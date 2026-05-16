@@ -14,6 +14,6 @@ public class DashboardController {
         if (authentication != null) {
             model.addAttribute("username", authentication.getName());
         }
-        return "dashboard";  // ✅ Busca templates/dashboard.html
+        return "dashboard";
     }
 }

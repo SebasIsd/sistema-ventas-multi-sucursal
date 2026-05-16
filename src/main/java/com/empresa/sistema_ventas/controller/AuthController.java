@@ -10,6 +10,6 @@ public class AuthController {
 
     @GetMapping("/login")
     public String login() {
-        return "auth/login";  // ✅ Busca en templates/auth/login.html
+        return "auth/login"; 
     }
 }

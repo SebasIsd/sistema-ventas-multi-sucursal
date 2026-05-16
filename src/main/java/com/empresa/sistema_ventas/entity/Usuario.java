@@ -28,9 +28,9 @@ public class Usuario {
     @Column(unique = true, nullable = false, length = 150)
     private String email;
 
+    @Column(length = 20)
     private String telefono;
 
-    // CAMBIO CLAVE: Relación ManyToOne (Un usuario = Un rol)
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_rol", nullable = false)
     private Rol rol;

@@ -9,6 +9,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 @Configuration
 @EnableWebSecurity
@@ -25,16 +28,18 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // ✅ PERMITIR ACCESO PÚBLICO A ESTAS RUTAS
                         .requestMatchers("/auth/**", "/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/").permitAll()  // ✅ Agrega esto
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/cajero/**").hasAnyRole("CAJERO", "ADMIN")
+                        .requestMatchers("/bodega/**").hasAnyRole("BODEGA", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/auth/login")  // ✅ Tu página de login custom
-                        .loginProcessingUrl("/auth/login")  // ✅ URL que procesa el login
-                        .defaultSuccessUrl("/dashboard", true)  // ✅ Redirección exitosa
-                        .failureUrl("/auth/login?error=true")  // ✅ Redirección con error
+                        .loginPage("/auth/login")
+                        .loginProcessingUrl("/auth/login")
+                        .successHandler(roleBasedSuccessHandler())
+                        .failureUrl("/auth/login?error=true")
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -44,10 +49,32 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) ->
-                                response.sendRedirect("/auth/login"))  // ✅ Evita bucles
+                                response.sendRedirect("/auth/login"))
                 );
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler roleBasedSuccessHandler() {
+        return (request, response, authentication) -> {
+            AtomicReference<String> redirectUrl = new AtomicReference<>("/dashboard"); // Default
+
+            // Obtener el rol de forma segura
+            authentication.getAuthorities().forEach(authority -> {
+                String role = authority.getAuthority();
+
+                if ("ROLE_ADMIN".equals(role)) {
+                    redirectUrl.set("/admin/dashboard");
+                } else if ("ROLE_CAJERO".equals(role)) {
+                    redirectUrl.set("/cajero/dashboard");
+                } else if ("ROLE_BODEGA".equals(role)) {
+                    redirectUrl.set("/bodega/dashboard");
+                }
+            });
+
+            response.sendRedirect(redirectUrl.get());
+        };
     }
 
     @Bean

@@ -28,8 +28,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
         if (!usuario.isActivo()) {
             throw new UsernameNotFoundException("Usuario inactivo: " + username);
         }
-
-        // Ahora solo asignamos UN rol directamente
+        
         var authority = new SimpleGrantedAuthority("ROLE_" + usuario.getRol().getNombre());
 
         return new User(

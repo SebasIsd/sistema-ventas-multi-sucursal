@@ -30,8 +30,7 @@
             </ul>
             <div class="d-flex align-items-center">
                     <span class="navbar-text text-white me-3">
-                        <span sec:authentication="name"></span> |
-                        <span> Activo </span>
+                        <span sec:authentication="name"></span>
                     </span>
                 <form th:action="@{/auth/logout}" method="post" class="d-inline">
                     <button type="submit" class="btn btn-outline-light btn-sm">🚪 Salir</button>
