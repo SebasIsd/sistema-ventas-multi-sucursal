@@ -23,7 +23,7 @@ public class DataInitializer implements CommandLineRunner {
     private final InventarioRepository inventarioRepo;
     private final VentaRepository ventaRepo;
     private final PasswordEncoder encoder;
-
+    private final DetalleVentaRepository detalleVentaRepo;//inicializar detalle
     public DataInitializer(RolRepository rolRepo,
                            SucursalRepository sucRepo,
                            UsuarioRepository userRepo,
@@ -32,6 +32,7 @@ public class DataInitializer implements CommandLineRunner {
                            ClienteRepository clienteRepo,
                            InventarioRepository inventarioRepo,
                            VentaRepository ventaRepo,
+                           DetalleVentaRepository detalleVentaRepo,
                            PasswordEncoder encoder) {
         this.rolRepo = rolRepo;
         this.sucRepo = sucRepo;
@@ -41,6 +42,7 @@ public class DataInitializer implements CommandLineRunner {
         this.clienteRepo = clienteRepo;
         this.inventarioRepo = inventarioRepo;
         this.ventaRepo = ventaRepo;
+        this.detalleVentaRepo = detalleVentaRepo;//inicializar detalle
         this.encoder = encoder;
     }
 
@@ -282,6 +284,7 @@ public class DataInitializer implements CommandLineRunner {
         v.setUsuario(vendedor);
         v.setSucursal(suc);
         v.setFecha(LocalDateTime.now());
+        v.setEstado("PAGADO");
 
         BigDecimal subtotal = precioUnit.multiply(BigDecimal.valueOf(cantidad));
         BigDecimal iva = subtotal.multiply(BigDecimal.valueOf(0.15));
@@ -291,7 +294,7 @@ public class DataInitializer implements CommandLineRunner {
         v.setSubtotalConIva(subtotal);
         v.setIvaTotal(iva);
         v.setTotal(total);
-        v.setEstado("PAGADO");
+        v.setEstado("PAGADO");//estado para venta
 
         ventaRepo.save(v);
 
