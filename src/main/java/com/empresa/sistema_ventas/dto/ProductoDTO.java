@@ -1,39 +1,21 @@
-package com.empresa.sistema_ventas.entity;
+package com.empresa.sistema_ventas.dto;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "productos")
-public class Producto {
+public class ProductoDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_producto")
     private Integer idProducto;
-
-    @Column(name = "codigo_barras", unique = true)
     private String codigoBarras;
-
-    @Column(name = "nombre", nullable = false)
     private String nombre;
-
-    @Column(name = "descripcion")
     private String descripcion;
-
-    @Column(name = "precio_unitario", nullable = false)
     private BigDecimal precioUnitario;
-
-    @Column(name = "porcentaje_iva")
     private BigDecimal porcentajeIva;
+    private Boolean activo;
+    private Integer idCategoria;
 
-    @Column(name = "activo")
-    private Boolean activo = true;
-
-    // ✅ EAGER está bien aquí para cargar la categoría junto al producto
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_categoria")
-    private Categoria categoria;
+    // ✅ Campo extra para mostrar el nombre de la categoría en la tabla del frontend
+    // El HTML usa p.nombreCategoria, así que debe existir en el DTO
+    private String nombreCategoria;
 
     public Integer getIdProducto() {
         return idProducto;
@@ -91,11 +73,19 @@ public class Producto {
         this.activo = activo;
     }
 
-    public Categoria getCategoria() {
-        return categoria;
+    public Integer getIdCategoria() {
+        return idCategoria;
     }
 
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
+    public void setIdCategoria(Integer idCategoria) {
+        this.idCategoria = idCategoria;
+    }
+
+    public String getNombreCategoria() {
+        return nombreCategoria;
+    }
+
+    public void setNombreCategoria(String nombreCategoria) {
+        this.nombreCategoria = nombreCategoria;
     }
 }
