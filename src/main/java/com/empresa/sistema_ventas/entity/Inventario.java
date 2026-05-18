@@ -1,15 +1,13 @@
-package com.empresa.sistema_ventas.entity;
-
-import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "inventario", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"id_producto", "id_sucursal"}, name = "uk_producto_sucursal")
-})
+@Table(name = "inventario",
+       uniqueConstraints = {
+           @UniqueConstraint(
+               columnNames = {"id_producto", "id_sucursal"},
+               name = "uk_producto_sucursal"
+           )
+       })
 public class Inventario {
 
     @Id
@@ -30,11 +28,4 @@ public class Inventario {
 
     @Column(name = "stock_minimo")
     private Integer stockMinimo = 5;
-
-    public Inventario(Producto producto, Sucursal sucursal, Integer stockActual, Integer stockMinimo) {
-        this.producto = producto;
-        this.sucursal = sucursal;
-        this.stockActual = stockActual;
-        this.stockMinimo = stockMinimo;
-    }
 }

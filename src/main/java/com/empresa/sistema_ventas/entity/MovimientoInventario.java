@@ -6,10 +6,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Data
-@NoArgsConstructor
 @Entity
 @Table(name = "movimientos_inventario")
+@Data
+@NoArgsConstructor
 public class MovimientoInventario {
 
     @Id
@@ -25,7 +25,7 @@ public class MovimientoInventario {
     @JoinColumn(name = "id_sucursal", nullable = false)
     private Sucursal sucursal;
 
-    @Column(name = "tipo_movimiento", nullable = false, length = 20)
+    @Column(name = "tipo_movimiento", nullable = false)
     private String tipoMovimiento;
 
     @Column(nullable = false)
@@ -37,11 +37,6 @@ public class MovimientoInventario {
     @Column(columnDefinition = "TEXT")
     private String observacion;
 
-    @Column(nullable = false)
+    @Column(name = "fecha")
     private LocalDateTime fecha = LocalDateTime.now();
-
-    @PrePersist
-    protected void onCreate() {
-        fecha = LocalDateTime.now();
-    }
 }
