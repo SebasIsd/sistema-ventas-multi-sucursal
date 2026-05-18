@@ -1,0 +1,355 @@
+<!-- templates/admin/productos/lista.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Productos</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            background: #f5f7fb;
+        }
+
+        .card-custom {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .table thead {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-blue {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-blue:hover {
+            background: #1d4ed8;
+            color: white;
+        }
+
+        .search-wrapper {
+            position: relative;
+            max-width: 320px;
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            pointer-events: none;
+        }
+
+        .search-input {
+            padding-left: 36px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            height: 40px;
+            width: 100%;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Productos</h2>
+            <p class="text-muted">Administración de productos</p>
+        </div>
+        <button class="btn btn-blue" onclick="abrirModalNuevo()">
+            Nuevo Producto
+        </button>
+    </div>
+
+    <div class="card card-custom">
+        <div class="card-body">
+
+            <!-- BUSCADOR -->
+            <div class="mb-3">
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input
+                        type="text"
+                        id="buscador"
+                        class="search-input"
+                        placeholder="Buscar por nombre, código o categoría..."
+                        oninput="filtrarTabla()"
+                    >
+                </div>
+            </div>
+
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Precio</th>
+                        <th>IVA</th>
+                        <th>Categoría</th>
+                        <th>Estado</th>
+                        <th width="180">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaProductos"></tbody>
+            </table>
+
+            <div class="no-results" id="sinResultados">
+                <i class="fas fa-search fa-2x mb-2 d-block"></i>
+                No se encontraron productos con ese criterio
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="modalProducto">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Producto</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <input type="hidden" id="idProducto">
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <label>Código Barras</label>
+                        <input type="text" id="codigoBarras" class="form-control">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Nombre</label>
+                        <input type="text" id="nombreProducto" class="form-control">
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label>Descripción</label>
+                        <textarea id="descripcionProducto" class="form-control"></textarea>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label>Precio</label>
+                        <input type="number" step="0.01" id="precioUnitario" class="form-control">
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label>IVA</label>
+                        <input type="number" step="0.01" id="porcentajeIva" class="form-control">
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label>Categoría</label>
+                        <select id="categoria" class="form-select"></select>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-check">
+                            <input type="checkbox" id="activoProducto" class="form-check-input" checked>
+                            <label class="form-check-label">Activo</label>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-blue" onclick="guardarProducto()">Guardar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+    let modalProducto;
+    let todosLosProductos = [];
+
+    function limpiarModal() {
+        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+    }
+
+    async function cargarProductos() {
+        const response = await fetch('/api/productos');
+        todosLosProductos = await response.json();
+        renderTabla(todosLosProductos);
+    }
+
+    function renderTabla(data) {
+        let html = '';
+
+        data.forEach(p => {
+            html += `
+                <tr>
+                    <td>${p.idProducto}</td>
+                    <td>${p.codigoBarras ?? ''}</td>
+                    <td>${p.nombre}</td>
+                    <td>$ ${p.precioUnitario}</td>
+                    <td>${p.porcentajeIva}%</td>
+                    <td>${p.nombreCategoria ?? ''}</td>
+                    <td>
+                        ${p.activo
+                            ? '<span class="badge bg-success">Activo</span>'
+                            : '<span class="badge bg-danger">Inactivo</span>'}
+                    </td>
+                    <td>
+                        <button class="btn btn-warning btn-sm"
+                            onclick='editarProducto(${JSON.stringify(p)})'>
+                            Editar
+                        </button>
+                        <button class="btn btn-danger btn-sm"
+                            onclick='eliminarProducto(${p.idProducto})'>
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        document.getElementById('tablaProductos').innerHTML = html;
+        document.getElementById('sinResultados').style.display = data.length === 0 ? 'block' : 'none';
+    }
+
+    // ✅ Busca por nombre, código de barras o nombre de categoría
+    function filtrarTabla() {
+        const texto = document.getElementById('buscador').value.toLowerCase().trim();
+
+        const filtrados = todosLosProductos.filter(p =>
+            p.nombre.toLowerCase().includes(texto) ||
+            (p.codigoBarras && p.codigoBarras.toLowerCase().includes(texto)) ||
+            (p.nombreCategoria && p.nombreCategoria.toLowerCase().includes(texto))
+        );
+
+        renderTabla(filtrados);
+    }
+
+    async function cargarCategorias() {
+        const response = await fetch('/api/categorias');
+        const categorias = await response.json();
+
+        let html = '';
+        categorias.forEach(c => {
+            html += `<option value="${c.idCategoria}">${c.nombre}</option>`;
+        });
+
+        document.getElementById('categoria').innerHTML = html;
+    }
+
+    function abrirModalNuevo() {
+        document.getElementById('idProducto').value = '';
+        document.getElementById('codigoBarras').value = '';
+        document.getElementById('nombreProducto').value = '';
+        document.getElementById('descripcionProducto').value = '';
+        document.getElementById('precioUnitario').value = '';
+        document.getElementById('porcentajeIva').value = 15;
+        document.getElementById('activoProducto').checked = true;
+
+        modalProducto = new bootstrap.Modal(document.getElementById('modalProducto'));
+        modalProducto.show();
+    }
+
+    function editarProducto(p) {
+        document.getElementById('idProducto').value = p.idProducto;
+        document.getElementById('codigoBarras').value = p.codigoBarras ?? '';
+        document.getElementById('nombreProducto').value = p.nombre;
+        document.getElementById('descripcionProducto').value = p.descripcion ?? '';
+        document.getElementById('precioUnitario').value = p.precioUnitario;
+        document.getElementById('porcentajeIva').value = p.porcentajeIva;
+        document.getElementById('categoria').value = p.idCategoria;
+        document.getElementById('activoProducto').checked = p.activo;
+
+        modalProducto = new bootstrap.Modal(document.getElementById('modalProducto'));
+        modalProducto.show();
+    }
+
+    async function guardarProducto() {
+        const id = document.getElementById('idProducto').value;
+
+        const body = {
+            codigoBarras: document.getElementById('codigoBarras').value,
+            nombre: document.getElementById('nombreProducto').value,
+            descripcion: document.getElementById('descripcionProducto').value,
+            precioUnitario: document.getElementById('precioUnitario').value,
+            porcentajeIva: document.getElementById('porcentajeIva').value,
+            idCategoria: document.getElementById('categoria').value,
+            activo: document.getElementById('activoProducto').checked
+        };
+
+        let url = '/api/productos';
+        let method = 'POST';
+
+        if (id) {
+            url += '/' + id;
+            method = 'PUT';
+        }
+
+        await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+
+        if (modalProducto) modalProducto.hide();
+        limpiarModal();
+
+        // Limpiar buscador para ver el resultado actualizado
+        document.getElementById('buscador').value = '';
+        cargarProductos();
+    }
+
+    async function eliminarProducto(id) {
+        if (!confirm('¿Eliminar producto?')) return;
+
+        await fetch('/api/productos/' + id, { method: 'DELETE' });
+        cargarProductos();
+    }
+
+    document.addEventListener('DOMContentLoaded', limpiarModal);
+
+    cargarProductos();
+    cargarCategorias();
+
+</script>
+
+</body>
+</html>

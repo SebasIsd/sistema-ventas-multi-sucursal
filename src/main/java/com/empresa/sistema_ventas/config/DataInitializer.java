@@ -25,14 +25,14 @@ public class DataInitializer implements CommandLineRunner {
     private final PasswordEncoder encoder;
 
     public DataInitializer(RolRepository rolRepo,
-                           SucursalRepository sucRepo,
-                           UsuarioRepository userRepo,
-                           CategoriaRepository categoriaRepo,
-                           ProductoRepository productoRepo,
-                           ClienteRepository clienteRepo,
-                           InventarioRepository inventarioRepo,
-                           VentaRepository ventaRepo,
-                           PasswordEncoder encoder) {
+            SucursalRepository sucRepo,
+            UsuarioRepository userRepo,
+            CategoriaRepository categoriaRepo,
+            ProductoRepository productoRepo,
+            ClienteRepository clienteRepo,
+            InventarioRepository inventarioRepo,
+            VentaRepository ventaRepo,
+            PasswordEncoder encoder) {
         this.rolRepo = rolRepo;
         this.sucRepo = sucRepo;
         this.userRepo = userRepo;
@@ -186,7 +186,7 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void createUsuario(String username, String pass, String nombre,
-                               String email, String tel, Rol rol, Sucursal suc) {
+            String email, String tel, Rol rol, Sucursal suc) {
         if (userRepo.existsByUsername(username)) {
             System.out.println("  ✓ Usuario ya existe: " + username);
             return;
@@ -205,10 +205,11 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private Categoria getOrCreateCategoria(String nombre, String desc) {
-        Optional<Categoria> existing = categoriaRepo.findByNombre(nombre);
-        if (existing.isPresent()) {
+        Categoria existing = categoriaRepo.findByNombre(nombre);
+
+        if (existing != null) {
             System.out.println("  ✓ Categoría ya existe: " + nombre);
-            return existing.get();
+            return existing;
         }
         Categoria c = new Categoria();
         c.setNombre(nombre);
@@ -219,11 +220,12 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private Producto getOrCreateProducto(String nombre, String desc, BigDecimal precio,
-                                         BigDecimal iva, Categoria cat, String codigo) {
-        Optional<Producto> existing = productoRepo.findByCodigoBarras(codigo);
-        if (existing.isPresent()) {
+            BigDecimal iva, Categoria cat, String codigo) {
+        Producto existing = productoRepo.findByCodigoBarras(codigo);
+
+        if (existing != null) {
             System.out.println("  ✓ Producto ya existe: " + nombre);
-            return existing.get();
+            return existing;
         }
         Producto p = new Producto();
         p.setNombre(nombre);
@@ -236,11 +238,11 @@ public class DataInitializer implements CommandLineRunner {
         System.out.println("  ➕ Creando producto: " + nombre);
         return productoRepo.save(p);
     }
-    
+
     private void createInventarioIfNotExists(Producto producto, Sucursal sucursal, int stock, int stockMin) {
         // Buscar si ya existe este inventario para esta combinación producto+sucursal
         boolean exists = inventarioRepo.findAll().stream()
-                .anyMatch(inv -> inv.getProducto().getId().equals(producto.getId())
+                .anyMatch(inv -> inv.getProducto().getIdProducto().equals(producto.getIdProducto())
                         && inv.getSucursal().getId().equals(sucursal.getId()));
 
         if (exists) {
@@ -254,11 +256,12 @@ public class DataInitializer implements CommandLineRunner {
         inv.setStockActual(stock);
         inv.setStockMinimo(stockMin);
         inventarioRepo.save(inv);
-        System.out.println("  ➕ Inventario creado: " + producto.getNombre() + " (" + stock + ") en " + sucursal.getCiudad());
+        System.out.println(
+                "  ➕ Inventario creado: " + producto.getNombre() + " (" + stock + ") en " + sucursal.getCiudad());
     }
 
     private void createCliente(String cedula, String nombres, String apellidos,
-                               String tel, String email, String tipo) {
+            String tel, String email, String tipo) {
         if (clienteRepo.findByCedulaRuc(cedula).isPresent()) {
             System.out.println("  ✓ Cliente ya existe: " + cedula);
             return;
@@ -276,7 +279,7 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void createVenta(Cliente cliente, Usuario vendedor, Sucursal suc,
-                             Producto prod, int cantidad, BigDecimal precioUnit) {
+            Producto prod, int cantidad, BigDecimal precioUnit) {
         Venta v = new Venta();
         v.setCliente(cliente);
         v.setUsuario(vendedor);

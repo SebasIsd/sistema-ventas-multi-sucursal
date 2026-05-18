@@ -2,14 +2,9 @@ package com.empresa.sistema_ventas.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.util.HashSet;
-import java.util.Set;
-
-@Data
-@NoArgsConstructor
 @Entity
 @Table(name = "categorias")
 public class Categoria {
@@ -17,22 +12,59 @@ public class Categoria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_categoria")
-    private Long id;
+    private Integer idCategoria;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "descripcion")
     private String descripcion;
 
-    @Column(nullable = false)
-    private boolean activo = true;
+    @Column(name = "activo")
+    private Boolean activo = true;
 
-    @OneToMany(mappedBy = "categoria")
+    // ✅ @JsonIgnore para evitar bucle infinito al serializar a JSON
     @JsonIgnore
-    private Set<Producto> productos = new HashSet<>();
+    @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY)
+    private List<Producto> productos = new ArrayList<>();
 
-    public Categoria(String nombre) {
+    public Integer getIdCategoria() {
+        return idCategoria;
+    }
+
+    public void setIdCategoria(Integer idCategoria) {
+        this.idCategoria = idCategoria;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public Boolean getActivo() {
+        return activo;
+    }
+
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
+    }
+
+    public List<Producto> getProductos() {
+        return productos;
+    }
+
+    public void setProductos(List<Producto> productos) {
+        this.productos = productos;
     }
 }
