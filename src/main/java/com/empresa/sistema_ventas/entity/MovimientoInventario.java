@@ -15,13 +15,15 @@ public class MovimientoInventario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_movimiento")
-    private Long idMovimiento;
+    private Long id;
 
-    @Column(name = "id_producto", nullable = false)
-    private Long productoId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_producto", nullable = false)
+    private Producto producto;
 
-    @Column(name = "id_sucursal", nullable = false)
-    private Long sucursalId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_sucursal", nullable = false)
+    private Sucursal sucursal;
 
     @Column(name = "tipo_movimiento", nullable = false)
     private String tipoMovimiento;
@@ -35,5 +37,6 @@ public class MovimientoInventario {
     @Column(columnDefinition = "TEXT")
     private String observacion;
 
+    @Column(name = "fecha")
     private LocalDateTime fecha = LocalDateTime.now();
 }

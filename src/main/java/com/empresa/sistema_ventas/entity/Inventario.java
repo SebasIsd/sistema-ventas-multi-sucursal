@@ -1,25 +1,27 @@
-package com.empresa.sistema_ventas.entity;
-
-import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Entity
-@Table(name = "inventario")
 @Data
 @NoArgsConstructor
+@Entity
+@Table(name = "inventario",
+       uniqueConstraints = {
+           @UniqueConstraint(
+               columnNames = {"id_producto", "id_sucursal"},
+               name = "uk_producto_sucursal"
+           )
+       })
 public class Inventario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_inventario")
-    private Long idInventario;
+    private Long id;
 
-    @Column(name = "id_producto", nullable = false)
-    private Long productoId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_producto", nullable = false)
+    private Producto producto;
 
-    @Column(name = "id_sucursal", nullable = false)
-    private Long sucursalId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_sucursal", nullable = false)
+    private Sucursal sucursal;
 
     @Column(name = "stock_actual", nullable = false)
     private Integer stockActual = 0;
