@@ -1,3 +1,10 @@
+package com.empresa.sistema_ventas.entity;
+
+import com.empresa.sistema_ventas.entity.*;
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Data
 @NoArgsConstructor
 @Entity
@@ -8,8 +15,8 @@
                name = "uk_producto_sucursal"
            )
        })
-public class Inventario {
 
+public class Inventario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_inventario")

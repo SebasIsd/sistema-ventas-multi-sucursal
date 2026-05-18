@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class AjusteStockRequest {
 
-    private Long productoId;
+    private Integer productoId;
     private Long sucursalId;
     private Integer cantidad;
     private String observacion;

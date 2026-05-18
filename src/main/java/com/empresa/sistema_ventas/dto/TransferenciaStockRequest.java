@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class TransferenciaStockRequest {
 
-    private Long productoId;
+    private Integer productoId;
     private Long sucursalOrigenId;
     private Long sucursalDestinoId;
     private Integer cantidad;
