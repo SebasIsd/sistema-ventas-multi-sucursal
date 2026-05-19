@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Clientes - Sistema Ventas</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+
+        :root{
+            --primary:#2563eb;
+            --primary-hover:#1d4ed8;
+            --bg:#f8fafc;
+            --card:#ffffff;
+            --text:#1e293b;
+            --text-light:#64748b;
+            --border:#e2e8f0;
+        }
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Inter',sans-serif;
+        }
+
+        body{
+            background:var(--bg);
+            min-height:100vh;
+        }
+
+        .container-custom{
+            width:95%;
+            max-width:1200px;
+            margin:auto;
+            padding:30px 0;
+        }
+
+        .header-box{
+            background:var(--card);
+            border-radius:16px;
+            padding:25px;
+            margin-bottom:25px;
+            box-shadow:0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .header-box h2{
+            color:var(--text);
+            font-weight:700;
+            margin-bottom:10px;
+        }
+
+        .header-box p{
+            color:var(--text-light);
+            margin:0;
+        }
+
+        .card-custom{
+            background:var(--card);
+            border-radius:16px;
+            padding:25px;
+            margin-bottom:25px;
+            box-shadow:0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .btn-primary-custom{
+            background:var(--primary);
+            border:none;
+        }
+
+        .btn-primary-custom:hover{
+            background:var(--primary-hover);
+        }
+
+        .table{
+            margin-top:20px;
+        }
+
+        .table thead{
+            background:#0f172a;
+            color:white;
+        }
+
+        .table th{
+            border:none;
+        }
+
+        .form-control,
+        .form-select{
+            border-radius:10px;
+            padding:10px;
+        }
+
+        .search-box{
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container-custom">
+    <!-- MODAL PARA EDITAR CLIENTE -->
+    <div class="modal fade" id="modalEditar" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-edit"></i> Editar Cliente
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEditar" th:action="@{/clientes/editar}" method="post">
+
+                        <input type="hidden" name="id" id="edit_id">
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Cédula / RUC</label>
+                                <input type="text" name="cedulaRuc" id="edit_cedula" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tipo Cliente</label>
+                                <select name="tipoCliente" id="edit_tipo" class="form-select">
+                                    <option value="NORMAL">NORMAL</option>
+                                    <option value="EMPRESA">EMPRESA</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nombres</label>
+                                <input type="text" name="nombres" id="edit_nombres" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Apellidos</label>
+                                <input type="text" name="apellidos" id="edit_apellidos" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Teléfono</label>
+                                <input type="text" name="telefono" id="edit_telefono" class="form-control">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" name="email" id="edit_email" class="form-control">
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">Dirección</label>
+                                <input type="text" name="direccion" id="edit_direccion" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Actualizar Cliente</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- BOTON VOLVER -->
+    <a href="cajero/dashboard"
+       class="btn btn-secondary mb-3">
+
+        <i class="fas fa-arrow-left"></i>
+        Volver al Panel
+
+    </a>
+
+    <!-- HEADER -->
+    <div class="header-box">
+
+        <h2>
+            <i class="fas fa-users"></i>
+            Gestión de Clientes
+        </h2>
+
+        <p>
+            Registro, búsqueda y listado de clientes
+        </p>
+
+    </div>
+
+    <!-- BUSCAR CLIENTE -->
+    <div class="card-custom">
+
+        <h4 class="mb-3">
+            Buscar Cliente
+        </h4>
+
+        <form th:action="@{/clientes/buscar}" method="get">
+
+            <div class="search-box">
+
+                <input type="text"
+                       name="cedula"
+                       class="form-control"
+                       placeholder="Ingrese cédula o RUC"
+                       required>
+
+                <button type="submit"
+                        class="btn btn-dark">
+
+                    <i class="fas fa-search"></i>
+                    Buscar
+
+                </button>
+
+            </div>
+
+        </form>
+
+        <!-- RESULTADO -->
+        <div th:if="${clienteEncontrado != null}" class="mt-4">
+
+            <div class="alert alert-success">
+
+                <h5>
+                    Cliente Encontrado
+                </h5>
+
+                <hr>
+
+                <p>
+                    <strong>Nombre:</strong>
+                    <span th:text="${clienteEncontrado.nombres + ' ' + clienteEncontrado.apellidos}"></span>
+                </p>
+
+                <p>
+                    <strong>Cédula:</strong>
+                    <span th:text="${clienteEncontrado.cedulaRuc}"></span>
+                </p>
+
+                <p>
+                    <strong>Teléfono:</strong>
+                    <span th:text="${clienteEncontrado.telefono}"></span>
+                </p>
+
+                <p>
+                    <strong>Email:</strong>
+                    <span th:text="${clienteEncontrado.email}"></span>
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FORMULARIO -->
+    <div class="card-custom">
+
+        <h4 class="mb-4">
+            Nuevo Cliente
+        </h4>
+
+        <form th:action="@{/clientes/guardar}" method="post">
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                        Cédula / RUC
+                    </label>
+
+                    <input type="text"
+                           name="cedulaRuc"
+                           class="form-control"
+                           required>
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                        Tipo Cliente
+                    </label>
+
+                    <select name="tipoCliente"
+                            class="form-select">
+
+                        <option value="NORMAL">NORMAL</option>
+                        <option value="EMPRESA">EMPRESA</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                        Nombres
+                    </label>
+
+                    <input type="text"
+                           name="nombres"
+                           class="form-control"
+                           required>
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                        Apellidos
+                    </label>
+
+                    <input type="text"
+                           name="apellidos"
+                           class="form-control"
+                           required>
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                        Teléfono
+                    </label>
+
+                    <input type="text"
+                           name="telefono"
+                           class="form-control">
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                        Email
+                    </label>
+
+                    <input type="email"
+                           name="email"
+                           class="form-control">
+
+                </div>
+
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+                        Dirección
+                    </label>
+
+                    <input type="text"
+                           name="direccion"
+                           class="form-control">
+
+                </div>
+
+            </div>
+
+            <button type="submit"
+                    class="btn btn-primary btn-primary-custom">
+
+                <i class="fas fa-save"></i>
+                Guardar Cliente
+
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- TABLA -->
+    <!-- TABLA -->
+    <div class="card-custom">
+
+        <h4>
+            Lista de Clientes
+        </h4>
+
+        <table class="table table-hover align-middle">
+
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cédula</th>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Email</th>
+                <th>Tipo</th>
+                <th>Acciones</th>  <!-- NUEVA COLUMNA -->
+            </thead>
+
+            <tbody>
+            <tr th:each="cliente : ${clientes}">
+                <td th:text="${cliente.id}"></td>
+                <td th:text="${cliente.cedulaRuc}"></td>
+                <td th:text="${cliente.nombres + ' ' + cliente.apellidos}"></td>
+                <td th:text="${cliente.telefono}"></td>
+                <td th:text="${cliente.email}"></td>
+                <td th:text="${cliente.tipoCliente}"></td>
+
+                <!-- NUEVA COLUMNA DE ACCIONES -->
+                <td>
+                    <!-- Botón Editar - Abre modal con los datos -->
+                    <button type="button"
+                            class="btn btn-sm btn-warning me-1"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalEditar"
+                            th:attr="data-id=${cliente.id},
+                                 data-cedula=${cliente.cedulaRuc},
+                                 data-nombres=${cliente.nombres},
+                                 data-apellidos=${cliente.apellidos},
+                                 data-telefono=${cliente.telefono},
+                                 data-email=${cliente.email},
+                                 data-direccion=${cliente.direccion},
+                                 data-tipo=${cliente.tipoCliente}">
+                        <i class="fas fa-edit"></i>
+                        Editar
+                    </button>
+
+                    <!-- Botón Eliminar -->
+                    <a th:href="@{/clientes/eliminar/{id}(id=${cliente.id})}"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('¿Estás seguro de eliminar este cliente?')">
+                        <i class="fas fa-trash"></i>
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Script para llenar el modal con los datos del cliente
+    const modalEditar = document.getElementById('modalEditar');
+    if (modalEditar) {
+        modalEditar.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+
+            // Obtener los datos del botón
+            const id = button.getAttribute('data-id');
+            const cedula = button.getAttribute('data-cedula');
+            const nombres = button.getAttribute('data-nombres');
+            const apellidos = button.getAttribute('data-apellidos');
+            const telefono = button.getAttribute('data-telefono');
+            const email = button.getAttribute('data-email');
+            const direccion = button.getAttribute('data-direccion');
+            const tipo = button.getAttribute('data-tipo');
+
+            // Llenar el formulario
+            document.getElementById('edit_id').value = id;
+            document.getElementById('edit_cedula').value = cedula;
+            document.getElementById('edit_nombres').value = nombres;
+            document.getElementById('edit_apellidos').value = apellidos;
+            document.getElementById('edit_telefono').value = telefono;
+            document.getElementById('edit_email').value = email;
+            document.getElementById('edit_direccion').value = direccion;
+            document.getElementById('edit_tipo').value = tipo;
+        });
+    }
+</script>
+</body>
+</html>
