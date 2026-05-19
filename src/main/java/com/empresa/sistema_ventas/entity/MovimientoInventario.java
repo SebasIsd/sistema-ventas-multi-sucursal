@@ -1,14 +1,16 @@
 package com.empresa.sistema_ventas.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "movimientos_inventario")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class MovimientoInventario {
 
@@ -37,6 +39,8 @@ public class MovimientoInventario {
     @Column(columnDefinition = "TEXT")
     private String observacion;
 
-    @Column(name = "fecha")
-    private LocalDateTime fecha = LocalDateTime.now();
+    @Column(name = "fecha_movimiento", nullable = false)
+    private LocalDateTime fechaMovimiento = LocalDateTime.now();
+
+
 }

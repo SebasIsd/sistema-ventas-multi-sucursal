@@ -153,4 +153,7 @@ public class VentaService {
     public List<Venta> getHistorialVentas(Long sucursalId) {
         return ventaRepository.findBySucursalId(sucursalId);
     }
+    public List<Venta> listarVentas(){
+        return ventaRepository.findAll();
+    }
 }
