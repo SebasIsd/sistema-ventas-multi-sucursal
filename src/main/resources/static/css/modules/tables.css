@@ -52,6 +52,13 @@
 .text-main { color: var(--text-main); }
 .text-muted { color: var(--text-muted); font-size: .85rem; }
 
+/* ---- Precio formateado en tabla ---- */
+.price-tag {
+    font-weight: 700;
+    color: var(--clr-primary);
+    font-size: .92rem;
+}
+
 /* ===============================
    PAGINACIÓN
    =============================== */

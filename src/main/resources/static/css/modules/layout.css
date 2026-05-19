@@ -29,6 +29,32 @@ body.role-cajero {
     animation: fadeIn .4s ease both;
 }
 
+/* ---- Page header (vistas de lista) ---- */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.page-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0 0 .2rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.page-desc {
+    color: var(--text-muted);
+    font-size: .875rem;
+    margin: 0;
+}
+
 /* ---- Welcome banner ---- */
 .welcome-banner {
     background: white;
@@ -101,10 +127,12 @@ body.role-cajero {
 }
 
 /* Icon colors using palette */
-.stat-icon.blue   { background: rgba(0, 110, 207, 0.1); color: var(--clr-primary); }
+.stat-icon.blue   { background: rgba(0, 110, 207, 0.1);  color: var(--clr-primary); }
 .stat-icon.green  { background: rgba(29, 189, 142, 0.1); color: var(--clr-secondary); }
 .stat-icon.teal   { background: rgba(15, 166, 157, 0.1); color: var(--clr-teal); }
-.stat-icon.navy   { background: rgba(0, 76, 148, 0.1); color: var(--clr-navy); }
+.stat-icon.navy   { background: rgba(0, 76, 148, 0.1);   color: var(--clr-navy); }
+.stat-icon.purple { background: rgba(45, 63, 84, 0.1);   color: var(--clr-dark); }
+.stat-icon.orange { background: rgba(217, 119, 6, 0.1);  color: #d97706; }
 
 .stat-data h3 {
     font-size: 1.6rem;
@@ -269,7 +297,7 @@ body.role-cajero {
    NAVBAR
    ====================================================== */
 .navbar {
-    background: var(--role-primary, var(--primary));
+    background: var(--primary);
     padding: 0;
     position: sticky;
     top: 0;
