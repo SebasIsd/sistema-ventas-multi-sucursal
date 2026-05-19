@@ -18,7 +18,7 @@
 .form-control:focus,
 .form-select:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, .1);
+    box-shadow: 0 0 0 3px rgba(0, 110, 207, .1);
     outline: none;
 }
 
@@ -36,7 +36,7 @@
 }
 
 .form-check-input:focus {
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, .15);
+    box-shadow: 0 0 0 3px rgba(0, 110, 207, .15);
     border-color: var(--primary);
 }
 
@@ -69,7 +69,7 @@
 .search-input:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, .12);
+    box-shadow: 0 0 0 3px rgba(0, 110, 207, .12);
 }
 
 .search-input::placeholder {

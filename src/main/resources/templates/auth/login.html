@@ -9,14 +9,17 @@
 
   <style>
     :root {
-      --primary:       #7c3aed;
-      --primary-dark:  #6d28d9;
-      --primary-light: #ede9fe;
-      --text-main:     #1e293b;
-      --text-muted:    #64748b;
-      --border:        #e2e8f0;
-      --error:         #ef4444;
-      --success:       #10b981;
+      --primary:       #006ECF;
+      --primary-dark:  #004C94;
+      --primary-light: #3C93FA;
+      --accent:        #1DBD8E;
+      --text-main:     #ffffff;
+      --text-muted:    #cbd5e1;
+      --border:        rgba(255, 255, 255, 0.2);
+      --error:         #f87171;
+      --success:       #34d399;
+      --glass-bg:      rgba(255, 255, 255, 0.1);
+      --glass-border:  rgba(255, 255, 255, 0.15);
     }
 
     *, *::before, *::after {
@@ -31,34 +34,34 @@
       align-items: center;
       justify-content: center;
       padding: 1.5rem;
-      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      background: linear-gradient(135deg, #2D3F54 0%, #004C94 50%, #017072aa 100%);
       background-size: 400% 400%;
-      animation: gradientShift 12s ease infinite;
+      animation: gradientShift 15s ease infinite;
       position: relative;
       overflow: hidden;
     }
 
-    /* ---- Animated background dots ---- */
+    /* ---- Animated background elements ---- */
     body::before {
       content: '';
       position: absolute;
       inset: 0;
-      background-image: radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px);
-      background-size: 28px 28px;
+      background-image: radial-gradient(rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: 32px 32px;
       pointer-events: none;
     }
 
-    /* Glowing orbs */
+    /* Glowing orbs for depth */
     .orb {
       position: absolute;
       border-radius: 50%;
-      filter: blur(80px);
-      opacity: .25;
-      animation: float 8s ease-in-out infinite;
+      filter: blur(100px);
+      opacity: 0.3;
+      animation: float 10s ease-in-out infinite;
     }
-    .orb-1 { width: 320px; height: 320px; background: #7c3aed; top: -80px; left: -80px; animation-delay: 0s; }
-    .orb-2 { width: 280px; height: 280px; background: #2563eb; bottom: -60px; right: -60px; animation-delay: -4s; }
-    .orb-3 { width: 200px; height: 200px; background: #ec4899; top: 50%; right: 20%; animation-delay: -2s; }
+    .orb-1 { width: 400px; height: 400px; background: #01437c; top: -100px; left: -100px; animation-delay: 0s; }
+    .orb-2 { width: 350px; height: 350px; background: #127759; bottom: -80px; right: -80px; animation-delay: -5s; }
+    .orb-3 { width: 250px; height: 250px; background: #017870; top: 40%; right: 15%; animation-delay: -2s; }
 
     @keyframes gradientShift {
       0%, 100% { background-position: 0% 50%; }
@@ -67,58 +70,61 @@
 
     @keyframes float {
       0%, 100% { transform: translateY(0) scale(1); }
-      50%       { transform: translateY(-20px) scale(1.05); }
+      50%       { transform: translateY(-30px) scale(1.1); }
     }
 
-    /* ---- Card ---- */
+    /* ---- Card Glass Morphism ---- */
     .login-card {
       position: relative;
       z-index: 1;
       width: 100%;
-      max-width: 430px;
-      background: rgba(255,255,255,.97);
-      border-radius: 24px;
-      padding: 2.75rem 2.5rem;
-      box-shadow: 0 25px 60px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.1);
-      animation: cardIn .6s cubic-bezier(.22,1,.36,1) both;
+      max-width: 420px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border-radius: 28px;
+      padding: 3rem 2.5rem;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      animation: cardIn .7s cubic-bezier(.22,1,.36,1) both;
     }
 
     @keyframes cardIn {
-      from { opacity: 0; transform: translateY(30px) scale(.97); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
+      from { opacity: 0; transform: translateY(40px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     /* ---- Header ---- */
     .login-header {
       text-align: center;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
     }
 
     .logo-wrap {
-      width: 60px;
-      height: 60px;
-      background: linear-gradient(135deg, var(--primary), #60a5fa);
-      border-radius: 16px;
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 18px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 1rem;
-      box-shadow: 0 8px 20px rgba(124,58,237,.35);
+      margin-bottom: 1.25rem;
+      box-shadow: 0 8px 25px rgba(0, 110, 207, 0.4);
     }
 
-    .logo-wrap i { font-size: 1.6rem; color: white; }
+    .logo-wrap i { font-size: 1.8rem; color: white; }
 
     .login-header h1 {
-      font-size: 1.6rem;
+      font-size: 1.75rem;
       font-weight: 700;
-      color: var(--text-main);
-      letter-spacing: -.4px;
+      color: white;
+      letter-spacing: -.5px;
     }
 
     .login-header p {
       color: var(--text-muted);
-      font-size: .9rem;
-      margin-top: .3rem;
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
     }
 
     /* ---- Alerts ---- */
@@ -126,37 +132,37 @@
       display: flex;
       align-items: center;
       gap: .75rem;
-      padding: .875rem 1rem;
-      border-radius: 10px;
-      margin-bottom: 1.25rem;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
       font-size: .875rem;
       font-weight: 500;
-      animation: cardIn .3s ease both;
+      backdrop-filter: blur(8px);
     }
 
     .alert-error {
-      background: #fef2f2;
-      color: var(--error);
-      border: 1px solid #fecaca;
+      background: rgba(248, 30, 30, 0.571);
+      color: #fca5a5;
+      border: 1px solid rgba(248, 113, 113, 0.3);
     }
 
     .alert-success {
-      background: #ecfdf5;
-      color: var(--success);
-      border: 1px solid #a7f3d0;
+      background: rgba(52, 211, 153, 0.15);
+      color: #a7f3d0;
+      border: 1px solid rgba(52, 211, 153, 0.3);
     }
 
     /* ---- Form ---- */
-    .form-group { margin-bottom: 1.25rem; }
+    .form-group { margin-bottom: 1.5rem; }
 
     .form-label {
       display: block;
-      font-size: .82rem;
-      font-weight: 600;
-      color: var(--text-main);
-      margin-bottom: .45rem;
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 0.6rem;
       text-transform: uppercase;
-      letter-spacing: .04em;
+      letter-spacing: .08em;
     }
 
     .input-wrap {
@@ -165,81 +171,88 @@
 
     .input-wrap i {
       position: absolute;
-      left: 14px;
+      left: 16px;
       top: 50%;
       transform: translateY(-50%);
-      color: #94a3b8;
-      transition: color .2s;
-      font-size: .9rem;
+      color: rgba(255, 255, 255, 0.73);
+      transition: color .3s;
+      font-size: 1rem;
     }
 
     .form-input {
       width: 100%;
-      height: 46px;
-      padding: 0 1rem 0 2.6rem;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      font-size: .95rem;
-      color: var(--text-main);
-      background: white;
-      transition: border-color .2s, box-shadow .2s;
+      height: 52px;
+      padding: 0 1rem 0 3rem;
+      background: rgba(255, 255, 255, 0.521);
+      border: 1px solid rgba(255, 255, 255, 0.479);
+      border-radius: 14px;
+      font-size: 1rem;
+      color: rgba(1, 1, 1, 0.755);
+      transition: all .3s;
     }
+
+    .form-input::placeholder { color: rgba(38, 38, 38, 0.718); }
 
     .form-input:focus {
       outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 4px rgba(124,58,237,.12);
+      background: rgba(255, 255, 255, 0.826);
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 4px rgba(131, 222, 250, 0.378);
     }
 
-    .input-wrap:focus-within i { color: var(--primary); }
+    .input-wrap:focus-within i { color: var(--primary-light); }
 
     /* Toggle password */
     .toggle-pw {
       position: absolute;
-      right: 12px;
+      right: 40px;
       top: 50%;
       transform: translateY(-50%);
       background: none;
       border: none;
-      color: #94a3b8;
+      color: rgba(255, 255, 255, 0.5);
       cursor: pointer;
       padding: .25rem;
       transition: color .2s;
     }
-    .toggle-pw:hover { color: var(--primary); }
+    .toggle-pw:hover { color: rgb(0, 0, 0); }
 
     /* ---- Submit button ---- */
     .btn-login {
       width: 100%;
-      height: 48px;
-      background: linear-gradient(135deg, var(--primary), #8b5cf6);
+      height: 54px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       color: white;
       border: none;
-      border-radius: 10px;
-      font-size: 1rem;
+      border-radius: 14px;
+      font-size: 1.1rem;
       font-weight: 700;
       cursor: pointer;
-      transition: transform .15s, box-shadow .2s, opacity .2s;
-      box-shadow: 0 4px 14px rgba(124,58,237,.35);
-      margin-top: .5rem;
+      transition: all .3s;
+      box-shadow: 0 10px 20px -5px rgba(82, 82, 82, 0.4);
+      margin-top: 0.75rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: .5rem;
-      letter-spacing: .02em;
+      gap: 0.75rem;
+      letter-spacing: .03em;
     }
 
-    .btn-login:hover  { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(124,58,237,.45); }
+    .btn-login:hover  { 
+      transform: translateY(-2px); 
+      box-shadow: 0 15px 30px -5px rgba(0, 76, 148, 0.867);
+      filter: brightness(1.1);
+    }
     .btn-login:active { transform: scale(.98); }
     .btn-login:disabled { opacity: .65; cursor: not-allowed; transform: none; }
 
     .spinner {
-      width: 18px;
-      height: 18px;
-      border: 2px solid rgba(255,255,255,.4);
-      border-top-color: white;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,.3);
+      border-top-color: rgb(0, 0, 0);
       border-radius: 50%;
-      animation: spin .7s linear infinite;
+      animation: spin .8s linear infinite;
       display: none;
     }
 
@@ -248,28 +261,28 @@
     /* ---- Footer ---- */
     .login-footer {
       text-align: center;
-      margin-top: 1.75rem;
-      padding-top: 1.25rem;
-      border-top: 1px solid var(--border);
-      font-size: .8rem;
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: .85rem;
       color: var(--text-muted);
-      line-height: 1.6;
     }
 
-    .login-footer .hint {
+    .hint {
       display: inline-flex;
-      gap: 1rem;
-      background: #f8fafc;
-      padding: .5rem 1rem;
-      border-radius: 8px;
-      margin-top: .5rem;
-      border: 1px solid var(--border);
+      gap: 1.25rem;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.6rem 1.25rem;
+      border-radius: 10px;
+      margin-top: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .login-footer .hint span { font-weight: 600; color: var(--text-main); }
+    .hint span { font-weight: 600; color: white; }
 
     @media (max-width: 480px) {
-      .login-card { padding: 2rem 1.5rem; }
+      .login-card { padding: 2.5rem 1.5rem; }
+      .login-header h1 { font-size: 1.5rem; }
     }
   </style>
 </head>
@@ -284,7 +297,7 @@
     <!-- Header -->
     <div class="login-header">
       <div class="logo-wrap">
-        <i class="fas fa-store"></i>
+        <i class="bi bi-shop"></i>
       </div>
       <h1>Sistema de Ventas</h1>
       <p>Ingresa tus credenciales para acceder</p>
@@ -292,7 +305,7 @@
 
     <!-- Alerts -->
     <div th:if="${param.error}" class="alert alert-error">
-      <i class="fas fa-exclamation-circle"></i>
+      <i class="bi bi-exclamation-triangle"></i>
       <span>Usuario o contraseña incorrectos. Intenta de nuevo.</span>
     </div>
 
@@ -336,11 +349,7 @@
     <!-- Footer -->
     <div class="login-footer">
       <p>&copy; 2026 Sistema de Ventas Multi-Sucursal</p>
-      <div class="hint">
-        <span>admin</span>
-        <span style="color:#cbd5e1;">|</span>
-        <span>admin123</span>
-      </div>
+      
     </div>
 
   </div>
@@ -351,8 +360,8 @@
       const icon   = document.getElementById('pwIcon');
       const isText = input.type === 'text';
       input.type   = isText ? 'password' : 'text';
-      icon.classList.toggle('fa-eye', isText);
-      icon.classList.toggle('fa-eye-slash', !isText);
+      icon.classList.toggle('bi-eye', isText);
+      icon.classList.toggle('bi-eye-slash', !isText);
     }
 
     function handleSubmit(e) {

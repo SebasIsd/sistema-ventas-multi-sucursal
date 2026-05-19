@@ -2,36 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/base :: head('Productos — Sistema de Ventas')}">
 </head>
-<body>
-
-    <!-- Estilos específicos de vista compartidos con admin -->
-    <style>
-        :root {
-            --role-primary:   #7c3aed;
-            --role-secondary: #6d28d9;
-            --role-glow:      rgba(124,58,237,.25);
-        }
-
-        .page-content { padding: 2rem; max-width: 1300px; margin: 0 auto; }
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-bottom: 1.5rem;
-        }
-        .page-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: .5rem;
-        }
-        .page-desc { color: var(--text-muted); font-size: .9rem; margin-top: .2rem; }
-        
-        .price-tag { font-family: monospace; font-size: .95rem; font-weight: 600; color: #15803d; }
-    </style>
+<body class="role-admin">
 
     <!-- NAVBAR MODULAR -->
     <nav th:replace="~{layout/base :: navbar-admin}"></nav>
@@ -48,7 +19,7 @@
         <!-- Header -->
         <div class="page-header">
             <div>
-                <h2 class="page-title"><i class="bi bi-box-seam" style="color:var(--primary);"></i> Productos</h2>
+                <h2 class="page-title"><i class="bi bi-box-seam"></i> Productos</h2>
                 <p class="page-desc">Catálogo completo de productos e inventario base</p>
             </div>
             <button class="btn btn-filled" onclick="abrirModalNuevo()">

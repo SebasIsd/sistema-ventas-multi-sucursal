@@ -7,25 +7,43 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-    /* Paleta de colores */
-    --primary:        #7c3aed;
-    --primary-hover:  #6d28d9;
-    --blue:           #2563eb;
-    --blue-hover:     #1d4ed8;
+    /* Paleta de colores - Basada en diseño solicitado */
+    --clr-primary:    #006ECF; /* Bright Blue */
+    --clr-secondary:  #1DBD8E; /* Green */
+    --clr-accent:     #3C93FA; /* Sky Blue */
+    --clr-dark:       #2D3F54; /* Dark Navy */
+    --clr-slate:      #52647A; /* Slate Gray */
+    --clr-cyan:       #00D4C6; /* Cyan */
+    --clr-teal:       #0FA69D; /* Teal */
+    --clr-teal-dark:  #028183; /* Dark Teal */
+    --clr-sage:       #73CC80; /* Sage Green */
+    --clr-navy:       #004C94; /* Deep Blue */
+
+    /* Mapeo de variables funcionales */
+    --primary:        var(--clr-primary);
+    --primary-hover:  var(--clr-navy);
+    --blue:           var(--clr-accent);
+    --blue-hover:     var(--clr-primary);
     --amber:          #d97706;
     --amber-hover:    #b45309;
-    --green:          #059669;
-    --green-hover:    #047857;
+    --green:          var(--clr-secondary);
+    --green-hover:    var(--clr-teal);
     --red:            #ef4444;
     --red-hover:      #dc2626;
 
+    /* Colores por Rol (Estandarizados) */
+    --role-admin:     var(--clr-dark);
+    --role-bodega:    var(--clr-teal-dark);
+    --role-cajero:    var(--clr-navy);
+
     /* Fondo y superficie */
-    --bg:             #f0f4fd;
+    --bg:             #f8fafc;
     --card-bg:        #ffffff;
 
     /* Texto */
     --text-main:      #1e293b;
-    --text-muted:     #64748b;
+    --text-muted:     #52647A;
+    --text-on-role:   #ffffff;
 
     /* Bordes y sombras */
     --border:         #e2e8f0;

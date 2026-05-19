@@ -25,13 +25,13 @@
 .btn-filled {
     background: var(--primary);
     color: white;
-    box-shadow: 0 3px 10px rgba(124, 58, 237, .25);
+    box-shadow: 0 3px 10px rgba(0, 76, 148, .15);
 }
 
 .btn-filled:hover {
     background: var(--primary-hover);
     color: white;
-    box-shadow: 0 5px 14px rgba(124, 58, 237, .35);
+    box-shadow: 0 5px 14px rgba(0, 76, 148, .25);
     transform: translateY(-1px);
 }
 
@@ -44,7 +44,7 @@
 .btn-ghost:hover {
     border-color: var(--primary);
     color: var(--primary);
-    background: #f5f3ff;
+    background: rgba(0, 110, 207, 0.05);
 }
 
 /* ---- Botones de acción en tablas ---- */

@@ -88,7 +88,7 @@
 .page-per-row select:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, .1);
+    box-shadow: 0 0 0 3px rgba(0, 110, 207, .1);
 }
 
 .pagination-info {
@@ -121,14 +121,14 @@
 .btn-page:hover:not(:disabled) {
     border-color: var(--primary);
     color: var(--primary);
-    background: #f5f3ff;
+    background: rgba(0, 110, 207, 0.05);
 }
 
 .btn-page.active {
     background: var(--primary);
     color: white;
     border-color: var(--primary);
-    box-shadow: 0 3px 8px rgba(124, 58, 237, .3);
+    box-shadow: 0 3px 8px rgba(0, 76, 148, .2);
 }
 
 .btn-page:disabled {

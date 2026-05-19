@@ -1,6 +1,5 @@
 package com.empresa.sistema_ventas.entity;
 
-import com.empresa.sistema_ventas.entity.*;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,13 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "inventario",
-       uniqueConstraints = {
-           @UniqueConstraint(
-               columnNames = {"id_producto", "id_sucursal"},
-               name = "uk_producto_sucursal"
-           )
-       })
+@Table(name = "inventario", uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "id_producto", "id_sucursal" }, name = "uk_producto_sucursal")
+})
 
 public class Inventario {
     @Id
