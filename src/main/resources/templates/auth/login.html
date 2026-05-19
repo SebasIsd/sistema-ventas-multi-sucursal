@@ -34,43 +34,9 @@
       align-items: center;
       justify-content: center;
       padding: 1.5rem;
-      background: linear-gradient(135deg, #2D3F54 0%, #004C94 50%, #017072aa 100%);
-      background-size: 400% 400%;
-      animation: gradientShift 15s ease infinite;
+      background: url('/img/login-bg.jpg') center center / cover no-repeat fixed;
       position: relative;
       overflow: hidden;
-    }
-
-    /* ---- Animated background elements ---- */
-    body::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: radial-gradient(rgba(255,255,255,.03) 1px, transparent 1px);
-      background-size: 32px 32px;
-      pointer-events: none;
-    }
-
-    /* Glowing orbs for depth */
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(100px);
-      opacity: 0.3;
-      animation: float 10s ease-in-out infinite;
-    }
-    .orb-1 { width: 400px; height: 400px; background: #01437c; top: -100px; left: -100px; animation-delay: 0s; }
-    .orb-2 { width: 350px; height: 350px; background: #127759; bottom: -80px; right: -80px; animation-delay: -5s; }
-    .orb-3 { width: 250px; height: 250px; background: #017870; top: 40%; right: 15%; animation-delay: -2s; }
-
-    @keyframes gradientShift {
-      0%, 100% { background-position: 0% 50%; }
-      50%       { background-position: 100% 50%; }
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0) scale(1); }
-      50%       { transform: translateY(-30px) scale(1.1); }
     }
 
     /* ---- Card Glass Morphism ---- */
@@ -142,8 +108,8 @@
 
     .alert-error {
       background: rgba(248, 30, 30, 0.571);
-      color: #fca5a5;
-      border: 1px solid rgba(248, 113, 113, 0.3);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
     .alert-success {
@@ -287,10 +253,6 @@
   </style>
 </head>
 <body>
-
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
 
   <div class="login-card">
 
