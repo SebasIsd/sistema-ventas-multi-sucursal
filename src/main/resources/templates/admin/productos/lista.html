@@ -1,355 +1,397 @@
-<!-- templates/admin/productos/lista.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Productos</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        body {
-            background: #f5f7fb;
-        }
-
-        .card-custom {
-            border: none;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        }
-
-        .table thead {
-            background: #2563eb;
-            color: white;
-        }
-
-        .btn-blue {
-            background: #2563eb;
-            color: white;
-        }
-
-        .btn-blue:hover {
-            background: #1d4ed8;
-            color: white;
-        }
-
-        .search-wrapper {
-            position: relative;
-            max-width: 320px;
-        }
-
-        .search-wrapper i {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #94a3b8;
-            pointer-events: none;
-        }
-
-        .search-input {
-            padding-left: 36px;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            background: white;
-            height: 40px;
-            width: 100%;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 2rem;
-            color: #94a3b8;
-            display: none;
-        }
-    </style>
-
+<head th:replace="~{layout/base :: head('Productos — Sistema de Ventas')}">
 </head>
 <body>
 
-<div class="container py-5">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2>Productos</h2>
-            <p class="text-muted">Administración de productos</p>
-        </div>
-        <button class="btn btn-blue" onclick="abrirModalNuevo()">
-            Nuevo Producto
-        </button>
-    </div>
-
-    <div class="card card-custom">
-        <div class="card-body">
-
-            <!-- BUSCADOR -->
-            <div class="mb-3">
-                <div class="search-wrapper">
-                    <i class="fas fa-search"></i>
-                    <input
-                        type="text"
-                        id="buscador"
-                        class="search-input"
-                        placeholder="Buscar por nombre, código o categoría..."
-                        oninput="filtrarTabla()"
-                    >
-                </div>
-            </div>
-
-            <table class="table table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Código</th>
-                        <th>Nombre</th>
-                        <th>Precio</th>
-                        <th>IVA</th>
-                        <th>Categoría</th>
-                        <th>Estado</th>
-                        <th width="180">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="tablaProductos"></tbody>
-            </table>
-
-            <div class="no-results" id="sinResultados">
-                <i class="fas fa-search fa-2x mb-2 d-block"></i>
-                No se encontraron productos con ese criterio
-            </div>
-
-        </div>
-    </div>
-
-</div>
-
-<!-- MODAL -->
-<div class="modal fade" id="modalProducto">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h5 class="modal-title">Producto</h5>
-                <button class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body">
-
-                <input type="hidden" id="idProducto">
-
-                <div class="row">
-
-                    <div class="col-md-6 mb-3">
-                        <label>Código Barras</label>
-                        <input type="text" id="codigoBarras" class="form-control">
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label>Nombre</label>
-                        <input type="text" id="nombreProducto" class="form-control">
-                    </div>
-
-                    <div class="col-md-12 mb-3">
-                        <label>Descripción</label>
-                        <textarea id="descripcionProducto" class="form-control"></textarea>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <label>Precio</label>
-                        <input type="number" step="0.01" id="precioUnitario" class="form-control">
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <label>IVA</label>
-                        <input type="number" step="0.01" id="porcentajeIva" class="form-control">
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <label>Categoría</label>
-                        <select id="categoria" class="form-select"></select>
-                    </div>
-
-                    <div class="col-md-12">
-                        <div class="form-check">
-                            <input type="checkbox" id="activoProducto" class="form-check-input" checked>
-                            <label class="form-check-label">Activo</label>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button class="btn btn-blue" onclick="guardarProducto()">Guardar</button>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-
-    let modalProducto;
-    let todosLosProductos = [];
-
-    function limpiarModal() {
-        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-        document.body.classList.remove('modal-open');
-        document.body.style.overflow = '';
-        document.body.style.paddingRight = '';
-    }
-
-    async function cargarProductos() {
-        const response = await fetch('/api/productos');
-        todosLosProductos = await response.json();
-        renderTabla(todosLosProductos);
-    }
-
-    function renderTabla(data) {
-        let html = '';
-
-        data.forEach(p => {
-            html += `
-                <tr>
-                    <td>${p.idProducto}</td>
-                    <td>${p.codigoBarras ?? ''}</td>
-                    <td>${p.nombre}</td>
-                    <td>$ ${p.precioUnitario}</td>
-                    <td>${p.porcentajeIva}%</td>
-                    <td>${p.nombreCategoria ?? ''}</td>
-                    <td>
-                        ${p.activo
-                            ? '<span class="badge bg-success">Activo</span>'
-                            : '<span class="badge bg-danger">Inactivo</span>'}
-                    </td>
-                    <td>
-                        <button class="btn btn-warning btn-sm"
-                            onclick='editarProducto(${JSON.stringify(p)})'>
-                            Editar
-                        </button>
-                        <button class="btn btn-danger btn-sm"
-                            onclick='eliminarProducto(${p.idProducto})'>
-                            Eliminar
-                        </button>
-                    </td>
-                </tr>
-            `;
-        });
-
-        document.getElementById('tablaProductos').innerHTML = html;
-        document.getElementById('sinResultados').style.display = data.length === 0 ? 'block' : 'none';
-    }
-
-    // ✅ Busca por nombre, código de barras o nombre de categoría
-    function filtrarTabla() {
-        const texto = document.getElementById('buscador').value.toLowerCase().trim();
-
-        const filtrados = todosLosProductos.filter(p =>
-            p.nombre.toLowerCase().includes(texto) ||
-            (p.codigoBarras && p.codigoBarras.toLowerCase().includes(texto)) ||
-            (p.nombreCategoria && p.nombreCategoria.toLowerCase().includes(texto))
-        );
-
-        renderTabla(filtrados);
-    }
-
-    async function cargarCategorias() {
-        const response = await fetch('/api/categorias');
-        const categorias = await response.json();
-
-        let html = '';
-        categorias.forEach(c => {
-            html += `<option value="${c.idCategoria}">${c.nombre}</option>`;
-        });
-
-        document.getElementById('categoria').innerHTML = html;
-    }
-
-    function abrirModalNuevo() {
-        document.getElementById('idProducto').value = '';
-        document.getElementById('codigoBarras').value = '';
-        document.getElementById('nombreProducto').value = '';
-        document.getElementById('descripcionProducto').value = '';
-        document.getElementById('precioUnitario').value = '';
-        document.getElementById('porcentajeIva').value = 15;
-        document.getElementById('activoProducto').checked = true;
-
-        modalProducto = new bootstrap.Modal(document.getElementById('modalProducto'));
-        modalProducto.show();
-    }
-
-    function editarProducto(p) {
-        document.getElementById('idProducto').value = p.idProducto;
-        document.getElementById('codigoBarras').value = p.codigoBarras ?? '';
-        document.getElementById('nombreProducto').value = p.nombre;
-        document.getElementById('descripcionProducto').value = p.descripcion ?? '';
-        document.getElementById('precioUnitario').value = p.precioUnitario;
-        document.getElementById('porcentajeIva').value = p.porcentajeIva;
-        document.getElementById('categoria').value = p.idCategoria;
-        document.getElementById('activoProducto').checked = p.activo;
-
-        modalProducto = new bootstrap.Modal(document.getElementById('modalProducto'));
-        modalProducto.show();
-    }
-
-    async function guardarProducto() {
-        const id = document.getElementById('idProducto').value;
-
-        const body = {
-            codigoBarras: document.getElementById('codigoBarras').value,
-            nombre: document.getElementById('nombreProducto').value,
-            descripcion: document.getElementById('descripcionProducto').value,
-            precioUnitario: document.getElementById('precioUnitario').value,
-            porcentajeIva: document.getElementById('porcentajeIva').value,
-            idCategoria: document.getElementById('categoria').value,
-            activo: document.getElementById('activoProducto').checked
-        };
-
-        let url = '/api/productos';
-        let method = 'POST';
-
-        if (id) {
-            url += '/' + id;
-            method = 'PUT';
+    <!-- Estilos específicos de vista compartidos con admin -->
+    <style>
+        :root {
+            --role-primary:   #7c3aed;
+            --role-secondary: #6d28d9;
+            --role-glow:      rgba(124,58,237,.25);
         }
 
-        await fetch(url, {
-            method: method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
+        .page-content { padding: 2rem; max-width: 1300px; margin: 0 auto; }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 1.5rem;
+        }
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+        .page-desc { color: var(--text-muted); font-size: .9rem; margin-top: .2rem; }
+        
+        .price-tag { font-family: monospace; font-size: .95rem; font-weight: 600; color: #15803d; }
+    </style>
+
+    <!-- NAVBAR MODULAR -->
+    <nav th:replace="~{layout/base :: navbar('/admin/dashboard', 'fas fa-user-shield', 'ADMINISTRADOR')}"></nav>
+
+    <div class="page-content">
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb-wrapper">
+            <a th:href="@{/admin/dashboard}"><i class="fas fa-home"></i> Inicio</a>
+            <i class="fas fa-chevron-right sep"></i>
+            <span class="current">Productos</span>
+        </div>
+
+        <!-- Header -->
+        <div class="page-header">
+            <div>
+                <h2 class="page-title"><i class="fas fa-box-open" style="color:var(--primary);"></i> Productos</h2>
+                <p class="page-desc">Catálogo completo de productos e inventario base</p>
+            </div>
+            <button class="btn btn-filled" onclick="abrirModalNuevo()">
+                <i class="fas fa-plus"></i> Nuevo Producto
+            </button>
+        </div>
+
+        <div class="card slide-up">
+            <div class="card-body" style="padding:1.5rem;">
+
+                <!-- Tools -->
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <div class="search-wrapper flex-grow-1" style="max-width:360px;">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="buscador" class="search-input"
+                               placeholder="Buscar por nombre, código o categoría..." oninput="filtrarTabla()">
+                    </div>
+                </div>
+
+                <!-- Tabla -->
+                <div class="table-wrapper">
+                    <table class="table align-middle">
+                        <thead style="background:var(--primary);">
+                            <tr>
+                                <th width="70">ID</th>
+                                <th>Código</th>
+                                <th>Nombre de Producto</th>
+                                <th class="text-end">Precio</th>
+                                <th class="text-center">IVA</th>
+                                <th>Categoría</th>
+                                <th width="110">Estado</th>
+                                <th width="150" class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaProductos">
+                            <!-- Renderizado por JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Estado Vacío -->
+                <div id="sinResultados" style="display:none; text-align:center; padding:3rem 1rem;">
+                    <i class="fas fa-boxes-stacked" style="font-size:3rem; color:#cbd5e1; margin-bottom:1rem;"></i>
+                    <h5 style="color:var(--text-main); font-weight:600;">Sin resultados</h5>
+                    <p style="color:var(--text-muted); font-size:.9rem;">No se encontraron productos con ese criterio.</p>
+                </div>
+
+                <!-- Paginación UI -->
+                <div class="pagination-container" id="paginationWrap">
+                    <div class="page-per-row">
+                        <span>Mostrar</span>
+                        <select onchange="cambiarFilasPorPagina(this.value)">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                        <span>filas</span>
+                    </div>
+                    <div class="pagination-info" id="pageInfoText"></div>
+                    <div class="pagination-controls" id="pageControls"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- FOOTER MODULAR -->
+        <div th:replace="~{layout/base :: footer}"></div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal fade" id="modalProducto" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content" style="border:none; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.15);">
+                <div class="modal-header" style="border-bottom:1px solid var(--border); padding:1.25rem 1.5rem;">
+                    <h5 class="modal-title" id="modalTitle" style="font-weight:700; font-size:1.1rem; color:var(--text-main);">
+                        <i class="fas fa-box" style="color:var(--primary); margin-right:.5rem;"></i>
+                        <span>Nuevo Producto</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body" style="padding:1.5rem;">
+                    <input type="hidden" id="idProducto">
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Código de Barras</label>
+                            <input type="text" id="codigoBarras" class="form-control" placeholder="Ej. 786123456789">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Nombre del Producto <span class="text-danger">*</span></label>
+                            <input type="text" id="nombreProducto" class="form-control" placeholder="Nombre descriptivo">
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Descripción</label>
+                            <textarea id="descripcionProducto" class="form-control" rows="2" placeholder="Opcional..."></textarea>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Precio Unitario ($) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" min="0" id="precioUnitario" class="form-control" placeholder="0.00">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">IVA (%) <span class="text-danger">*</span></label>
+                            <select id="porcentajeIva" class="form-select">
+                                <option value="0">0%</option>
+                                <option value="5">5%</option>
+                                <option value="15" selected>15%</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Categoría <span class="text-danger">*</span></label>
+                            <select id="categoria" class="form-select">
+                                <!-- JS carga -->
+                            </select>
+                        </div>
+
+                        <div class="col-12 mt-3">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" id="activoProducto" class="form-check-input" checked style="cursor:pointer;">
+                                <label class="form-check-label" for="activoProducto" style="font-weight:500; cursor:pointer;">
+                                    Producto Activo
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer" style="border-top:1px solid var(--border); padding:1.25rem 1.5rem;">
+                    <button class="btn btn-ghost" data-bs-dismiss="modal">Cancelar</button>
+                    <button class="btn btn-filled" onclick="guardarProducto()" id="btnGuardar">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS MODULAR -->
+    <div th:replace="~{layout/base :: scripts}"></div>
+
+    <!-- Scripts de la vista -->
+    <script>
+        let bsModal;
+        let todosLosProductos = [];
+        let paginator;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            bsModal = new bootstrap.Modal(document.getElementById('modalProducto'));
+            
+            cargarCategorias();
+            cargarProductos();
         });
 
-        if (modalProducto) modalProducto.hide();
-        limpiarModal();
+        async function cargarCategorias() {
+            try {
+                const res = await fetch('/api/categorias');
+                if(res.ok) {
+                    const cats = await res.json();
+                    const sel = document.getElementById('categoria');
+                    sel.innerHTML = '<option value="">-- Seleccionar --</option>' + 
+                        cats.filter(c => c.activo).map(c => `<option value="${c.idCategoria}">${c.nombre}</option>`).join('');
+                }
+            } catch(e) { console.error('Error cargando categorías'); }
+        }
 
-        // Limpiar buscador para ver el resultado actualizado
-        document.getElementById('buscador').value = '';
-        cargarProductos();
-    }
+        async function cargarProductos() {
+            try {
+                const res = await fetch('/api/productos');
+                if (!res.ok) throw new Error('Error al cargar datos');
+                todosLosProductos = await res.json();
+                
+                paginator = new TablePaginator(todosLosProductos, renderFilasTabla, 10);
+                paginator.renderCurrentPage();
+            } catch (error) {
+                showToast('error', 'Error de conexión con el servidor');
+            }
+        }
 
-    async function eliminarProducto(id) {
-        if (!confirm('¿Eliminar producto?')) return;
+        function renderFilasTabla(data) {
+            let html = '';
+            data.forEach(p => {
+                const badge = p.activo 
+                    ? '<span class="badge-status active">Activo</span>'
+                    : '<span class="badge-status inactive">Inactivo</span>';
 
-        await fetch('/api/productos/' + id, { method: 'DELETE' });
-        cargarProductos();
-    }
+                html += `
+                    <tr>
+                        <td><span class="text-muted fw-semibold">#${p.idProducto}</span></td>
+                        <td><span class="badge bg-light text-dark border">${p.codigoBarras || '-'}</span></td>
+                        <td class="fw-semibold text-main">${p.nombre}</td>
+                        <td class="text-end"><span class="price-tag">${formatCurrency(p.precioUnitario)}</span></td>
+                        <td class="text-center">${p.porcentajeIva}%</td>
+                        <td>${p.nombreCategoria || '<em class="text-muted">Sin Categoría</em>'}</td>
+                        <td>${badge}</td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                <button class="btn btn-sm btn-icon-edit" title="Editar"
+                                    onclick='editarProducto(${JSON.stringify(p)})'>
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                                <button class="btn btn-sm btn-icon-delete" title="Eliminar"
+                                    onclick='eliminarProducto(${p.idProducto})'>
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
 
-    document.addEventListener('DOMContentLoaded', limpiarModal);
+            document.getElementById('tablaProductos').innerHTML = html;
+            
+            const noRes = document.getElementById('sinResultados');
+            const pagWrap = document.getElementById('paginationWrap');
+            const tableWrap = document.querySelector('.table-wrapper');
+            
+            if (data.length === 0) {
+                noRes.style.display = 'block';
+                tableWrap.style.display = 'none';
+                pagWrap.style.display = 'none';
+            } else {
+                noRes.style.display = 'none';
+                tableWrap.style.display = 'block';
+                pagWrap.style.display = 'flex';
+            }
+        }
 
-    cargarProductos();
-    cargarCategorias();
+        function cambiarFilasPorPagina(val) {
+            if(paginator) paginator.setRowsPerPage(parseInt(val));
+        }
 
-</script>
+        function filtrarTabla() {
+            const txt = document.getElementById('buscador').value.toLowerCase().trim();
+            const filtrados = todosLosProductos.filter(p => 
+                p.nombre.toLowerCase().includes(txt) || 
+                (p.codigoBarras && p.codigoBarras.toLowerCase().includes(txt)) ||
+                (p.nombreCategoria && p.nombreCategoria.toLowerCase().includes(txt))
+            );
+            if(paginator) paginator.updateData(filtrados);
+        }
 
+        function abrirModalNuevo() {
+            document.getElementById('idProducto').value = '';
+            document.getElementById('codigoBarras').value = '';
+            document.getElementById('nombreProducto').value = '';
+            document.getElementById('descripcionProducto').value = '';
+            document.getElementById('precioUnitario').value = '';
+            document.getElementById('porcentajeIva').value = '15';
+            document.getElementById('categoria').value = '';
+            document.getElementById('activoProducto').checked = true;
+            
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-box" style="color:var(--primary); margin-right:.5rem;"></i> Nuevo Producto';
+            
+            bsModal.show();
+        }
+
+        function editarProducto(p) {
+            document.getElementById('idProducto').value = p.idProducto;
+            document.getElementById('codigoBarras').value = p.codigoBarras || '';
+            document.getElementById('nombreProducto').value = p.nombre;
+            document.getElementById('descripcionProducto').value = p.descripcion || '';
+            document.getElementById('precioUnitario').value = p.precioUnitario;
+            document.getElementById('porcentajeIva').value = p.porcentajeIva;
+            document.getElementById('categoria').value = p.idCategoria || '';
+            document.getElementById('activoProducto').checked = p.activo;
+            
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-pen" style="color:var(--amber); margin-right:.5rem;"></i> Editar Producto';
+            
+            bsModal.show();
+        }
+
+        async function guardarProducto() {
+            const id = document.getElementById('idProducto').value;
+            const nombre = document.getElementById('nombreProducto').value.trim();
+            const precio = parseFloat(document.getElementById('precioUnitario').value);
+            const catId = document.getElementById('categoria').value;
+            
+            if (!nombre || isNaN(precio) || !catId) {
+                showToast('error', 'Nombre, Precio y Categoría son obligatorios');
+                return;
+            }
+
+            const btn = document.getElementById('btnGuardar');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+
+            const body = {
+                codigoBarras: document.getElementById('codigoBarras').value.trim(),
+                nombre: nombre,
+                descripcion: document.getElementById('descripcionProducto').value.trim(),
+                precioUnitario: precio,
+                porcentajeIva: parseInt(document.getElementById('porcentajeIva').value),
+                idCategoria: parseInt(catId),
+                activo: document.getElementById('activoProducto').checked
+            };
+
+            const url = id ? '/api/productos/' + id : '/api/productos';
+            const method = id ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                if (!res.ok) throw new Error('Error al guardar');
+
+                showToast('success', id ? 'Producto actualizado exitosamente' : 'Producto creado exitosamente');
+                
+                bsModal.hide();
+                
+                document.getElementById('buscador').value = '';
+                await cargarProductos();
+                
+            } catch (error) {
+                showToast('error', error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save"></i> Guardar';
+            }
+        }
+
+        function eliminarProducto(id) {
+            confirmDialog('Eliminar Producto', '¿Estás seguro de eliminar este producto? Esta acción no se puede deshacer.', async () => {
+                try {
+                    const res = await fetch('/api/productos/' + id, { method: 'DELETE' });
+                    if (!res.ok) throw new Error('No se pudo eliminar el producto');
+                    
+                    showToast('success', 'Producto eliminado');
+                    
+                    document.getElementById('buscador').value = '';
+                    cargarProductos();
+                } catch (error) {
+                    showToast('error', error.message);
+                }
+            });
+        }
+    </script>
 </body>
 </html>
