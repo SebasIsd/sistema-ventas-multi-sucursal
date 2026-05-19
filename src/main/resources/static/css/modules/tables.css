@@ -1,0 +1,145 @@
+/* =========================================================
+   MÓDULO: tables.css
+   Tabla de datos y controles de paginación
+   ========================================================= */
+
+/* ---- Contenedor con scroll horizontal en móvil ---- */
+.table-wrapper {
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+}
+
+/* ---- Tabla base ---- */
+.table {
+    margin: 0;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .9rem;
+}
+
+.table thead tr {
+    background: var(--primary);
+}
+
+.table thead th {
+    color: white;
+    font-weight: 600;
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    padding: .9rem 1rem;
+    white-space: nowrap;
+    border: none;
+}
+
+.table tbody td {
+    padding: .85rem 1rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+    color: var(--text-main);
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table tbody tr:hover {
+    background: #f8fafc;
+}
+
+/* ---- Clases de texto en celdas ---- */
+.text-main { color: var(--text-main); }
+.text-muted { color: var(--text-muted); font-size: .85rem; }
+
+/* ===============================
+   PAGINACIÓN
+   =============================== */
+.pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .75rem;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+
+.page-per-row {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .85rem;
+    color: var(--text-muted);
+}
+
+.page-per-row select {
+    padding: .3rem .6rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: .85rem;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: var(--transition);
+    background: white;
+}
+
+.page-per-row select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, .1);
+}
+
+.pagination-info {
+    font-size: .85rem;
+    color: var(--text-muted);
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+}
+
+.btn-page {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--border);
+    background: white;
+    color: var(--text-main);
+    border-radius: var(--radius-sm);
+    font-size: .82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-page:hover:not(:disabled) {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: #f5f3ff;
+}
+
+.btn-page.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    box-shadow: 0 3px 8px rgba(124, 58, 237, .3);
+}
+
+.btn-page:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+    .pagination-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

@@ -34,25 +34,25 @@
     </style>
 
     <!-- NAVBAR MODULAR -->
-    <nav th:replace="~{layout/base :: navbar('/admin/dashboard', 'fas fa-user-shield', 'ADMINISTRADOR')}"></nav>
+    <nav th:replace="~{layout/base :: navbar-admin}"></nav>
 
     <div class="page-content">
 
         <!-- Breadcrumb -->
         <div class="breadcrumb-wrapper">
-            <a th:href="@{/admin/dashboard}"><i class="fas fa-home"></i> Inicio</a>
-            <i class="fas fa-chevron-right sep"></i>
+            <a th:href="@{/admin/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+            <i class="bi bi-chevron-right sep"></i>
             <span class="current">Productos</span>
         </div>
 
         <!-- Header -->
         <div class="page-header">
             <div>
-                <h2 class="page-title"><i class="fas fa-box-open" style="color:var(--primary);"></i> Productos</h2>
+                <h2 class="page-title"><i class="bi bi-box-seam" style="color:var(--primary);"></i> Productos</h2>
                 <p class="page-desc">Catálogo completo de productos e inventario base</p>
             </div>
             <button class="btn btn-filled" onclick="abrirModalNuevo()">
-                <i class="fas fa-plus"></i> Nuevo Producto
+                <i class="bi bi-plus"></i> Nuevo Producto
             </button>
         </div>
 
@@ -62,7 +62,7 @@
                 <!-- Tools -->
                 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                     <div class="search-wrapper flex-grow-1" style="max-width:360px;">
-                        <i class="fas fa-search search-icon"></i>
+                        <i class="bi bi-search search-icon"></i>
                         <input type="text" id="buscador" class="search-input"
                                placeholder="Buscar por nombre, código o categoría..." oninput="filtrarTabla()">
                     </div>
@@ -91,7 +91,7 @@
 
                 <!-- Estado Vacío -->
                 <div id="sinResultados" style="display:none; text-align:center; padding:3rem 1rem;">
-                    <i class="fas fa-boxes-stacked" style="font-size:3rem; color:#cbd5e1; margin-bottom:1rem;"></i>
+                    <i class="bi bi-boxes" style="font-size:3rem; color:#cbd5e1; margin-bottom:1rem;"></i>
                     <h5 style="color:var(--text-main); font-weight:600;">Sin resultados</h5>
                     <p style="color:var(--text-muted); font-size:.9rem;">No se encontraron productos con ese criterio.</p>
                 </div>
@@ -184,7 +184,7 @@
                 <div class="modal-footer" style="border-top:1px solid var(--border); padding:1.25rem 1.5rem;">
                     <button class="btn btn-ghost" data-bs-dismiss="modal">Cancelar</button>
                     <button class="btn btn-filled" onclick="guardarProducto()" id="btnGuardar">
-                        <i class="fas fa-save"></i> Guardar
+                        <i class="bi bi-floppy"></i> Guardar
                     </button>
                 </div>
             </div>
@@ -252,11 +252,11 @@
                             <div class="d-flex justify-content-center gap-2">
                                 <button class="btn btn-sm btn-icon-edit" title="Editar"
                                     onclick='editarProducto(${JSON.stringify(p)})'>
-                                    <i class="fas fa-pen"></i>
+                                    <i class="bi bi-pencil"></i>
                                 </button>
                                 <button class="btn btn-sm btn-icon-delete" title="Eliminar"
                                     onclick='eliminarProducto(${p.idProducto})'>
-                                    <i class="fas fa-trash"></i>
+                                    <i class="bi bi-trash"></i>
                                 </button>
                             </div>
                         </td>
@@ -320,7 +320,7 @@
             document.getElementById('categoria').value = p.idCategoria || '';
             document.getElementById('activoProducto').checked = p.activo;
             
-            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-pen" style="color:var(--amber); margin-right:.5rem;"></i> Editar Producto';
+            document.getElementById('modalTitle').innerHTML = '<i class="bi bi-pencil" style="color:var(--amber); margin-right:.5rem;"></i> Editar Producto';
             
             bsModal.show();
         }
@@ -338,7 +338,7 @@
 
             const btn = document.getElementById('btnGuardar');
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+            btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Guardando...';
 
             const body = {
                 codigoBarras: document.getElementById('codigoBarras').value.trim(),
@@ -373,7 +373,7 @@
                 showToast('error', error.message);
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-save"></i> Guardar';
+                btn.innerHTML = '<i class="bi bi-floppy"></i> Guardar';
             }
         }
 

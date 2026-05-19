@@ -1,0 +1,43 @@
+/* =========================================================
+   MÓDULO: variables.css
+   Tokens de diseño centralizados — Sistema de Ventas
+   ========================================================= */
+
+/* ---- Google Font ---- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    /* Paleta de colores */
+    --primary:        #7c3aed;
+    --primary-hover:  #6d28d9;
+    --blue:           #2563eb;
+    --blue-hover:     #1d4ed8;
+    --amber:          #d97706;
+    --amber-hover:    #b45309;
+    --green:          #059669;
+    --green-hover:    #047857;
+    --red:            #ef4444;
+    --red-hover:      #dc2626;
+
+    /* Fondo y superficie */
+    --bg:             #f0f4fd;
+    --card-bg:        #ffffff;
+
+    /* Texto */
+    --text-main:      #1e293b;
+    --text-muted:     #64748b;
+
+    /* Bordes y sombras */
+    --border:         #e2e8f0;
+    --shadow-sm:      0 2px 8px rgba(0, 0, 0, .06);
+    --shadow-md:      0 4px 16px rgba(0, 0, 0, .10);
+    --shadow-lg:      0 12px 30px rgba(0, 0, 0, .12);
+
+    /* Radios */
+    --radius-sm:      8px;
+    --radius-md:      12px;
+    --radius-lg:      16px;
+
+    /* Transición global */
+    --transition:     all .2s ease;
+}

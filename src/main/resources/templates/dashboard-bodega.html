@@ -182,7 +182,7 @@
     </style>
 
     <!-- NAVBAR MODULAR -->
-    <nav th:replace="~{layout/base :: navbar('#', 'fas fa-warehouse', 'BODEGUERO')}"></nav>
+    <nav th:replace="~{layout/base :: navbar-bodega}"></nav>
 
     <!-- CONTENT -->
     <div class="page-content">
@@ -194,14 +194,14 @@
                 <p>Control de stock, productos y movimientos de bodega</p>
             </div>
             <div class="time-badge">
-                <i class="fas fa-clock"></i>
+                <i class="bi bi-clock"></i>
                 <span id="clockDisplay">--:--</span>
             </div>
         </div>
 
         <!-- Alert de stock -->
         <div class="stock-alert-banner">
-            <div class="alert-icon-wrap"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="alert-icon-wrap"><i class="bi bi-exclamation-triangle"></i></div>
             <div class="alert-text">
                 <h4>Alerta de Stock Bajo</h4>
                 <p>Hay productos con stock mínimo en tu sucursal. Revisa el inventario.</p>
@@ -210,7 +210,7 @@
 
         <!-- Section title -->
         <div class="section-title">
-            <i class="fas fa-th-large" style="color:#d97706;"></i>
+            <i class="bi bi-grid" style="color:#d97706;"></i>
             Módulos de Bodega
         </div>
 
@@ -220,17 +220,17 @@
             <div class="module-card">
                 <div class="module-head">
                     <div class="module-icon" style="background:#dbeafe;color:#2563eb;">
-                        <i class="fas fa-boxes-stacked"></i>
+                        <i class="bi bi-boxes"></i>
                     </div>
                     <p class="module-title">Control de Stock</p>
                 </div>
                 <p class="module-desc">Visualiza y actualiza el inventario disponible en tu sucursal.</p>
                 <div class="module-actions">
                     <a href="/inventario/stock" class="btn-module btn-filled">
-                        <i class="fas fa-list"></i> Ver Stock Actual
+                        <i class="bi bi-list-ul"></i> Ver Stock Actual
                     </a>
                     <a href="/inventario/ajustar" class="btn-module btn-ghost">
-                        <i class="fas fa-sliders"></i> Ajuste de Inventario
+                        <i class="bi bi-sliders"></i> Ajuste de Inventario
                     </a>
                 </div>
             </div>
@@ -238,17 +238,17 @@
             <div class="module-card">
                 <div class="module-head">
                     <div class="module-icon" style="background:#d1fae5;color:#059669;">
-                        <i class="fas fa-right-left"></i>
+                        <i class="bi bi-arrow-left-right"></i>
                     </div>
                     <p class="module-title">Transferencias</p>
                 </div>
                 <p class="module-desc">Mueve stock entre sucursales de forma segura y con trazabilidad.</p>
                 <div class="module-actions">
                     <a href="/inventario/transferencias" class="btn-module btn-filled">
-                        <i class="fas fa-plus"></i> Nueva Transferencia
+                        <i class="bi bi-plus"></i> Nueva Transferencia
                     </a>
                     <a href="/inventario/historial" class="btn-module btn-ghost">
-                        <i class="fas fa-clock-rotate-left"></i> Historial
+                        <i class="bi bi-clock-rotate-left"></i> Historial
                     </a>
                 </div>
             </div>
@@ -256,17 +256,17 @@
             <div class="module-card">
                 <div class="module-head">
                     <div class="module-icon" style="background:#ede9fe;color:#7c3aed;">
-                        <i class="fas fa-box-open"></i>
+                        <i class="bi bi-box-seam"></i>
                     </div>
                     <p class="module-title">Catálogo de Productos</p>
                 </div>
                 <p class="module-desc">Consulta el catálogo de productos y sus categorías disponibles.</p>
                 <div class="module-actions">
                     <a href="/productos/listar" class="btn-module btn-filled">
-                        <i class="fas fa-list"></i> Ver Productos
+                        <i class="bi bi-list-ul"></i> Ver Productos
                     </a>
                     <a href="/productos/nuevo" class="btn-module btn-ghost">
-                        <i class="fas fa-plus"></i> Nuevo Producto
+                        <i class="bi bi-plus"></i> Nuevo Producto
                     </a>
                 </div>
             </div>
