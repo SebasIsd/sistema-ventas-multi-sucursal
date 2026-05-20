@@ -429,12 +429,19 @@
                     </button>
 
                     <!-- Botón Eliminar -->
-                    <a th:href="@{/clientes/eliminar/{id}(id=${cliente.id})}"
-                       class="btn btn-sm btn-danger"
-                       onclick="return confirm('¿Estás seguro de eliminar este cliente?')">
-                        <i class="fas fa-trash"></i>
-                        Eliminar
-                    </a>
+                    <form th:action="@{/clientes/eliminar/{id}(id=${cliente.id})}"
+                          method="post"
+                          class="d-inline"
+                          onsubmit="return confirm('¿Estás seguro de eliminar este cliente?')">
+                        <input type="hidden"
+                               th:if="${_csrf != null}"
+                               th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}">
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash"></i>
+                            Eliminar
+                        </button>
+                    </form>
                 </td>
             </tr>
             </tbody>
