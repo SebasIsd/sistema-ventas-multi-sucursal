@@ -37,6 +37,22 @@
     --role-bodega:    var(--clr-green);
     --role-cajero:    var(--clr-blue-light);
 
+    /* Colores de estado */
+    --success:        #10b981; /* Verde éxito */
+    --success-hover:  #059669;
+    --warning:        #f59e0b; /* Ámbar advertencia */
+    --warning-hover:  #d97706;
+    --danger:         #ef4444; /* Rojo peligro */
+    --danger-hover:   #dc2626;
+    --info:           var(--clr-blue);
+    --info-hover:     var(--clr-blue-dark);
+
+    /* Alias para compatibilidad */
+    --amber:          var(--warning);
+    --amber-hover:    var(--warning-hover);
+    --red:            var(--danger);
+    --red-hover:      var(--danger-hover);
+
     /* Sidebar / Glass */
     --sidebar-bg:     var(--clr-dark-slate);
     --sidebar-text:   #d1d5db;
