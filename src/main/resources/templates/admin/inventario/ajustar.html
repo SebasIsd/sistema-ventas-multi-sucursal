@@ -22,13 +22,41 @@
       <form th:action="@{/admin/inventario/ajustar}" method="post">
 
         <div class="mb-3">
-          <label class="form-label">ID Producto</label>
-          <input type="number" name="productoId" class="form-control" required>
+          <label class="form-label">Producto</label>
+
+          <input list="listaProductos"
+                 id="productoTexto"
+                 class="form-control"
+                 placeholder="Escriba el nombre del producto"
+                 required>
+
+          <input type="hidden" name="productoId" id="productoId">
+
+          <datalist id="listaProductos">
+            <option th:each="producto : ${productos}"
+                    th:value="${producto.nombre}"
+                    th:attr="data-id=${producto.idProducto}">
+            </option>
+          </datalist>
         </div>
 
         <div class="mb-3">
-          <label class="form-label">ID Sucursal</label>
-          <input type="number" name="sucursalId" class="form-control" required>
+          <label class="form-label">Sucursal</label>
+
+          <input list="listaSucursales"
+                 id="sucursalTexto"
+                 class="form-control"
+                 placeholder="Escriba la ciudad de la sucursal"
+                 required>
+
+          <input type="hidden" name="sucursalId" id="sucursalId">
+
+          <datalist id="listaSucursales">
+            <option th:each="sucursal : ${sucursales}"
+                    th:value="${sucursal.ciudad}"
+                    th:attr="data-id=${sucursal.id}">
+            </option>
+          </datalist>
         </div>
 
         <div class="mb-3">
@@ -50,6 +78,27 @@
   </div>
 
 </div>
+
+<script>
+  function asignarId(inputId, hiddenId, datalistId) {
+      const input = document.getElementById(inputId);
+      const hidden = document.getElementById(hiddenId);
+      const opciones = document.querySelectorAll(`#${datalistId} option`);
+
+      input.addEventListener('input', function () {
+          hidden.value = "";
+
+          opciones.forEach(function (opcion) {
+              if (opcion.value === input.value) {
+                  hidden.value = opcion.getAttribute("data-id");
+              }
+          });
+      });
+  }
+
+  asignarId("productoTexto", "productoId", "listaProductos");
+  asignarId("sucursalTexto", "sucursalId", "listaSucursales");
+</script>
 
 </body>
 </html>

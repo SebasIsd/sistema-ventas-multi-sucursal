@@ -6,14 +6,22 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import com.empresa.sistema_ventas.repository.ProductoRepository;
+import com.empresa.sistema_ventas.repository.SucursalRepository;
 
 @Controller
 public class InventarioViewController {
 
     private final InventarioService inventarioService;
+    private final ProductoRepository productoRepository;
+    private final SucursalRepository sucursalRepository;
 
-    public InventarioViewController(InventarioService inventarioService) {
+    public InventarioViewController(InventarioService inventarioService,
+                                    ProductoRepository productoRepository,
+                                    SucursalRepository sucursalRepository) {
         this.inventarioService = inventarioService;
+        this.productoRepository = productoRepository;
+        this.sucursalRepository = sucursalRepository;
     }
 
     @GetMapping("/admin/inventario")
@@ -23,7 +31,9 @@ public class InventarioViewController {
     }
 
     @GetMapping("/admin/inventario/ajustar")
-    public String mostrarFormularioAjuste() {
+    public String mostrarFormularioAjuste(Model model) {
+        model.addAttribute("productos", productoRepository.findAll());
+        model.addAttribute("sucursales", sucursalRepository.findAll());
         return "admin/inventario/ajustar";
     }
 
