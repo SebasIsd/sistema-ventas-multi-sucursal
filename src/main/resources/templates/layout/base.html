@@ -148,9 +148,9 @@
          SIDEBAR: Auto-select based on Role
          ========================================================= -->
     <aside th:fragment="sidebar-auto">
-        <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:replace="~{layout/base :: sidebar-admin}"></div>
-        <div th:if="${#authorization.expression('hasRole(''BODEGA'')') and !#authorization.expression('hasRole(''ADMIN'')')}" th:replace="~{layout/base :: sidebar-bodega}"></div>
-        <div th:if="${#authorization.expression('hasRole(''CAJERO'')') and !#authorization.expression('hasRole(''ADMIN'')') and !#authorization.expression('hasRole(''BODEGA'')')}" th:replace="~{layout/base :: sidebar-cajero}"></div>
+        <div th:if="${#authorization.expression('hasRole(\"ADMIN\")')}" th:replace="~{layout/base :: sidebar-admin}"></div>
+        <div th:if="${#authorization.expression('hasRole(\"BODEGA\")') and !#authorization.expression('hasRole(\"ADMIN\")')}" th:replace="~{layout/base :: sidebar-bodega}"></div>
+        <div th:if="${#authorization.expression('hasRole(\"CAJERO\")') and !#authorization.expression('hasRole(\"ADMIN\")') and !#authorization.expression('hasRole(\"BODEGA\")')}" th:replace="~{layout/base :: sidebar-cajero}"></div>
     </aside>
 
     <div class="main-wrapper">

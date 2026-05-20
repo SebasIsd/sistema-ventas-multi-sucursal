@@ -8,6 +8,7 @@ import com.empresa.sistema_ventas.repository.InventarioRepository;
 import com.empresa.sistema_ventas.repository.UsuarioRepository;
 import com.empresa.sistema_ventas.service.VentaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +21,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/ventas")
-
+@PreAuthorize("hasAnyRole('CAJERO', 'ADMIN')")
 public class VentaController {
     @Autowired
     private InventarioRepository inventarioRepository;

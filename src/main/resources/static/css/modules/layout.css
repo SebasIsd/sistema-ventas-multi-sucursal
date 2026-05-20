@@ -7,18 +7,18 @@
    ROLE-BASED THEMES
    ====================================================== */
 body.role-admin {
-    --primary: var(--role-admin);
-    --primary-hover: var(--clr-navy);
+    --primary: var(--clr-blue);
+    --primary-hover: var(--clr-blue-dark);
 }
 
 body.role-bodega {
-    --primary: var(--role-bodega);
-    --primary-hover: var(--clr-teal-dark);
+    --primary: var(--clr-green);
+    --primary-hover: var(--clr-teal-light);
 }
 
 body.role-cajero {
-    --primary: var(--role-cajero);
-    --primary-hover: var(--clr-navy);
+    --primary: var(--clr-blue-light);
+    --primary-hover: var(--clr-blue);
 }
 
 /* ======================================================
@@ -393,7 +393,7 @@ body.role-cajero {
 .sidebar-link.active {
     background: var(--sidebar-active);
     color: white;
-    box-shadow: 0 4px 12px rgba(0, 110, 207, 0.3);
+    box-shadow: 0 4px 12px rgba(29, 189, 142, 0.3);
 }
 
 .sidebar-link.active i { opacity: 1; }

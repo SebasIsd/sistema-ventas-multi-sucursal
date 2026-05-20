@@ -8,37 +8,40 @@
 
 :root {
     /* Paleta de colores - Sincronizada con Login */
-    --clr-primary:       #006ECF; /* Blue Primary */
-    --clr-primary-dark:  #004C94; /* Deep Blue */
-    --clr-primary-light: #3C93FA; /* Sky Blue */
-    --clr-accent:        #1DBD8E; /* Emerald Green */
-    
-    --clr-dark:          #1e293b; /* Slate 800 */
-    --clr-slate:         #64748b; /* Slate 500 */
+    --clr-green:         #1DBD8E; /* Emerald Green Principal */
+    --clr-dark-slate:    #2D3F54; /* Dark Slate (Sidebar) */
+    --clr-slate:         #52647A; /* Medium Slate */
+    --clr-green-light:   #73CC80; /* Light Green */
+    --clr-blue-dark:     #004C94; /* Dark Blue */
+    --clr-blue:          #006ECF; /* Blue */
+    --clr-blue-light:    #3C93FA; /* Light Blue */
+    --clr-cyan:          #00D4C6; /* Cyan */
+    --clr-teal-light:    #0FA69D; /* Teal Light */
+    --clr-teal:          #028183; /* Teal Dark */
     --clr-white:         #ffffff;
     
     /* Mapeo de variables funcionales */
-    --primary:        var(--clr-primary);
-    --primary-dark:   var(--clr-primary-dark);
-    --primary-light:  var(--clr-primary-light);
-    --accent:         var(--clr-accent);
+    --primary:        var(--clr-green);
+    --primary-dark:   var(--clr-teal);
+    --primary-light:  var(--clr-green-light);
+    --accent:         var(--clr-blue);
     
-    --primary-hover:  var(--clr-primary-dark);
-    --blue:           var(--clr-primary-light);
-    --blue-hover:     var(--clr-primary);
-    --green:          var(--clr-accent);
-    --green-hover:    #059669;
+    --primary-hover:  var(--clr-teal-light);
+    --blue:           var(--clr-blue-light);
+    --blue-hover:     var(--clr-blue);
+    --green:          var(--clr-green);
+    --green-hover:    var(--clr-teal-light);
     
-    /* Colores por Rol (Modernizados) */
-    --role-admin:     var(--clr-primary);
-    --role-bodega:    var(--clr-accent);
-    --role-cajero:    var(--clr-primary-light);
+    /* Colores por Rol */
+    --role-admin:     var(--clr-blue);
+    --role-bodega:    var(--clr-green);
+    --role-cajero:    var(--clr-blue-light);
 
     /* Sidebar / Glass */
-    --sidebar-bg:     #111827; /* Dark Gray / Near Black */
+    --sidebar-bg:     var(--clr-dark-slate);
     --sidebar-text:   #d1d5db;
-    --sidebar-hover:  rgba(255, 255, 255, 0.1);
-    --sidebar-active: var(--clr-primary);
+    --sidebar-hover:  rgba(29, 189, 142, 0.15);
+    --sidebar-active: var(--clr-green);
 
     /* Fondo y superficie */
     --bg:             #f1f5f9;
