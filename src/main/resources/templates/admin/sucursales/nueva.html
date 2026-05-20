@@ -19,26 +19,28 @@
                 Vista habilitada para resolver rutas. El guardado de sucursales puede conectarse despues al servicio correspondiente.
             </div>
 
-            <form>
+            <form th:action="@{/admin/sucursales/guardar}" method="post">
                 <div class="row g-3">
                     <div class="col-md-4">
                         <label class="form-label">Codigo</label>
-                        <input type="text" class="form-control" placeholder="SUC-001">
+                        <input name="codigo" type="text" class="form-control" placeholder="SUC-001" required>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Ciudad</label>
-                        <input type="text" class="form-control" placeholder="Quito">
+                        <input name="ciudad" type="text" class="form-control" placeholder="Quito" required>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Telefono</label>
-                        <input type="text" class="form-control" placeholder="022222222">
+                        <input name="telefono" type="text" class="form-control" placeholder="022222222">
                     </div>
                     <div class="col-md-12">
                         <label class="form-label">Direccion</label>
-                        <input type="text" class="form-control" placeholder="Av. Principal y Calle Secundaria">
+                        <input name="direccion" type="text" class="form-control" placeholder="Av. Principal y Calle Secundaria">
                     </div>
                 </div>
-                <button type="button" class="btn btn-primary mt-3" disabled>Guardar (pendiente)</button>
+                <div class="mt-3 text-end">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
             </form>
         </div>
     </div>
