@@ -47,6 +47,7 @@
                 <th>Cliente</th>
                 <th>Fecha</th>
                 <th>Total</th>
+                <th>Factura</th>
             </tr>
             </thead>
 
@@ -60,6 +61,19 @@
                 <td th:text="${#temporals.format(venta.fecha, 'dd/MM/yyyy HH:mm')}"></td>
 
                 <td th:text="${venta.total}"></td>
+
+                <td>
+                    <div class="d-flex gap-2">
+                        <a class="btn btn-sm btn-primary"
+                           th:href="@{/facturas/ver/{ventaId}(ventaId=${venta.id})}">
+                            Ver
+                        </a>
+                        <a class="btn btn-sm btn-outline-success"
+                           th:href="@{/facturas/descargar/{ventaId}(ventaId=${venta.id})}">
+                            Descargar PDF
+                        </a>
+                    </div>
+                </td>
             </tr>
 
             </tbody>
