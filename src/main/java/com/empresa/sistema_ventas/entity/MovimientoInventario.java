@@ -39,8 +39,14 @@ public class MovimientoInventario {
     @Column(columnDefinition = "TEXT")
     private String observacion;
 
-    @Column(name = "fecha_movimiento", nullable = false)
+    @Column(name = "fecha", nullable = false)
     private LocalDateTime fechaMovimiento = LocalDateTime.now();
 
+    @PrePersist
+    private void prePersist() {
+        if (fechaMovimiento == null) {
+            fechaMovimiento = LocalDateTime.now();
+        }
+    }
 
 }
