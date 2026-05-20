@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- SIDEBAR FRAGMENTS (separados para evitar render duplicado) -->
+
+    <!-- =========================================================
+         SIDEBAR: Administrador
+         ========================================================= -->
+    <aside th:fragment="sidebar-admin" class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a th:href="@{/admin/dashboard}" class="sidebar-brand">
+                <i class="bi bi-shop"></i>
+                <span>Sistema Ventas</span>
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <p class="nav-label">Principal</p>
+                <a th:href="@{/admin/dashboard}" class="sidebar-link">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <p class="nav-label">Catálogo</p>
+                <a th:href="@{/admin/categorias}" class="sidebar-link">
+                    <i class="bi bi-tags"></i> Categorías
+                </a>
+                <a th:href="@{/admin/productos}" class="sidebar-link">
+                    <i class="bi bi-box-seam"></i> Productos
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <p class="nav-label">Configuración</p>
+                <a th:href="@{/admin/usuarios}" class="sidebar-link">
+                    <i class="bi bi-people"></i> Usuarios
+                </a>
+                <a th:href="@{/admin/sucursales}" class="sidebar-link">
+                    <i class="bi bi-building"></i> Sucursales
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <!-- Espacio para info extra si se desea -->
+        </div>
+    </aside>
+
+
+    <!-- =========================================================
+         SIDEBAR: Bodega
+         ========================================================= -->
+    <aside th:fragment="sidebar-bodega" class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a th:href="@{/bodega/dashboard}" class="sidebar-brand">
+                <i class="bi bi-archive"></i>
+                <span>Bodega Central</span>
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <p class="nav-label">Principal</p>
+                <a th:href="@{/bodega/dashboard}" class="sidebar-link">
+                    <i class="bi bi-speedometer2"></i> Inicio
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <p class="nav-label">Inventario</p>
+                <a th:href="@{/inventario/stock}" class="sidebar-link">
+                    <i class="bi bi-boxes"></i> Stock Actual
+                </a>
+                <a th:href="@{/inventario/ajustar}" class="sidebar-link">
+                    <i class="bi bi-sliders"></i> Ajustar Stock
+                </a>
+                <a th:href="@{/inventario/transferencias}" class="sidebar-link">
+                    <i class="bi bi-arrow-left-right"></i> Transferencias
+                </a>
+                <a th:href="@{/inventario/historial}" class="sidebar-link">
+                    <i class="bi bi-clock-history"></i> Historial
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <p class="nav-label">Consultas</p>
+                <a th:href="@{/productos/listar}" class="sidebar-link">
+                    <i class="bi bi-search"></i> Productos
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+
+    <!-- =========================================================
+         SIDEBAR: Cajero
+         ========================================================= -->
+    <aside th:fragment="sidebar-cajero" class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a th:href="@{/cajero/dashboard}" class="sidebar-brand">
+                <i class="bi bi-cash-register"></i>
+                <span>Punto de Venta</span>
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <p class="nav-label">Principal</p>
+                <a th:href="@{/cajero/dashboard}" class="sidebar-link">
+                    <i class="bi bi-speedometer2"></i> Inicio
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <p class="nav-label">Operaciones</p>
+                <a th:href="@{/ventas/nueva}" class="sidebar-link">
+                    <i class="bi bi-cart-plus"></i> Nueva Venta
+                </a>
+                <a th:href="@{/ventas/buscar}" class="sidebar-link">
+                    <i class="bi bi-search"></i> Buscar Venta
+                </a>
+                <a th:href="@{/facturas/listar}" class="sidebar-link">
+                    <i class="bi bi-receipt"></i> Historial Facturas
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+</body>
+</html>
