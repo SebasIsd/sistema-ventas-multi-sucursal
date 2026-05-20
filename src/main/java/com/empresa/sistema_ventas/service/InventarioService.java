@@ -103,4 +103,5 @@ public class InventarioService {
     public List<Inventario> getStockBajo() {
         return inventarioRepository.findStockBajo();
     }
+    public List<Inventario> listarTodos() {return inventarioRepository.findAll();}
 }
