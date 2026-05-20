@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Usuario</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="m-0">Nuevo Usuario</h2>
+        <a class="btn btn-outline-secondary" th:href="@{/admin/usuarios}">Volver</a>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div class="alert alert-info">
+                Vista habilitada para resolver rutas. El guardado de usuarios puede conectarse despues al servicio correspondiente.
+            </div>
+
+            <form>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control" placeholder="usuario">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Nombre completo</label>
+                        <input type="text" class="form-control" placeholder="Nombre Apellido">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" placeholder="correo@dominio.com">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Telefono</label>
+                        <input type="text" class="form-control" placeholder="0999999999">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Rol</label>
+                        <select class="form-select">
+                            <option value="">Seleccione</option>
+                            <option th:each="r : ${roles}" th:text="${r.nombre}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Sucursal</label>
+                        <select class="form-select">
+                            <option value="">Seleccione</option>
+                            <option th:each="s : ${sucursales}" th:text="${s.codigo + ' - ' + s.ciudad}"></option>
+                        </select>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary mt-3" disabled>Guardar (pendiente)</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
