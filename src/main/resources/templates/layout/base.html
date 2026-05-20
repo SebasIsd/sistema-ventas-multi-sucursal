@@ -17,201 +17,188 @@
 
 <body>
 
-<!-- =========================================================
-     FRAGMENTO: navbar-admin
-     ========================================================= -->
-<nav th:fragment="navbar-admin" class="navbar">
-    <div class="navbar-top">
+<div class="app-container">
 
-        <!-- Izquierda: brand + links -->
-        <div class="navbar-left">
-            <a class="nav-brand" th:href="@{/admin/dashboard}">
-                <div class="brand-icon"><i class="bi bi-shop"></i></div>
-                <span class="d-none d-lg-inline">Sistema Ventas</span>
+    <!-- =========================================================
+         SIDEBAR: Administrador
+         ========================================================= -->
+    <aside th:fragment="sidebar-admin" class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a th:href="@{/admin/dashboard}" class="sidebar-brand">
+                <i class="bi bi-shop"></i>
+                <span>Sistema Ventas</span>
             </a>
+        </div>
 
-            <nav class="nav-links">
-                <a th:href="@{/admin/dashboard}" class="nav-link-item">
-                    <i class="bi bi-house-door"></i> Inicio
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <p class="nav-label">Principal</p>
+                <a th:href="@{/admin/dashboard}" class="sidebar-link">
+                    <i class="bi bi-speedometer2"></i> Dashboard
                 </a>
-                <span class="nav-separator"></span>
-                <a th:href="@{/admin/categorias}" class="nav-link-item">
+            </div>
+
+            <div class="nav-section">
+                <p class="nav-label">Catálogo</p>
+                <a th:href="@{/admin/categorias}" class="sidebar-link">
                     <i class="bi bi-tags"></i> Categorías
                 </a>
-                <a th:href="@{/admin/productos}" class="nav-link-item">
+                <a th:href="@{/admin/productos}" class="sidebar-link">
                     <i class="bi bi-box-seam"></i> Productos
                 </a>
-                <span class="nav-separator"></span>
-                <a th:href="@{/admin/usuarios}" class="nav-link-item">
+            </div>
+
+            <div class="nav-section">
+                <p class="nav-label">Configuración</p>
+                <a th:href="@{/admin/usuarios}" class="sidebar-link">
                     <i class="bi bi-people"></i> Usuarios
                 </a>
-                <a th:href="@{/admin/sucursales}" class="nav-link-item">
+                <a th:href="@{/admin/sucursales}" class="sidebar-link">
                     <i class="bi bi-building"></i> Sucursales
                 </a>
-            </nav>
-
-            <button class="nav-toggler" onclick="toggleNavMenu('collapseAdmin')">
-                <i class="bi bi-list"></i>
-            </button>
-        </div>
-
-        <!-- Derecha: siempre anclada -->
-        <div class="navbar-right">
-            <div class="user-avatar"><i class="bi bi-person-badge"></i></div>
-            <div class="user-meta d-none d-sm-block">
-                <div class="user-name" th:text="${username != null ? username : 'Usuario'}">admin</div>
-                <span class="user-role">ADMINISTRADOR</span>
             </div>
-            <form th:action="@{/auth/logout}" method="post" class="d-inline">
-                <button type="submit" class="btn-logout">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span class="d-none d-sm-inline">Salir</span>
-                </button>
-            </form>
+        </nav>
+
+        <div class="sidebar-footer">
+            <!-- Espacio para info extra si se desea -->
         </div>
-    </div>
-
-    <!-- Menú colapsable móvil -->
-    <div class="nav-collapse" id="collapseAdmin">
-        <a th:href="@{/admin/dashboard}" class="nav-link-item"><i class="bi bi-house-door"></i> Inicio</a>
-        <a th:href="@{/admin/categorias}" class="nav-link-item"><i class="bi bi-tags"></i> Categorías</a>
-        <a th:href="@{/admin/productos}" class="nav-link-item"><i class="bi bi-box-seam"></i> Productos</a>
-        <a th:href="@{/admin/usuarios}" class="nav-link-item"><i class="bi bi-people"></i> Usuarios</a>
-        <a th:href="@{/admin/sucursales}" class="nav-link-item"><i class="bi bi-building"></i> Sucursales</a>
-    </div>
-</nav>
+    </aside>
 
 
-<!-- =========================================================
-     FRAGMENTO: navbar-bodega
-     ========================================================= -->
-<nav th:fragment="navbar-bodega" class="navbar">
-    <div class="navbar-top">
-
-        <div class="navbar-left">
-            <a class="nav-brand" th:href="@{/bodega/dashboard}">
-                <div class="brand-icon"><i class="bi bi-archive"></i></div>
-                <span class="d-none d-lg-inline">Sistema Ventas</span>
+    <!-- =========================================================
+         SIDEBAR: Bodega
+         ========================================================= -->
+    <aside th:fragment="sidebar-bodega" class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a th:href="@{/bodega/dashboard}" class="sidebar-brand">
+                <i class="bi bi-archive"></i>
+                <span>Bodega Central</span>
             </a>
+        </div>
 
-            <nav class="nav-links">
-                <a th:href="@{/bodega/dashboard}" class="nav-link-item">
-                    <i class="bi bi-house-door"></i> Inicio
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <p class="nav-label">Principal</p>
+                <a th:href="@{/bodega/dashboard}" class="sidebar-link">
+                    <i class="bi bi-speedometer2"></i> Inicio
                 </a>
-                <span class="nav-separator"></span>
-                <a th:href="@{/inventario/stock}" class="nav-link-item">
-                    <i class="bi bi-boxes"></i> Stock
+            </div>
+
+            <div class="nav-section">
+                <p class="nav-label">Inventario</p>
+                <a th:href="@{/inventario/stock}" class="sidebar-link">
+                    <i class="bi bi-boxes"></i> Stock Actual
                 </a>
-                <a th:href="@{/inventario/ajustar}" class="nav-link-item">
-                    <i class="bi bi-sliders"></i> Ajuste
+                <a th:href="@{/inventario/ajustar}" class="sidebar-link">
+                    <i class="bi bi-sliders"></i> Ajustar Stock
                 </a>
-                <span class="nav-separator"></span>
-                <a th:href="@{/inventario/transferencias}" class="nav-link-item">
+                <a th:href="@{/inventario/transferencias}" class="sidebar-link">
                     <i class="bi bi-arrow-left-right"></i> Transferencias
                 </a>
-                <a th:href="@{/inventario/historial}" class="nav-link-item">
+                <a th:href="@{/inventario/historial}" class="sidebar-link">
                     <i class="bi bi-clock-history"></i> Historial
                 </a>
-                <span class="nav-separator"></span>
-                <a th:href="@{/productos/listar}" class="nav-link-item">
-                    <i class="bi bi-box-seam"></i> Productos
-                </a>
-            </nav>
-
-            <button class="nav-toggler" onclick="toggleNavMenu('collapseBodega')">
-                <i class="bi bi-list"></i>
-            </button>
-        </div>
-
-        <div class="navbar-right">
-            <div class="user-avatar"><i class="bi bi-archive"></i></div>
-            <div class="user-meta d-none d-sm-block">
-                <div class="user-name" th:text="${username != null ? username : 'Usuario'}">bodega1</div>
-                <span class="user-role">BODEGUERO</span>
             </div>
-            <form th:action="@{/auth/logout}" method="post" class="d-inline">
-                <button type="submit" class="btn-logout">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span class="d-none d-sm-inline">Salir</span>
-                </button>
-            </form>
-        </div>
-    </div>
 
-    <div class="nav-collapse" id="collapseBodega">
-        <a th:href="@{/bodega/dashboard}" class="nav-link-item"><i class="bi bi-house-door"></i> Inicio</a>
-        <a th:href="@{/inventario/stock}" class="nav-link-item"><i class="bi bi-boxes"></i> Stock</a>
-        <a th:href="@{/inventario/ajustar}" class="nav-link-item"><i class="bi bi-sliders"></i> Ajuste</a>
-        <a th:href="@{/inventario/transferencias}" class="nav-link-item"><i class="bi bi-arrow-left-right"></i> Transferencias</a>
-        <a th:href="@{/inventario/historial}" class="nav-link-item"><i class="bi bi-clock-history"></i> Historial</a>
-        <a th:href="@{/productos/listar}" class="nav-link-item"><i class="bi bi-box-seam"></i> Productos</a>
-    </div>
-</nav>
+            <div class="nav-section">
+                <p class="nav-label">Consultas</p>
+                <a th:href="@{/productos/listar}" class="sidebar-link">
+                    <i class="bi bi-search"></i> Productos
+                </a>
+            </div>
+        </nav>
+    </aside>
 
 
-<!-- =========================================================
-     FRAGMENTO: navbar-cajero
-     ========================================================= -->
-<nav th:fragment="navbar-cajero" class="navbar">
-    <div class="navbar-top">
-
-        <div class="navbar-left">
-            <a class="nav-brand" th:href="@{/cajero/dashboard}">
-                <div class="brand-icon"><i class="bi bi-cash-register"></i></div>
-                <span class="d-none d-lg-inline">Sistema Ventas</span>
+    <!-- =========================================================
+         SIDEBAR: Cajero
+         ========================================================= -->
+    <aside th:fragment="sidebar-cajero" class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a th:href="@{/cajero/dashboard}" class="sidebar-brand">
+                <i class="bi bi-cash-register"></i>
+                <span>Punto de Venta</span>
             </a>
+        </div>
 
-            <nav class="nav-links">
-                <a th:href="@{/cajero/dashboard}" class="nav-link-item">
-                    <i class="bi bi-house-door"></i> Inicio
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <p class="nav-label">Principal</p>
+                <a th:href="@{/cajero/dashboard}" class="sidebar-link">
+                    <i class="bi bi-speedometer2"></i> Inicio
                 </a>
-                <span class="nav-separator"></span>
-                <a th:href="@{/ventas/nueva}" class="nav-link-item">
-                    <i class="bi bi-plus-circle"></i> Nueva Venta
+            </div>
+
+            <div class="nav-section">
+                <p class="nav-label">Operaciones</p>
+                <a th:href="@{/ventas/nueva}" class="sidebar-link">
+                    <i class="bi bi-cart-plus"></i> Nueva Venta
                 </a>
-                <a th:href="@{/ventas/buscar}" class="nav-link-item">
+                <a th:href="@{/ventas/buscar}" class="sidebar-link">
                     <i class="bi bi-search"></i> Buscar Venta
                 </a>
-                <span class="nav-separator"></span>
-                <a th:href="@{/facturas/listar}" class="nav-link-item">
-                    <i class="bi bi-receipt-cutoff"></i> Facturas
+                <a th:href="@{/facturas/listar}" class="sidebar-link">
+                    <i class="bi bi-receipt"></i> Historial Facturas
                 </a>
-            </nav>
-
-            <button class="nav-toggler" onclick="toggleNavMenu('collapseCajero')">
-                <i class="bi bi-list"></i>
-            </button>
-        </div>
-
-        <div class="navbar-right">
-            <div class="user-avatar"><i class="bi bi-cash-register"></i></div>
-            <div class="user-meta d-none d-sm-block">
-                <div class="user-name" th:text="${username != null ? username : 'Usuario'}">cajero1</div>
-                <span class="user-role">CAJERO</span>
             </div>
-            <form th:action="@{/auth/logout}" method="post" class="d-inline">
-                <button type="submit" class="btn-logout">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span class="d-none d-sm-inline">Salir</span>
-                </button>
-            </form>
-        </div>
-    </div>
+        </nav>
+    </aside>
 
-    <div class="nav-collapse" id="collapseCajero">
-        <a th:href="@{/cajero/dashboard}" class="nav-link-item"><i class="bi bi-house-door"></i> Inicio</a>
-        <a th:href="@{/ventas/nueva}" class="nav-link-item"><i class="bi bi-plus-circle"></i> Nueva Venta</a>
-        <a th:href="@{/ventas/buscar}" class="nav-link-item"><i class="bi bi-search"></i> Buscar Venta</a>
-        <a th:href="@{/facturas/listar}" class="nav-link-item"><i class="bi bi-receipt-cutoff"></i> Facturas</a>
-    </div>
-</nav>
+    <!-- =========================================================
+         SIDEBAR: Auto-select based on Role
+         ========================================================= -->
+    <aside th:fragment="sidebar-auto">
+        <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:replace="~{layout/base :: sidebar-admin}"></div>
+        <div th:if="${#authorization.expression('hasRole(''BODEGA'')') and !#authorization.expression('hasRole(''ADMIN'')')}" th:replace="~{layout/base :: sidebar-bodega}"></div>
+        <div th:if="${#authorization.expression('hasRole(''CAJERO'')') and !#authorization.expression('hasRole(''ADMIN'')') and !#authorization.expression('hasRole(''BODEGA'')')}" th:replace="~{layout/base :: sidebar-cajero}"></div>
+    </aside>
+
+    <div class="main-wrapper">
+        <!-- TOP BAR (Común) -->
+        <header th:fragment="top-bar" class="top-bar">
+            <div class="top-bar-left">
+                <button class="btn-toggle-sidebar" onclick="toggleSidebar()">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div class="breadcrumb-wrapper d-none d-md-flex" style="margin-bottom:0">
+                    <i class="bi bi-house-door"></i>
+                    <span class="sep">/</span>
+                    <span class="current" th:text="${title}">Dashboard</span>
+                </div>
+            </div>
+
+            <div class="top-bar-right">
+                <div class="user-pill">
+                    <div class="user-pill-info">
+                        <span class="user-pill-name" th:text="${#authentication.principal.nombreCompleto}">Admin Name</span>
+                        <span class="user-pill-branch" th:text="${#authentication.principal.sucursalNombre}">Sucursal</span>
+                    </div>
+                    <div class="user-pill-avatar">
+                        <i class="bi bi-person-circle"></i>
+                    </div>
+                </div>
+
+                <form th:action="@{/auth/logout}" method="post">
+                    <button type="submit" class="btn-logout-minimal" title="Cerrar Sesión">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </header>
+
+        <!-- Aquí se inyectará el contenido de las páginas -->
+        <!-- Las páginas individuales deben abrir .page-content -->
+
+    </div> <!-- /main-wrapper -->
+
+</div> <!-- /app-container -->
 
 
 <!-- =========================================================
      FRAGMENTO: footer
      ========================================================= -->
 <div th:fragment="footer" class="page-footer">
-    &copy; 2026 Sistema de Ventas Multi-Sucursal &mdash; v1.0
+    &copy; 2026 Sistema de Ventas Multi-Sucursal &mdash; v2.0 Redesign
 </div>
 
 
@@ -226,16 +213,16 @@
     <script th:src="@{/js/modules/paginator.js}"></script>
 
     <script>
-        /* ---- Hamburger ---- */
-        function toggleNavMenu(id) {
-            const el = document.getElementById(id);
-            if (el) el.classList.toggle('open');
+        /* ---- Sidebar Toggle (Mobile) ---- */
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) sidebar.classList.toggle('open');
         }
 
         /* ---- Marcar link activo ---- */
         (function () {
             const path = window.location.pathname;
-            document.querySelectorAll('.nav-link-item').forEach(link => {
+            document.querySelectorAll('.sidebar-link').forEach(link => {
                 const href = link.getAttribute('href');
                 if (href && href !== '#' && (path === href || (href.length > 1 && path.startsWith(href)))) {
                     link.classList.add('active');
@@ -254,7 +241,7 @@
         }
         if (document.getElementById('clockDisplay')) { updateClock(); setInterval(updateClock, 60000); }
 
-        /* ---- Limpiar backdrop Bootstrap (BFCache) ---- */
+        /* ---- Limpiar bloqueo modal ---- */
         function limpiarBloqueoModal() {
             document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
             document.body.classList.remove('modal-open');

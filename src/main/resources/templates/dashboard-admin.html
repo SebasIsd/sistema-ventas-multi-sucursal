@@ -4,145 +4,151 @@
 </head>
 <body class="role-admin">
 
-    <!-- NAVBAR MODULAR -->
-    <nav th:replace="~{layout/base :: navbar-admin}"></nav>
+    <div class="app-container">
+        <!-- SIDEBAR -->
+        <aside th:replace="~{layout/base :: sidebar-admin}"></aside>
 
-    <!-- CONTENT -->
-    <div class="page-content">
+        <div class="main-wrapper">
+            <!-- TOP BAR -->
+            <header th:replace="~{layout/base :: top-bar}"></header>
 
-        <!-- Welcome -->
-        <div class="welcome-banner">
-            <div class="welcome-text">
-                <h1>👋 Panel de Administración</h1>
-                <p>Gestión completa del sistema de ventas multi-sucursal</p>
-            </div>
-            <div class="time-badge">
-                <i class="bi bi-clock"></i>
-                <span id="clockDisplay">--:--</span>
-            </div>
-        </div>
+            <!-- CONTENT -->
+            <div class="page-content">
 
-        <!-- Stats -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon blue"><i class="bi bi-people"></i></div>
-                <div class="stat-data">
-                    <h3 th:text="${totalUsuarios ?: 0}">0</h3>
-                    <p>Usuarios Activos</p>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon green"><i class="bi bi-cart3"></i></div>
-                <div class="stat-data">
-                    <h3 th:text="${totalVentas ?: 0}">0</h3>
-                    <p>Ventas Totales</p>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon purple"><i class="bi bi-boxes"></i></div>
-                <div class="stat-data">
-                    <h3 th:text="${totalProductos ?: 0}">0</h3>
-                    <p>Productos</p>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon orange"><i class="bi bi-currency-dollar"></i></div>
-                <div class="stat-data">
-                    <h3 th:text="'$' + ${#numbers.formatDecimal(totalIngresos ?: 0, 0, 'COMMA', 2, 'POINT')}">$0.00</h3>
-                    <p>Ingresos Totales</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modules -->
-        <div class="section-title">
-            <i class="bi bi-grid" style="color:#2D3F54;"></i>
-            Módulos del Sistema
-        </div>
-
-        <div class="modules-grid">
-
-            <!-- Usuarios -->
-            <div class="module-card">
-                <div class="module-head">
-                    <div class="module-icon" style="background:#f1f5f9;color:#2D3F54;">
-                        <i class="bi bi-people"></i>
+                <!-- Welcome -->
+                <div class="welcome-banner">
+                    <div class="welcome-text">
+                        <h1 th:text="'👋 ¡Hola, ' + ${#authentication.principal.nombreCompleto} + '!'">👋 ¡Hola, Admin!</h1>
+                        <p>Gestión completa del sistema de ventas multi-sucursal</p>
                     </div>
-                    <p class="module-title">Gestión de Usuarios</p>
-                </div>
-                <p class="module-desc">Administra cuentas de acceso, contraseñas y permisos por rol.</p>
-                <div class="module-actions">
-                    <a th:href="@{/admin/usuarios}" class="btn-module btn-filled">
-                        <i class="bi bi-list-ul"></i> Ver Usuarios
-                    </a>
-                    <a th:href="@{/admin/usuarios/nuevo}" class="btn-module btn-ghost">
-                        <i class="bi bi-plus"></i> Nuevo Usuario
-                    </a>
-                </div>
-            </div>
-
-            <!-- Categorías -->
-            <div class="module-card">
-                <div class="module-head">
-                    <div class="module-icon" style="background:#e0f2fe;color:#006ECF;">
-                        <i class="bi bi-tags"></i>
+                    <div class="time-badge">
+                        <i class="bi bi-clock"></i>
+                        <span id="clockDisplay">--:--</span>
                     </div>
-                    <p class="module-title">Categorías</p>
                 </div>
-                <p class="module-desc">Organiza los productos por categorías para una mejor gestión del inventario.</p>
-                <div class="module-actions">
-                    <a th:href="@{/admin/categorias}" class="btn-module btn-filled">
-                        <i class="bi bi-list-ul"></i> Ver Categorías
-                    </a>
-                </div>
-            </div>
 
-            <!-- Productos -->
-            <div class="module-card">
-                <div class="module-head">
-                    <div class="module-icon" style="background:#ccfbf1;color:#0FA69D;">
-                        <i class="bi bi-box-seam"></i>
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="bi bi-people"></i></div>
+                        <div class="stat-data">
+                            <h3 th:text="${totalUsuarios ?: 0}">0</h3>
+                            <p>Usuarios Activos</p>
+                        </div>
                     </div>
-                    <p class="module-title">Productos</p>
-                </div>
-                <p class="module-desc">Gestión completa de productos, precios, códigos de barras e IVA.</p>
-                <div class="module-actions">
-                    <a th:href="@{/admin/productos}" class="btn-module btn-filled">
-                        <i class="bi bi-list-ul"></i> Ver Productos
-                    </a>
-                </div>
-            </div>
 
-            <!-- Sucursales -->
-            <div class="module-card">
-                <div class="module-head">
-                    <div class="module-icon" style="background:#dcfce7;color:#1DBD8E;">
-                        <i class="bi bi-building"></i>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="bi bi-cart3"></i></div>
+                        <div class="stat-data">
+                            <h3 th:text="${totalVentas ?: 0}">0</h3>
+                            <p>Ventas Totales</p>
+                        </div>
                     </div>
-                    <p class="module-title">Sucursales</p>
+
+                    <div class="stat-card">
+                        <div class="stat-icon purple"><i class="bi bi-boxes"></i></div>
+                        <div class="stat-data">
+                            <h3 th:text="${totalProductos ?: 0}">0</h3>
+                            <p>Productos</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon orange"><i class="bi bi-currency-dollar"></i></div>
+                        <div class="stat-data">
+                            <h3 th:text="'$' + ${#numbers.formatDecimal(totalIngresos ?: 0, 0, 'COMMA', 2, 'POINT')}">$0.00</h3>
+                            <p>Ingresos Totales</p>
+                        </div>
+                    </div>
                 </div>
-                <p class="module-desc">Configura y administra las sedes, direcciones y datos de cada sucursal.</p>
-                <div class="module-actions">
-                    <a th:href="@{/admin/sucursales}" class="btn-module btn-filled">
-                        <i class="bi bi-list-ul"></i> Ver Sucursales
-                    </a>
-                    <a th:href="@{/admin/sucursales/nueva}" class="btn-module btn-ghost">
-                        <i class="bi bi-plus"></i> Nueva Sucursal
-                    </a>
+
+                <!-- Modules -->
+                <div class="section-title">
+                    <i class="bi bi-grid" style="color:#006ECF;"></i>
+                    Módulos del Sistema
                 </div>
-            </div>
 
-        </div>
+                <div class="modules-grid">
 
-        <!-- FOOTER MODULAR -->
-        <div th:replace="~{layout/base :: footer}"></div>
+                    <!-- Usuarios -->
+                    <div class="module-card">
+                        <div class="module-head">
+                            <div class="module-icon" style="background:#f1f5f9;color:#2D3F54;">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <p class="module-title">Gestión de Usuarios</p>
+                        </div>
+                        <p class="module-desc">Administra cuentas de acceso, contraseñas y permisos por rol.</p>
+                        <div class="module-actions">
+                            <a th:href="@{/admin/usuarios}" class="btn-module btn-filled">
+                                <i class="bi bi-list-ul"></i> Ver Usuarios
+                            </a>
+                            <a th:href="@{/admin/usuarios/nuevo}" class="btn-module btn-ghost">
+                                <i class="bi bi-plus"></i> Nuevo Usuario
+                            </a>
+                        </div>
+                    </div>
 
-    </div>
+                    <!-- Categorías -->
+                    <div class="module-card">
+                        <div class="module-head">
+                            <div class="module-icon" style="background:#e0f2fe;color:#006ECF;">
+                                <i class="bi bi-tags"></i>
+                            </div>
+                            <p class="module-title">Categorías</p>
+                        </div>
+                        <p class="module-desc">Organiza los productos por categorías para una mejor gestión del inventario.</p>
+                        <div class="module-actions">
+                            <a th:href="@{/admin/categorias}" class="btn-module btn-filled">
+                                <i class="bi bi-list-ul"></i> Ver Categorías
+                            </a>
+                        </div>
+                    </div>
 
-    <!-- SCRIPTS MODULAR -->
+                    <!-- Productos -->
+                    <div class="module-card">
+                        <div class="module-head">
+                            <div class="module-icon" style="background:#ccfbf1;color:#0FA69D;">
+                                <i class="bi bi-box-seam"></i>
+                            </div>
+                            <p class="module-title">Productos</p>
+                        </div>
+                        <p class="module-desc">Gestión completa de productos, precios, códigos de barras e IVA.</p>
+                        <div class="module-actions">
+                            <a th:href="@{/admin/productos}" class="btn-module btn-filled">
+                                <i class="bi bi-list-ul"></i> Ver Productos
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Sucursales -->
+                    <div class="module-card">
+                        <div class="module-head">
+                            <div class="module-icon" style="background:#dcfce7;color:#1DBD8E;">
+                                <i class="bi bi-building"></i>
+                            </div>
+                            <p class="module-title">Sucursales</p>
+                        </div>
+                        <p class="module-desc">Configura y administra las sedes, direcciones y datos de cada sucursal.</p>
+                        <div class="module-actions">
+                            <a th:href="@{/admin/sucursales}" class="btn-module btn-filled">
+                                <i class="bi bi-list-ul"></i> Ver Sucursales
+                            </a>
+                            <a th:href="@{/admin/sucursales/nueva}" class="btn-module btn-ghost">
+                                <i class="bi bi-plus"></i> Nueva Sucursal
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- FOOTER -->
+                <div th:replace="~{layout/base :: footer}"></div>
+            </div> <!-- /page-content -->
+        </div> <!-- /main-wrapper -->
+    </div> <!-- /app-container -->
+
+    <!-- SCRIPTS -->
     <div th:replace="~{layout/base :: scripts}"></div>
 
 </body>

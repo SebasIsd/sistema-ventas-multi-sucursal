@@ -3,87 +3,89 @@
 <head th:replace="~{layout/base :: head('Categorías — Sistema de Ventas')}">
 </head>
 <body class="role-admin">
+    <div class="app-container">
+        <aside th:replace="~{layout/base :: sidebar-auto}"></aside>
+        <div class="main-wrapper">
+            <header th:replace="~{layout/base :: top-bar}"></header>
+            <div class="page-content">
 
-    <!-- NAVBAR MODULAR -->
-    <nav th:replace="~{layout/base :: navbar-admin}"></nav>
+                <!-- Breadcrumb -->
+                <div class="breadcrumb-wrapper">
+                    <a th:href="@{/admin/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+                    <i class="bi bi-chevron-right sep"></i>
+                    <span class="current">Categorías</span>
+                </div>
 
-    <div class="page-content">
+                <!-- Header -->
+                <div class="page-header">
+                    <div>
+                        <h2 class="page-title"><i class="bi bi-tags"></i> Categorías</h2>
+                        <p class="page-desc">Administración de categorías del inventario</p>
+                    </div>
+                    <button class="btn btn-filled" onclick="abrirModalNueva()">
+                        <i class="bi bi-plus"></i> Nueva Categoría
+                    </button>
+                </div>
 
-        <!-- Breadcrumb -->
-        <div class="breadcrumb-wrapper">
-            <a th:href="@{/admin/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
-            <i class="bi bi-chevron-right sep"></i>
-            <span class="current">Categorías</span>
-        </div>
+                <div class="card slide-up">
+                    <div class="card-body" style="padding:1.5rem;">
 
-        <!-- Header -->
-        <div class="page-header">
-            <div>
-                <h2 class="page-title"><i class="bi bi-tags"></i> Categorías</h2>
-                <p class="page-desc">Administración de categorías del inventario</p>
-            </div>
-            <button class="btn btn-filled" onclick="abrirModalNueva()">
-                <i class="bi bi-plus"></i> Nueva Categoría
-            </button>
-        </div>
+                        <!-- Tools: Buscar & Filas -->
+                        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                            <div class="search-wrapper flex-grow-1" style="max-width:320px;">
+                                <i class="bi bi-search search-icon"></i>
+                                <input type="text" id="buscador" class="search-input"
+                                       placeholder="Buscar categoría..." oninput="filtrarTabla()">
+                            </div>
+                        </div>
 
-        <div class="card slide-up">
-            <div class="card-body" style="padding:1.5rem;">
+                        <!-- Tabla -->
+                        <div class="table-wrapper">
+                            <table class="table align-middle">
+                                <thead style="background:var(--primary);">
+                                    <tr>
+                                        <th width="80">ID</th>
+                                        <th>Nombre</th>
+                                        <th>Descripción</th>
+                                        <th width="120">Estado</th>
+                                        <th width="160" class="text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaCategorias">
+                                    <!-- Renderizado por JS -->
+                                </tbody>
+                            </table>
+                        </div>
 
-                <!-- Tools: Buscar & Filas -->
-                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-                    <div class="search-wrapper flex-grow-1" style="max-width:320px;">
-                        <i class="bi bi-search search-icon"></i>
-                        <input type="text" id="buscador" class="search-input"
-                               placeholder="Buscar categoría..." oninput="filtrarTabla()">
+                        <!-- Estado Vacío -->
+                        <div id="sinResultados" style="display:none; text-align:center; padding:3rem 1rem;">
+                            <i class="bi bi-box-seam" style="font-size:3rem; color:#cbd5e1; margin-bottom:1rem;"></i>
+                            <h5 style="color:var(--text-main); font-weight:600;">Sin resultados</h5>
+                            <p style="color:var(--text-muted); font-size:.9rem;">No se encontraron categorías con ese criterio.</p>
+                        </div>
+
+                        <!-- Paginación UI -->
+                        <div class="pagination-container" id="paginationWrap">
+                            <div class="page-per-row">
+                                <span>Mostrar</span>
+                                <select onchange="cambiarFilasPorPagina(this.value)">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                </select>
+                                <span>filas</span>
+                            </div>
+                            <div class="pagination-info" id="pageInfoText"></div>
+                            <div class="pagination-controls" id="pageControls"></div>
+                        </div>
+
                     </div>
                 </div>
 
-                <!-- Tabla -->
-                <div class="table-wrapper">
-                    <table class="table align-middle">
-                        <thead style="background:var(--primary);">
-                            <tr>
-                                <th width="80">ID</th>
-                                <th>Nombre</th>
-                                <th>Descripción</th>
-                                <th width="120">Estado</th>
-                                <th width="160" class="text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tablaCategorias">
-                            <!-- Renderizado por JS -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Estado Vacío -->
-                <div id="sinResultados" style="display:none; text-align:center; padding:3rem 1rem;">
-                    <i class="bi bi-box-seam" style="font-size:3rem; color:#cbd5e1; margin-bottom:1rem;"></i>
-                    <h5 style="color:var(--text-main); font-weight:600;">Sin resultados</h5>
-                    <p style="color:var(--text-muted); font-size:.9rem;">No se encontraron categorías con ese criterio.</p>
-                </div>
-
-                <!-- Paginación UI -->
-                <div class="pagination-container" id="paginationWrap">
-                    <div class="page-per-row">
-                        <span>Mostrar</span>
-                        <select onchange="cambiarFilasPorPagina(this.value)">
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                        </select>
-                        <span>filas</span>
-                    </div>
-                    <div class="pagination-info" id="pageInfoText"></div>
-                    <div class="pagination-controls" id="pageControls"></div>
-                </div>
-
+                <!-- FOOTER MODULAR -->
+                <div th:replace="~{layout/base :: footer}"></div>
             </div>
         </div>
-
-        <!-- FOOTER MODULAR -->
-        <div th:replace="~{layout/base :: footer}"></div>
     </div>
 
     <!-- MODAL -->

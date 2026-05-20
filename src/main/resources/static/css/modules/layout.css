@@ -294,204 +294,230 @@ body.role-cajero {
 }
 
 /* ======================================================
-   NAVBAR
+   APP LAYOUT (Sidebar + Main)
    ====================================================== */
-.navbar {
-    background: var(--primary);
-    padding: 0;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Fila superior: brand | links | user-pill */
-.navbar-top {
-    display: grid;
-    grid-template-columns: 1fr auto;   /* navbar-left expande, navbar-right fijo a la derecha */
-    align-items: center;
-    height: 60px;
-    padding: 0 1.5rem;
-    gap: .75rem;
-    width: 100%;                        /* CRÍTICO: Bootstrap .navbar no hereda full-width en hijo */
-}
-
-/* Agrupa brand + nav-links + toggler */
-.navbar-left {
+.app-container {
     display: flex;
-    align-items: center;
-    gap: .5rem;
-    min-width: 0;      /* permite que los links se compriman en pantallas pequeñas */
-    overflow: hidden;
+    min-height: 100vh;
 }
 
-/* Siempre en el extremo derecho — columna auto del grid */
-.navbar-right {
+/* ======================================================
+   SIDEBAR
+   ====================================================== */
+.sidebar {
+    width: 260px;
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
     display: flex;
-    align-items: center;
-    gap: .6rem;
-    flex-shrink: 0;
-    padding-left: .75rem;
-    border-left: 1px solid rgba(255,255,255,.18);
-}
-
-/* ---- Marca / Logo ---- */
-.nav-brand {
-    color: white;
-    font-weight: 700;
-    font-size: 1.05rem;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    flex-shrink: 0;
-}
-
-.nav-brand:hover { color: rgba(255,255,255,.85); }
-
-.nav-brand .brand-icon {
-    width: 30px;
-    height: 30px;
-    background: rgba(255,255,255,.2);
-    border-radius: var(--radius-sm);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: .9rem;
-}
-
-/* ---- Links de navegación ---- */
-.nav-links {
-    display: flex;
-    align-items: center;
-    gap: .15rem;
-    overflow-x: auto;
-    scrollbar-width: none;
-    flex: 1;
-}
-
-.nav-links::-webkit-scrollbar { display: none; }
-
-.nav-link-item {
-    display: inline-flex;
-    align-items: center;
-    gap: .35rem;
-    color: rgba(255,255,255,.78);
-    text-decoration: none;
-    font-size: .8rem;
-    font-weight: 600;
-    padding: .38rem .65rem;
-    border-radius: var(--radius-sm);
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    z-index: 1001;
     transition: var(--transition);
-    white-space: nowrap;
+    border-right: 1px solid rgba(255,255,255,0.05);
 }
 
-.nav-link-item:hover {
+.sidebar-header {
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
     color: white;
-    background: rgba(255,255,255,.15);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
 }
 
-.nav-link-item.active {
-    color: white;
-    background: rgba(255,255,255,.22);
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,.25);
-}
-
-/* Separador vertical entre grupos */
-.nav-separator {
-    width: 1px;
-    height: 18px;
-    background: rgba(255,255,255,.22);
-    margin: 0 .2rem;
-    flex-shrink: 0;
-}
-
-/* ---- Hamburger (solo móvil) ---- */
-.nav-toggler {
-    display: none;
-    background: rgba(255,255,255,.18);
-    border: 1px solid rgba(255,255,255,.3);
-    color: white;
-    width: 34px;
-    height: 34px;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
+.sidebar-brand i {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border-radius: 8px;
+    display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1rem;
-    transition: var(--transition);
-    flex-shrink: 0;
 }
 
-.nav-toggler:hover { background: rgba(255,255,255,.28); }
+.sidebar-nav {
+    flex: 1;
+    padding: 1.25rem .75rem;
+    overflow-y: auto;
+}
 
-/* ---- User info ---- */
-.user-avatar {
+.nav-section {
+    margin-bottom: 1.5rem;
+}
+
+.nav-label {
+    padding: 0 1rem;
+    font-size: .65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: #4b5563;
+    margin-bottom: .5rem;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .75rem 1rem;
+    color: var(--sidebar-text);
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: .875rem;
+    font-weight: 500;
+    transition: var(--transition);
+    margin-bottom: .2rem;
+}
+
+.sidebar-link i {
+    font-size: 1.1rem;
+    opacity: .7;
+}
+
+.sidebar-link:hover {
+    background: var(--sidebar-hover);
+    color: white;
+}
+
+.sidebar-link.active {
+    background: var(--sidebar-active);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 110, 207, 0.3);
+}
+
+.sidebar-link.active i { opacity: 1; }
+
+.sidebar-footer {
+    padding: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+/* ======================================================
+   MAIN CONTENT
+   ====================================================== */
+.main-wrapper {
+    flex: 1;
+    margin-left: 260px; /* Ancho del sidebar */
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+}
+
+.top-bar {
+    height: 64px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.top-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+/* Botón toggle sidebar móvil */
+.btn-toggle-sidebar {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: var(--text-main);
+    cursor: pointer;
+}
+
+/* User Info Pill */
+.user-pill {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .4rem .75rem;
+    padding-right: .4rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+}
+
+.user-pill-info {
+    text-align: right;
+    line-height: 1.2;
+}
+
+.user-pill-name {
+    display: block;
+    font-size: .8rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.user-pill-branch {
+    display: block;
+    font-size: .7rem;
+    color: var(--text-muted);
+}
+
+.user-pill-avatar {
     width: 32px;
     height: 32px;
-    background: rgba(255,255,255,.2);
+    background: var(--primary);
+    color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: .9rem;
-    color: white;
-    flex-shrink: 0;
 }
 
-.user-meta .user-name {
-    font-weight: 600;
-    font-size: .84rem;
-    line-height: 1.2;
-    color: white;
-}
-
-.user-meta .user-role {
-    font-size: .67rem;
-    background: rgba(255,255,255,.2);
-    padding: .1rem .5rem;
-    border-radius: 20px;
-    font-weight: 600;
-    display: inline-block;
-    line-height: 1.6;
-    color: rgba(255,255,255,.9);
-}
-
-/* ---- Botón Logout ---- */
-.btn-logout {
-    background: rgba(255,255,255,.18);
-    border: 1px solid rgba(255,255,255,.3);
-    color: white;
-    padding: .36rem .8rem;
-    border-radius: var(--radius-sm);
-    font-size: .8rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
+/* Logout */
+.btn-logout-minimal {
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
-    gap: .35rem;
-    line-height: 1;
-    white-space: nowrap;
+    justify-content: center;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--clr-slate);
+    transition: var(--transition);
+    cursor: pointer;
 }
 
-.btn-logout:hover { background: rgba(255,255,255,.3); color: white; }
-
-/* ---- Menú colapsable móvil ---- */
-.nav-collapse {
-    display: none;
-    flex-direction: column;
-    gap: .2rem;
-    padding: .65rem 1.25rem .9rem;
-    border-top: 1px solid rgba(255,255,255,.15);
-    background: rgba(0,0,0,.12);
+.btn-logout-minimal:hover {
+    background: #fee2e2;
+    color: #ef4444;
+    border-color: #fecaca;
 }
 
-.nav-collapse.open { display: flex; }
-
-.nav-collapse .nav-link-item {
-    font-size: .875rem;
-    padding: .5rem .7rem;
+/* Responsive Sidebar */
+@media (max-width: 1024px) {
+    .sidebar { transform: translateX(-100%); }
+    .main-wrapper { margin-left: 0; }
+    .sidebar.open { transform: translateX(0); }
+    .btn-toggle-sidebar { display: block; }
 }
 
 /* ======================================================
@@ -499,7 +525,7 @@ body.role-cajero {
    ====================================================== */
 .page-footer {
     text-align: center;
-    margin-top: 2.5rem;
+    margin-top: auto;
     padding: 1.5rem 0;
     border-top: 1px solid var(--border);
     color: var(--text-muted);
@@ -544,13 +570,7 @@ body.role-cajero {
 /* ======================================================
    RESPONSIVE
    ====================================================== */
-@media (max-width: 900px) {
-    .nav-links { display: none; }
-    .nav-toggler { display: flex; }
-}
-
 @media (max-width: 600px) {
-    .navbar-top { padding: 0 1rem; }
-    .user-meta  { display: none; }
-    .navbar-right { border-left: none; padding-left: .25rem; }
+    .top-bar { padding: 0 1rem; }
+    .user-pill-info { display: none; }
 }
