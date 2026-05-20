@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="factura" pageWidth="595" pageHeight="842" columnWidth="535"
+              leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20">
+
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+
+    <parameter name="NUMERO_FACTURA" class="java.lang.String"/>
+    <parameter name="FECHA_EMISION" class="java.lang.String"/>
+    <parameter name="CLIENTE_NOMBRE" class="java.lang.String"/>
+    <parameter name="CLIENTE_IDENTIFICACION" class="java.lang.String"/>
+    <parameter name="SUCURSAL" class="java.lang.String"/>
+    <parameter name="ESTADO_SRI" class="java.lang.String"/>
+    <parameter name="CLAVE_ACCESO" class="java.lang.String"/>
+    <parameter name="SUBTOTAL" class="java.math.BigDecimal"/>
+    <parameter name="IVA_TOTAL" class="java.math.BigDecimal"/>
+    <parameter name="TOTAL" class="java.math.BigDecimal"/>
+
+    <field name="producto" class="java.lang.String"/>
+    <field name="cantidad" class="java.lang.Integer"/>
+    <field name="precioUnitario" class="java.math.BigDecimal"/>
+    <field name="subtotal" class="java.math.BigDecimal"/>
+
+    <title>
+        <band height="120">
+            <staticText>
+                <reportElement x="0" y="0" width="300" height="30"/>
+                <textElement>
+                    <font size="18" isBold="true"/>
+                </textElement>
+                <text><![CDATA[FACTURA ELECTRONICA]]></text>
+            </staticText>
+
+            <textField>
+                <reportElement x="0" y="40" width="280" height="20"/>
+                <textFieldExpression><![CDATA["No: " + $P{NUMERO_FACTURA}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="60" width="280" height="20"/>
+                <textFieldExpression><![CDATA["Fecha: " + $P{FECHA_EMISION}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="300" y="40" width="235" height="20"/>
+                <textFieldExpression><![CDATA["Sucursal: " + $P{SUCURSAL}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="300" y="60" width="235" height="20"/>
+                <textFieldExpression><![CDATA["Estado SRI: " + $P{ESTADO_SRI}]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="0" y="90" width="535" height="20"/>
+                <textFieldExpression><![CDATA["Cliente: " + $P{CLIENTE_NOMBRE} + " | ID: " + $P{CLIENTE_IDENTIFICACION}]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+
+    <columnHeader>
+        <band height="22">
+            <staticText>
+                <reportElement x="0" y="0" width="255" height="22" mode="Opaque" backcolor="#EEEEEE"/>
+                <text><![CDATA[Producto]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="255" y="0" width="80" height="22" mode="Opaque" backcolor="#EEEEEE"/>
+                <text><![CDATA[Cantidad]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="335" y="0" width="100" height="22" mode="Opaque" backcolor="#EEEEEE"/>
+                <text><![CDATA[P. Unitario]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="435" y="0" width="100" height="22" mode="Opaque" backcolor="#EEEEEE"/>
+                <text><![CDATA[Subtotal]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="20">
+            <textField>
+                <reportElement x="0" y="0" width="255" height="20"/>
+                <textFieldExpression><![CDATA[$F{producto}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="255" y="0" width="80" height="20"/>
+                <textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
+            </textField>
+            <textField pattern="$ #,##0.00">
+                <reportElement x="335" y="0" width="100" height="20"/>
+                <textFieldExpression><![CDATA[$F{precioUnitario}]]></textFieldExpression>
+            </textField>
+            <textField pattern="$ #,##0.00">
+                <reportElement x="435" y="0" width="100" height="20"/>
+                <textFieldExpression><![CDATA[$F{subtotal}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <summary>
+        <band height="90">
+            <textField pattern="$ #,##0.00">
+                <reportElement x="375" y="0" width="160" height="20"/>
+                <textFieldExpression><![CDATA[$P{SUBTOTAL}]]></textFieldExpression>
+            </textField>
+            <textField pattern="$ #,##0.00">
+                <reportElement x="375" y="25" width="160" height="20"/>
+                <textFieldExpression><![CDATA[$P{IVA_TOTAL}]]></textFieldExpression>
+            </textField>
+            <textField pattern="$ #,##0.00">
+                <reportElement x="375" y="50" width="160" height="20"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{TOTAL}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="275" y="0" width="95" height="20"/>
+                <text><![CDATA[Subtotal:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="275" y="25" width="95" height="20"/>
+                <text><![CDATA[IVA:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="275" y="50" width="95" height="20"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Total:]]></text>
+            </staticText>
+
+            <textField>
+                <reportElement x="0" y="72" width="535" height="18"/>
+                <textFieldExpression><![CDATA["Clave acceso: " + $P{CLAVE_ACCESO}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+</jasperReport>
