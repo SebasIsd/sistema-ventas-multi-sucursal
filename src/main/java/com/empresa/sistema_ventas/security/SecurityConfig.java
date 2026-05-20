@@ -33,8 +33,8 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**", "/css/**", "/js/**", "/img/**", "/images/**").permitAll()
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/cajero/**").hasAnyRole("CAJERO", "ADMIN")
-                        .requestMatchers("/bodega/**").hasAnyRole("BODEGA", "ADMIN")
+                    .requestMatchers("/cajero/**").hasRole("CAJERO")
+                    .requestMatchers("/bodega/**").hasRole("BODEGA")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -50,8 +50,13 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint((request, response, authException) ->
-                                response.sendRedirect("/auth/login"))
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            if (request.getRequestURI().startsWith("/api/")) {
+                                response.sendError(401);
+                            } else {
+                                response.sendRedirect("/auth/login");
+                            }
+                        })
                 );
 
         return http.build();

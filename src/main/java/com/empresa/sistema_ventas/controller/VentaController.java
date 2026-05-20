@@ -21,7 +21,8 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/ventas")
-@PreAuthorize("hasAnyRole('CAJERO', 'ADMIN')")
+@PreAuthorize("hasRole('CAJERO')")
+
 public class VentaController {
     @Autowired
     private InventarioRepository inventarioRepository;

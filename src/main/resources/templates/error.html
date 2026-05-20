@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Error — Sistema de Ventas')}"></head>
+<body>
+<div class="app-container">
+    <aside th:replace="~{layout/sidebars :: sidebar-admin}" th:if="${#authorization.expression('isAuthenticated()') and #authorization.expression('hasRole(''ADMIN'')')}"></aside>
+    <aside th:replace="~{layout/sidebars :: sidebar-cajero}" th:if="${#authorization.expression('isAuthenticated()') and #authorization.expression('hasRole(''CAJERO'')') and !#authorization.expression('hasRole(''ADMIN'')')}"></aside>
+    <aside th:replace="~{layout/sidebars :: sidebar-bodega}" th:if="${#authorization.expression('isAuthenticated()') and #authorization.expression('hasRole(''BODEGA'')') and !#authorization.expression('hasRole(''ADMIN'')') and !#authorization.expression('hasRole(''CAJERO'')')}"></aside>
+
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
+            <div class="card" style="max-width:720px; margin:3rem auto; padding:2rem; border-radius:18px;">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="stat-icon orange" style="width:64px;height:64px;font-size:1.6rem;">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                    <div>
+                        <h2 class="page-title mb-1" th:text="${status == 403 ? 'Acceso denegado' : status == 404 ? 'Ruta no encontrada' : 'Error del servidor'}">Error</h2>
+                        <p class="page-desc mb-0" th:text="${status == 403 ? 'Tu usuario no tiene permiso para entrar a esta sección.' : status == 404 ? 'La dirección que ingresaste no existe.' : 'Ocurrió un problema inesperado.'}">Mensaje</p>
+                    </div>
+                </div>
+
+                <div class="alert alert-light border mb-4">
+                    <strong th:text="'Código: ' + ${status ?: 500}">Código: 500</strong>
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+                    <a th:href="@{/}" class="btn btn-filled">Ir al inicio</a>
+                    <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/dashboard}" class="btn btn-ghost">Ir al dashboard admin</a>
+                    <a th:if="${#authorization.expression('hasRole(''CAJERO'')') and !#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/cajero/dashboard}" class="btn btn-ghost">Ir al dashboard cajero</a>
+                    <a th:if="${#authorization.expression('hasRole(''BODEGA'')') and !#authorization.expression('hasRole(''ADMIN'')') and !#authorization.expression('hasRole(''CAJERO'')')}" th:href="@{/bodega/dashboard}" class="btn btn-ghost">Ir al dashboard bodega</a>
+                </div>
+            </div>
+
+            <div th:replace="~{layout/base :: footer}"></div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

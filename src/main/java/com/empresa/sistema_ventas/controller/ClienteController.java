@@ -7,10 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.empresa.sistema_ventas.entity.Cliente;
-
 @Controller
 @RequestMapping("/clientes")
-@PreAuthorize("hasAnyRole('CAJERO', 'ADMIN')")
+@PreAuthorize("hasRole('CAJERO')")
 public class ClienteController {
 
     private final ClienteService clienteService;
