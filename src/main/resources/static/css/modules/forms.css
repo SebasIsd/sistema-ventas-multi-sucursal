@@ -1,0 +1,84 @@
+/* =========================================================
+   MÓDULO: forms.css
+   Inputs, selects, textareas, switches y buscador
+   ========================================================= */
+
+/* ---- Bootstrap overrides ---- */
+.form-control,
+.form-select {
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: .6rem .9rem;
+    font-size: .9rem;
+    color: var(--text-main);
+    background: white;
+    transition: var(--transition);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 110, 207, .1);
+    outline: none;
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: .875rem;
+    color: var(--text-main);
+    margin-bottom: .4rem;
+}
+
+/* ---- Switch toggle ---- */
+.form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 3px rgba(0, 110, 207, .15);
+    border-color: var(--primary);
+}
+
+/* ---- Buscador ---- */
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: .9rem;
+    color: var(--text-muted);
+    font-size: .9rem;
+    pointer-events: none;
+}
+
+.search-input {
+    width: 100%;
+    padding: .6rem .9rem .6rem 2.5rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: .875rem;
+    color: var(--text-main);
+    background: white;
+    transition: var(--transition);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 110, 207, .12);
+}
+
+.search-input::placeholder {
+    color: #94a3b8;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+    .search-wrapper {
+        max-width: 100%;
+    }
+}
