@@ -1,6 +1,7 @@
 package com.empresa.sistema_ventas.repository;
 
 import com.empresa.sistema_ventas.entity.Inventario;
+import com.empresa.sistema_ventas.entity.Sucursal;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -16,4 +17,5 @@ public interface InventarioRepository extends JpaRepository<Inventario, Long> {
 
     @Query("SELECT i FROM Inventario i WHERE i.stockActual <= i.stockMinimo")
     List<Inventario> findStockBajo();
+    List<Inventario> findBySucursal(Sucursal sucursal);
 }
