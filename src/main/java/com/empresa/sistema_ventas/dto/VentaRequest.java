@@ -8,6 +8,5 @@ import java.util.List;
 public class VentaRequest {
 
     private Long clienteId;
-    private Integer usuarioId;
     private List<ItemVentaDTO> items;
 }
