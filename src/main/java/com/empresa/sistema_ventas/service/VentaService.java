@@ -106,6 +106,16 @@ public class VentaService {
 
         venta.setDetalles(detalles);
 
+        for (DetalleVenta detalle : venta.getDetalles()) {
+            if (detalle.getProducto() == null || detalle.getProducto().getPorcentajeIva() == null) {
+                throw new RuntimeException(
+                        "El producto ID "
+                                + (detalle.getProducto() != null ? detalle.getProducto().getIdProducto() : "null")
+                                + " no tiene el porcentaje de IVA configurado"
+                );
+            }
+        }
+
         venta.calcularTotales();
 
         return ventaRepository.save(venta);
