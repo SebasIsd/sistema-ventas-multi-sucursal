@@ -436,7 +436,7 @@
     /*[# th:each="inv : ${inventarios}"]*/
     {
         id: [[${inv.producto.idProducto}]],
-        nombre: '[[${inv.producto.nombre}]]',
+        nombre: [[${inv.producto.nombre}]],
         precio: [[${inv.producto.precioUnitario}]],
         stock: [[${inv.stockActual}]]
     },
