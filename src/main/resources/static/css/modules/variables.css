@@ -1,65 +1,109 @@
 /* =========================================================
    MÓDULO: variables.css
-   Tokens de diseño centralizados — Sistema de Ventas
+   Paleta Adobe Color — Sistema de Ventas
    ========================================================= */
 
-/* ---- Google Font ---- */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-    /* Paleta de colores - Sincronizada con Login */
-    --clr-primary:       #006ECF; /* Blue Primary */
-    --clr-primary-dark:  #004C94; /* Deep Blue */
-    --clr-primary-light: #3C93FA; /* Sky Blue */
-    --clr-accent:        #1DBD8E; /* Emerald Green */
-    
-    --clr-dark:          #1e293b; /* Slate 800 */
-    --clr-slate:         #64748b; /* Slate 500 */
+    /* ---- Paleta oficial ---- */
+    --clr-mint:          #1DBD8E;  /* Minty Teal */
+    --clr-navy:          #2D3F54;  /* Dark Navy */
+    --clr-slate:         #52647A;  /* Slate Blue */
+    --clr-sage:          #73CC80;  /* Soft Sage */
+    --clr-royal:         #004C94;  /* Royal Blue */
+    --clr-primary:       #006ECF;  /* Azure Blue */
+    --clr-sky:           #3C93FA;  /* Sky Blue */
+    --clr-cyan:          #00D4C6;  /* Electric Cyan — acento puntual */
+    --clr-teal:          #0FA69D;  /* Medium Teal */
+    --clr-teal-dark:     #028183;  /* Deep Pine Teal */
+
+    /* Mapeo funcional global */
+    --primary:           var(--clr-primary);
+    --primary-dark:      var(--clr-royal);
+    --primary-light:     var(--clr-sky);
+    --accent:            var(--clr-mint);
+    --primary-hover:     var(--clr-royal);
+
+    /* Texto y superficies */
     --clr-white:         #ffffff;
-    
-    /* Mapeo de variables funcionales */
-    --primary:        var(--clr-primary);
-    --primary-dark:   var(--clr-primary-dark);
-    --primary-light:  var(--clr-primary-light);
-    --accent:         var(--clr-accent);
-    
-    --primary-hover:  var(--clr-primary-dark);
-    --blue:           var(--clr-primary-light);
-    --blue-hover:     var(--clr-primary);
-    --green:          var(--clr-accent);
-    --green-hover:    #059669;
-    
-    /* Colores por Rol (Modernizados) */
-    --role-admin:     var(--clr-primary);
-    --role-bodega:    var(--clr-accent);
-    --role-cajero:    var(--clr-primary-light);
+    --text-main:         var(--clr-navy);
+    --text-muted:        var(--clr-slate);
+    --text-on-role:      #ffffff;
+    --bg:                #f1f5f9;
+    --card-bg:           #ffffff;
+    --border:            #e2e8f0;
 
-    /* Sidebar / Glass */
-    --sidebar-bg:     #111827; /* Dark Gray / Near Black */
-    --sidebar-text:   #d1d5db;
-    --sidebar-hover:  rgba(255, 255, 255, 0.1);
-    --sidebar-active: var(--clr-primary);
+    /* Roles (se sobreescriben en body.role-*) */
+    --role-accent:       var(--clr-primary);
+    --role-accent-soft:  var(--clr-sky);
+    --navbar-start:      var(--clr-navy);
+    --navbar-end:        var(--clr-royal);
+    --page-tint:         #eef2f7;
+    --role-glow:         rgba(0, 110, 207, 0.22);
 
-    /* Fondo y superficie */
-    --bg:             #f1f5f9;
-    --card-bg:        #ffffff;
+    /* Sidebar */
+    --sidebar-bg:        var(--clr-navy);
+    --sidebar-text:      #cbd5e1;
+    --sidebar-hover:     rgba(255, 255, 255, 0.1);
+    --sidebar-active:    var(--clr-primary);
 
-    /* Texto */
-    --text-main:      #1e293b;
-    --text-muted:     #52647A;
-    --text-on-role:   #ffffff;
+    /* Utilidades */
+    --amber:             #d97706;
+    --amber-hover:       #b45309;
+    --red:               #dc2626;
+    --red-hover:         #b91c1c;
+    --green:             var(--clr-mint);
 
-    /* Bordes y sombras */
-    --border:         #e2e8f0;
-    --shadow-sm:      0 2px 8px rgba(0, 0, 0, .06);
-    --shadow-md:      0 4px 16px rgba(0, 0, 0, .10);
-    --shadow-lg:      0 12px 30px rgba(0, 0, 0, .12);
+    /* Sombras y radios */
+    --shadow-sm:         0 2px 8px rgba(45, 63, 84, 0.06);
+    --shadow-md:         0 6px 20px rgba(45, 63, 84, 0.10);
+    --shadow-lg:         0 14px 32px rgba(45, 63, 84, 0.12);
+    --radius-sm:         8px;
+    --radius-md:         12px;
+    --radius-lg:         16px;
+    --transition:        all 0.25s ease;
+    --transition-slow:   all 0.4s ease;
+}
 
-    /* Radios */
-    --radius-sm:      8px;
-    --radius-md:      12px;
-    --radius-lg:      16px;
+/* ---- Tema ADMIN: profesional / azul corporativo ---- */
+body.role-admin {
+    --primary:           var(--clr-primary);
+    --primary-hover:     var(--clr-royal);
+    --accent:            var(--clr-sky);
+    --role-accent:       var(--clr-primary);
+    --role-accent-soft:  var(--clr-sky);
+    --navbar-start:      var(--clr-navy);
+    --navbar-end:        var(--clr-royal);
+    --page-tint:         #eef3f9;
+    --role-glow:         rgba(0, 110, 207, 0.25);
+    --sidebar-active:    var(--clr-primary);
+}
 
-    /* Transición global */
-    --transition:     all .2s ease;
+/* ---- Tema CAJERO: teal activo ---- */
+body.role-cajero {
+    --primary:           var(--clr-teal);
+    --primary-hover:     var(--clr-teal-dark);
+    --accent:            var(--clr-mint);
+    --role-accent:       var(--clr-teal);
+    --role-accent-soft:  var(--clr-mint);
+    --navbar-start:      var(--clr-teal-dark);
+    --navbar-end:        var(--clr-teal);
+    --page-tint:         #ecf8f6;
+    --role-glow:         rgba(15, 166, 157, 0.28);
+    --sidebar-active:    var(--clr-teal);
+}
+
+/* ---- Tema BODEGA: verde calmado ---- */
+body.role-bodega {
+    --primary:           var(--clr-mint);
+    --primary-hover:     #17a87a;
+    --accent:            var(--clr-sage);
+    --role-accent:       var(--clr-mint);
+    --role-accent-soft:  var(--clr-sage);
+    --navbar-start:      #3d5a6c;
+    --navbar-end:        var(--clr-teal-dark);
+    --page-tint:         #f0f9f4;
+    --role-glow:         rgba(29, 189, 142, 0.25);
+    --sidebar-active:    var(--clr-mint);
 }

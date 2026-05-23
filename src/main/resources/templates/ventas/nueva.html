@@ -1,13 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/base :: head('Nueva Venta — Sistema de Ventas')}">
 </head>
 <body class="role-cajero">
-    <div class="app-container">
-        <aside th:replace="~{layout/base :: sidebar-auto}"></aside>
-        <div class="main-wrapper">
-            <header th:replace="~{layout/base :: top-bar}"></header>
-            <div class="page-content">
+
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-cajero}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
 
                 <!-- Breadcrumb -->
                 <div class="breadcrumb-wrapper">
@@ -142,12 +143,11 @@
                 </form>
 
                 <!-- FOOTER MODULAR -->
-                <div th:replace="~{layout/base :: footer}"></div>
-            </div>
-        </div>
+    <div th:replace="~{layout/base :: footer}"></div>
     </div>
-
-    <!-- SCRIPTS MODULAR -->
+    </div>
+</div>
+<!-- SCRIPTS MODULAR -->
     <div th:replace="~{layout/base :: scripts}"></div>
 
     <script th:inline="javascript">

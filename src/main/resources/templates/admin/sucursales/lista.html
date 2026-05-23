@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Sucursales — Admin')}"></head>
+<body class="role-admin">
+
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-admin}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
+
+    <div class="breadcrumb-wrapper">
+        <a th:href="@{/admin/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+        <i class="bi bi-chevron-right sep"></i>
+        <span class="current">Sucursales</span>
+    </div>
+
+    <div class="page-header">
+        <div>
+            <h2 class="page-title"><i class="bi bi-building"></i> Sucursales</h2>
+            <p class="page-desc">Sedes registradas en el sistema</p>
+        </div>
+        <a th:href="@{/admin/sucursales/nueva}" class="btn btn-filled"><i class="bi bi-plus"></i> Nueva sucursal</a>
+    </div>
+
+    <div th:if="${exito}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${exito}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="card slide-up">
+        <div class="card-body" style="padding:1.5rem;">
+            <div class="table-wrapper">
+                <table class="table align-middle">
+                    <thead style="background:var(--primary);">
+                    <tr>
+                        <th>Código</th>
+                        <th>Ciudad</th>
+                        <th>Dirección</th>
+                        <th>Teléfono</th>
+                        <th class="text-center">Estado</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="s : ${sucursales}">
+                        <td class="fw-semibold" th:text="${s.codigo}">—</td>
+                        <td th:text="${s.ciudad}">—</td>
+                        <td th:text="${s.direccion ?: '—'}">—</td>
+                        <td th:text="${s.telefono ?: '—'}">—</td>
+                        <td class="text-center">
+                            <span th:if="${s.activo}" class="badge-status active">Activa</span>
+                            <span th:unless="${s.activo}" class="badge-status inactive">Inactiva</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{layout/base :: footer}"></div>
+    </div>
+    </div>
+</div>
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

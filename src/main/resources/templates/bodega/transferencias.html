@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Transferencias — Bodega')}"></head>
+<body class="role-bodega">
+
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-bodega}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
+
+    <div class="breadcrumb-wrapper">
+        <a th:href="@{/bodega/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+        <i class="bi bi-chevron-right sep"></i>
+        <span class="current">Transferencias</span>
+    </div>
+
+    <div class="page-header">
+        <div>
+            <h2 class="page-title"><i class="bi bi-arrow-left-right"></i> Transferir stock</h2>
+            <p class="page-desc">Origen: <strong th:text="${sucursalOrigen.ciudad}">—</strong></p>
+        </div>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="card slide-up" style="max-width:560px;">
+        <div class="card-body" style="padding:1.5rem;">
+            <form th:action="@{/bodega/transferencias}" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Producto</label>
+                    <select name="productoId" class="form-select" required>
+                        <option value="">-- Seleccione --</option>
+                        <option th:each="p : ${productos}" th:value="${p.idProducto}" th:text="${p.nombre}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Sucursal destino</label>
+                    <select name="sucursalDestinoId" class="form-select" required>
+                        <option value="">-- Seleccione --</option>
+                        <option th:each="s : ${sucursales}" th:value="${s.id}" th:text="${s.ciudad + ' (' + s.codigo + ')'}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Cantidad</label>
+                    <input type="number" name="cantidad" class="form-control" min="1" required>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-filled"><i class="bi bi-arrow-left-right"></i> Transferir</button>
+                    <a th:href="@{/bodega/dashboard}" class="btn btn-ghost">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div th:replace="~{layout/base :: footer}"></div>
+    </div>
+    </div>
+</div>
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

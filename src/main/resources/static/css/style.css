@@ -1,16 +1,13 @@
 /* =========================================================
-   style.css — Índice principal de estilos
-   Sistema de Ventas Multi-Sucursal
-   
-   Este archivo actúa como punto de entrada único.
-   Todo el código real está en css/modules/.
-   Orden de carga: variables → base → layout → components → tables → forms → utilities
+   style.css — Punto de entrada único
+   Rutas absolutas para evitar fallos de carga por @import relativo
    ========================================================= */
 
-@import url('modules/variables.css');
-@import url('modules/base.css');
-@import url('modules/layout.css');
-@import url('modules/components.css');
-@import url('modules/tables.css');
-@import url('modules/forms.css');
-@import url('modules/utilities.css');
+@import url('/css/modules/variables.css');
+@import url('/css/modules/base.css');
+@import url('/css/modules/sidebar.css');
+@import url('/css/modules/layout.css');
+@import url('/css/modules/components.css');
+@import url('/css/modules/tables.css');
+@import url('/css/modules/forms.css');
+@import url('/css/modules/utilities.css');

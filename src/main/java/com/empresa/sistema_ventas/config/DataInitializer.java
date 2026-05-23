@@ -25,14 +25,14 @@ public class DataInitializer implements CommandLineRunner {
     private final PasswordEncoder encoder;
 
     public DataInitializer(RolRepository rolRepo,
-            SucursalRepository sucRepo,
-            UsuarioRepository userRepo,
-            CategoriaRepository categoriaRepo,
-            ProductoRepository productoRepo,
-            ClienteRepository clienteRepo,
-            InventarioRepository inventarioRepo,
-            VentaRepository ventaRepo,
-            PasswordEncoder encoder) {
+                           SucursalRepository sucRepo,
+                           UsuarioRepository userRepo,
+                           CategoriaRepository categoriaRepo,
+                           ProductoRepository productoRepo,
+                           ClienteRepository clienteRepo,
+                           InventarioRepository inventarioRepo,
+                           VentaRepository ventaRepo,
+                           PasswordEncoder encoder) {
         this.rolRepo = rolRepo;
         this.sucRepo = sucRepo;
         this.userRepo = userRepo;
@@ -186,7 +186,7 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void createUsuario(String username, String pass, String nombre,
-            String email, String tel, Rol rol, Sucursal suc) {
+                               String email, String tel, Rol rol, Sucursal suc) {
         if (userRepo.existsByUsername(username)) {
             System.out.println("  ✓ Usuario ya existe: " + username);
             return;
@@ -220,7 +220,7 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private Producto getOrCreateProducto(String nombre, String desc, BigDecimal precio,
-            BigDecimal iva, Categoria cat, String codigo) {
+                                         BigDecimal iva, Categoria cat, String codigo) {
         Producto existing = productoRepo.findByCodigoBarras(codigo);
 
         if (existing != null) {
@@ -261,7 +261,7 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void createCliente(String cedula, String nombres, String apellidos,
-            String tel, String email, String tipo) {
+                               String tel, String email, String tipo) {
         if (clienteRepo.findByCedulaRuc(cedula).isPresent()) {
             System.out.println("  ✓ Cliente ya existe: " + cedula);
             return;
@@ -279,7 +279,7 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void createVenta(Cliente cliente, Usuario vendedor, Sucursal suc,
-            Producto prod, int cantidad, BigDecimal precioUnit) {
+                             Producto prod, int cantidad, BigDecimal precioUnit) {
         Venta v = new Venta();
         v.setCliente(cliente);
         v.setUsuario(vendedor);

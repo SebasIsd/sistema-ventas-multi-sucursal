@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Inventario — Admin')}"></head>
+<body class="role-admin">
+
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-admin}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
+
+    <div class="breadcrumb-wrapper">
+        <a th:href="@{/admin/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+        <i class="bi bi-chevron-right sep"></i>
+        <span class="current">Inventario global</span>
+    </div>
+
+    <div class="page-header">
+        <div>
+            <h2 class="page-title"><i class="bi bi-boxes"></i> Inventario</h2>
+            <p class="page-desc">Stock por producto y sucursal</p>
+        </div>
+        <a th:href="@{/admin/inventario/ajustar}" class="btn btn-filled"><i class="bi bi-sliders"></i> Ajustar stock</a>
+    </div>
+
+    <div class="card slide-up">
+        <div class="card-body" style="padding:1.5rem;">
+            <div class="table-wrapper">
+                <table class="table align-middle">
+                    <thead style="background:var(--primary);">
+                    <tr>
+                        <th>ID</th>
+                        <th>Producto</th>
+                        <th>Sucursal</th>
+                        <th class="text-center">Stock</th>
+                        <th class="text-center">Mínimo</th>
+                        <th class="text-center">Estado</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="inv : ${inventarios}">
+                        <td th:text="${inv.id}">1</td>
+                        <td class="fw-semibold" th:text="${inv.producto.nombre}">—</td>
+                        <td th:text="${inv.sucursal.ciudad}">—</td>
+                        <td class="text-center" th:text="${inv.stockActual}">0</td>
+                        <td class="text-center" th:text="${inv.stockMinimo}">0</td>
+                        <td class="text-center">
+                            <span th:if="${inv.stockActual <= inv.stockMinimo}" class="badge-status inactive">Bajo</span>
+                            <span th:unless="${inv.stockActual <= inv.stockMinimo}" class="badge-status active">OK</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{layout/base :: footer}"></div>
+    </div>
+    </div>
+</div>
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

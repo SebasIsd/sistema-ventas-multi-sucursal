@@ -13,4 +13,7 @@ public interface VentaRepository extends JpaRepository<Venta, Long> {
 
     @Query("SELECT SUM(v.total) FROM Venta v WHERE v.sucursal.id = ?1")
     Double getTotalVentasBySucursal(Long sucursalId);
+
+    @Query("SELECT COALESCE(SUM(v.total), 0) FROM Venta v WHERE v.estado = 'PAGADO'")
+    Double getTotalIngresos();
 }

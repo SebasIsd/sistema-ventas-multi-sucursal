@@ -23,9 +23,9 @@
 }
 
 .btn-filled {
-    background: var(--primary);
+    background: linear-gradient(135deg, var(--role-accent), var(--primary-hover));
     color: white;
-    box-shadow: 0 3px 10px rgba(0, 76, 148, .15);
+    box-shadow: 0 3px 12px var(--role-glow);
 }
 
 .btn-filled:hover {

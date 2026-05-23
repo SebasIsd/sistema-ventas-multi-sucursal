@@ -103,4 +103,18 @@ public class InventarioService {
     public List<Inventario> getStockBajo() {
         return inventarioRepository.findStockBajo();
     }
+
+    public List<Inventario> getStockBajoPorSucursal(Long sucursalId) {
+        return inventarioRepository.findStockBajo().stream()
+                .filter(inv -> inv.getSucursal() != null && sucursalId.equals(inv.getSucursal().getId()))
+                .toList();
+    }
+
+    public List<Inventario> listarPorSucursal(Long sucursalId) {
+        return inventarioRepository.findBySucursal_Id(sucursalId);
+    }
+
+    public List<Inventario> listarTodos() {
+        return inventarioRepository.findAll();
+    }
 }

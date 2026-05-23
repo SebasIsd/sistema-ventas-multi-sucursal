@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Stock — Bodega')}"></head>
+<body class="role-bodega">
+
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-bodega}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
+
+    <div class="breadcrumb-wrapper">
+        <a th:href="@{/bodega/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+        <i class="bi bi-chevron-right sep"></i>
+        <span class="current">Stock</span>
+    </div>
+
+    <div class="page-header">
+        <div>
+            <h2 class="page-title"><i class="bi bi-boxes"></i> Stock en <span th:text="${sucursalNombre}">Sucursal</span></h2>
+            <p class="page-desc">Inventario disponible en tu sucursal</p>
+        </div>
+        <a th:href="@{/bodega/ajustar}" class="btn btn-filled"><i class="bi bi-sliders"></i> Ajustar stock</a>
+    </div>
+
+    <div th:if="${exito}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle"></i> <span th:text="${exito}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle"></i> <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="card slide-up">
+        <div class="card-body" style="padding:1.5rem;">
+            <div class="table-wrapper">
+                <table class="table align-middle">
+                    <thead style="background:var(--primary);">
+                    <tr>
+                        <th>Producto</th>
+                        <th class="text-center">Stock actual</th>
+                        <th class="text-center">Stock mínimo</th>
+                        <th class="text-center">Estado</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="inv : ${inventarios}">
+                        <td class="fw-semibold" th:text="${inv.producto.nombre}">Producto</td>
+                        <td class="text-center" th:text="${inv.stockActual}">0</td>
+                        <td class="text-center" th:text="${inv.stockMinimo}">0</td>
+                        <td class="text-center">
+                            <span th:if="${inv.stockActual <= inv.stockMinimo}" class="badge-status inactive">Bajo</span>
+                            <span th:unless="${inv.stockActual <= inv.stockMinimo}" class="badge-status active">OK</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div th:if="${#lists.isEmpty(inventarios)}" class="text-center py-5 text-muted">
+                <i class="bi bi-inbox" style="font-size:2.5rem;"></i>
+                <p class="mt-2 mb-0">No hay registros de inventario en esta sucursal.</p>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{layout/base :: footer}"></div>
+    </div>
+    </div>
+</div>
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

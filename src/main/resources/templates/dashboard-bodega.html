@@ -1,112 +1,127 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/base :: head('Panel Bodega — Sistema de Ventas')}">
 </head>
 <body class="role-bodega">
 
-    <div class="app-container">
-        <!-- SIDEBAR -->
-        <aside th:replace="~{layout/base :: sidebar-bodega}"></aside>
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-bodega}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
 
-        <div class="main-wrapper">
-            <!-- TOP BAR -->
-            <header th:replace="~{layout/base :: top-bar}"></header>
+    <!-- Welcome -->
+    <div class="welcome-banner">
+        <div class="welcome-text">
+            <h1>📦 Panel de Inventario</h1>
+            <p>Control de stock, productos y movimientos de bodega</p>
+        </div>
+        <div class="time-badge">
+            <i class="bi bi-clock"></i>
+            <span id="clockDisplay">--:--</span>
+        </div>
+    </div>
 
-            <!-- CONTENT -->
-            <div class="page-content">
+    <!-- Alert de stock bajo (solo se muestra si hay alertas) -->
+    <div th:if="${stockBajo != null and !stockBajo.isEmpty()}" class="stock-alert-banner" role="alert">
+        <div class="alert-icon-wrap"><i class="bi bi-exclamation-triangle"></i></div>
+        <div class="alert-text">
+            <h4>⚠️ Alerta de Stock Bajo</h4>
+            <p>Hay <strong th:text="${stockBajo.size()}">0</strong> productos con stock mínimo en tu sucursal.</p>
+            <a th:href="@{/bodega/stock}" class="btn btn-sm btn-light mt-2">
+                <i class="bi bi-eye"></i> Revisar inventario
+            </a>
+        </div>
+    </div>
 
-                <!-- Welcome -->
-                <div class="welcome-banner">
-                    <div class="welcome-text">
-                        <h1 th:text="'📦 ¡Hola, ' + ${#authentication.principal.nombreCompleto} + '!'">📦 ¡Hola, Bodeguero!</h1>
-                        <p>Control de stock, productos y movimientos de bodega</p>
-                    </div>
-                    <div class="time-badge">
-                        <i class="bi bi-clock"></i>
-                        <span id="clockDisplay">--:--</span>
-                    </div>
+    <!-- Mensajes de feedback (éxito/error) -->
+    <div th:if="${exito}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle"></i> <span th:text="${exito}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle"></i> <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Section title -->
+    <div class="section-title">
+        <i class="bi bi-grid" style="color:#028183;"></i>
+        Módulos de Bodega
+    </div>
+
+    <!-- Modules -->
+    <div class="modules-grid">
+
+        <!-- Control de Stock -->
+        <div class="module-card">
+            <div class="module-head">
+                <div class="module-icon" style="background:#e0f2fe;color:#006ECF;">
+                    <i class="bi bi-boxes"></i>
                 </div>
+                <p class="module-title">Control de Stock</p>
+            </div>
+            <p class="module-desc">Visualiza y actualiza el inventario disponible en tu sucursal.</p>
+            <div class="module-actions">
+                <a th:href="@{/bodega/stock}" class="btn-module btn-filled">
+                    <i class="bi bi-list-ul"></i> Ver Stock Actual
+                </a>
+                <a th:href="@{/bodega/ajustar}" class="btn-module btn-ghost">
+                    <i class="bi bi-sliders"></i> Ajuste de Inventario
+                </a>
+            </div>
+        </div>
 
-                <!-- Alert de stock -->
-                <div class="stock-alert-banner">
-                    <div class="alert-icon-wrap"><i class="bi bi-exclamation-triangle"></i></div>
-                    <div class="alert-text">
-                        <h4>Alerta de Stock Bajo</h4>
-                        <p>Hay productos con stock mínimo en tu sucursal. Revisa el inventario.</p>
-                    </div>
+        <!-- Transferencias -->
+        <div class="module-card">
+            <div class="module-head">
+                <div class="module-icon" style="background:#dcfce7;color:#1DBD8E;">
+                    <i class="bi bi-arrow-left-right"></i>
                 </div>
+                <p class="module-title">Transferencias</p>
+            </div>
+            <p class="module-desc">Mueve stock entre sucursales de forma segura y con trazabilidad.</p>
+            <div class="module-actions">
+                <a th:href="@{/bodega/transferencias}" class="btn-module btn-filled">
+                    <i class="bi bi-plus"></i> Nueva Transferencia
+                </a>
+                <a th:href="@{/bodega/historial}" class="btn-module btn-ghost">
+                    <i class="bi bi-clock-rotate-left"></i> Historial
+                </a>
+            </div>
+        </div>
 
-                <!-- Section title -->
-                <div class="section-title">
-                    <i class="bi bi-grid" style="color: var(--accent);"></i>
-                    Módulos de Bodega
+        <!-- Catálogo de Productos -->
+        <div class="module-card">
+            <div class="module-head">
+                <div class="module-icon" style="background:#f1f5f9;color:#52647A;">
+                    <i class="bi bi-box-seam"></i>
                 </div>
+                <p class="module-title">Catálogo de Productos</p>
+            </div>
+            <p class="module-desc">Consulta el catálogo de productos y sus categorías disponibles.</p>
+            <div class="module-actions">
+                <a th:href="@{/bodega/productos}" class="btn-module btn-filled">
+                    <i class="bi bi-list-ul"></i> Ver Productos
+                </a>
+                <!-- Opcional: solo si el bodeguero puede crear productos -->
+                <!--
+                <a th:href="@{/productos/nuevo}" class="btn-module btn-ghost">
+                    <i class="bi bi-plus"></i> Nuevo Producto
+                </a>
+                -->
+            </div>
+        </div>
 
-                <!-- Modules -->
-                <div class="modules-grid">
+    </div>
 
-                    <div class="module-card">
-                        <div class="module-head">
-                            <div class="module-icon" style="background:#e0f2fe;color:#006ECF;">
-                                <i class="bi bi-boxes"></i>
-                            </div>
-                            <p class="module-title">Control de Stock</p>
-                        </div>
-                        <p class="module-desc">Visualiza y actualiza el inventario disponible en tu sucursal.</p>
-                        <div class="module-actions">
-                            <a th:href="@{/inventario/stock}" class="btn-module btn-filled">
-                                <i class="bi bi-list-ul"></i> Ver Stock Actual
-                            </a>
-                            <a th:href="@{/inventario/ajustar}" class="btn-module btn-ghost">
-                                <i class="bi bi-sliders"></i> Ajuste de Inventario
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="module-card">
-                        <div class="module-head">
-                            <div class="module-icon" style="background:#dcfce7;color:#1DBD8E;">
-                                <i class="bi bi-arrow-left-right"></i>
-                            </div>
-                            <p class="module-title">Transferencias</p>
-                        </div>
-                        <p class="module-desc">Mueve stock entre sucursales de forma segura y con trazabilidad.</p>
-                        <div class="module-actions">
-                            <a th:href="@{/inventario/transferencias}" class="btn-module btn-filled">
-                                <i class="bi bi-plus"></i> Nueva Transferencia
-                            </a>
-                            <a th:href="@{/inventario/historial}" class="btn-module btn-ghost">
-                                <i class="bi bi-clock-rotate-left"></i> Historial
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="module-card">
-                        <div class="module-head">
-                            <div class="module-icon" style="background:#f1f5f9;color:#52647A;">
-                                <i class="bi bi-box-seam"></i>
-                            </div>
-                            <p class="module-title">Catálogo de Productos</p>
-                        </div>
-                        <p class="module-desc">Consulta el catálogo de productos y sus categorías disponibles.</p>
-                        <div class="module-actions">
-                            <a th:href="@{/productos/listar}" class="btn-module btn-filled">
-                                <i class="bi bi-list-ul"></i> Ver Productos
-                            </a>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- FOOTER -->
-                <div th:replace="~{layout/base :: footer}"></div>
-
-            </div> <!-- /page-content -->
-        </div> <!-- /main-wrapper -->
-    </div> <!-- /app-container -->
-
-    <!-- SCRIPTS -->
-    <div th:replace="~{layout/base :: scripts}"></div>
+    <!-- FOOTER MODULAR -->
+    <div th:replace="~{layout/base :: footer}"></div>
+    </div>
+    </div>
+</div>
+<!-- SCRIPTS MODULAR -->
+<div th:replace="~{layout/base :: scripts}"></div>
 
 </body>
 </html>

@@ -11,4 +11,9 @@ public class ProductoViewController {
     public String productos() {
         return "admin/productos/lista";
     }
+
+    @GetMapping("/productos/listar")
+    public String redirectCatalogoBodega() {
+        return "redirect:/bodega/productos";
+    }
 }

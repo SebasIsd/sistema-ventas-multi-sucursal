@@ -12,8 +12,7 @@ public class CajeroDashboardController {
 
     @GetMapping("/dashboard")
     public String cajeroDashboard(Authentication authentication, Model model) {
-        model.addAttribute("username", authentication.getName());
-        model.addAttribute("role", "CAJERO");
+        model.addAttribute("role", "Cajero");
         return "dashboard-cajero";
     }
 }
