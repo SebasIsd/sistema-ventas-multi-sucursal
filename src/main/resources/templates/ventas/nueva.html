@@ -138,9 +138,18 @@
             color:#065f46;
             font-weight:700;
         }
-        .ts-wrapper.single .ts-control::after{
-        display:none !important;
-        }
+        .ts-wrapper.single .ts-control::after,
+.ts-wrapper.single .ts-control:after {
+    display: none !important;
+}.ts-control{
+    padding-right: 12px !important;
+}
+        select{
+    appearance:none !important;
+    -webkit-appearance:none !important;
+    -moz-appearance:none !important;
+    background-image:none !important;
+}
 
     </style>
 </head>
