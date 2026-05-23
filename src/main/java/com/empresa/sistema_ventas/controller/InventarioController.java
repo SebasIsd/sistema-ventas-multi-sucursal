@@ -4,12 +4,14 @@ import com.empresa.sistema_ventas.dto.AjusteStockRequest;
 import com.empresa.sistema_ventas.dto.TransferenciaStockRequest;
 import com.empresa.sistema_ventas.entity.Inventario;
 import com.empresa.sistema_ventas.service.InventarioService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/inventario")
+@PreAuthorize("hasAnyRole('BODEGA', 'ADMIN')")
 public class InventarioController {
 
     private final InventarioService inventarioService;

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/base :: head('Nueva Venta — Sistema de Ventas')}">
 </head>
@@ -66,7 +66,7 @@
 
                                     <div class="table-wrapper">
                                         <table class="table align-middle" id="tablaProductos">
-                                            <thead style="background:var(--primary);">
+                                            <thead>
                                                 <tr>
                                                     <th>Producto</th>
                                                     <th width="100" class="text-center">Stock</th>
@@ -132,7 +132,7 @@
                         <div class="col-12 mb-4">
                             <div class="d-flex gap-3">
                                 <button type="submit" class="btn btn-filled px-4">
-                                    <i class="bi bi-cash-register me-2"></i> Procesar Venta
+                                    <i class="bi bi-cash-coin me-2"></i> Procesar Venta
                                 </button>
                                 <a th:href="@{/cajero/dashboard}" class="btn btn-ghost px-4">
                                     <i class="bi bi-arrow-left me-2"></i> Cancelar

@@ -32,6 +32,7 @@ body.role-bodega .sidebar {
 .sidebar-brand i {
     background: linear-gradient(145deg, var(--role-accent-soft), var(--role-accent));
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    color: #ffffff;
 }
 
 .sidebar-logout {

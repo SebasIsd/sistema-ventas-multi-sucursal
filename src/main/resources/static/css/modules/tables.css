@@ -19,18 +19,20 @@
 }
 
 .table thead tr {
-    background: var(--primary);
+    background: #e8eef5;
 }
 
 .table thead th {
-    color: white;
-    font-weight: 600;
-    font-size: .8rem;
+    background: transparent;
+    color: #1a2535 !important;
+    font-weight: 700;
+    font-size: .78rem;
     text-transform: uppercase;
-    letter-spacing: .04em;
+    letter-spacing: .05em;
     padding: .9rem 1rem;
     white-space: nowrap;
-    border: none;
+    border: none !important;
+    border-bottom: 2px solid var(--clr-primary) !important;
 }
 
 .table tbody td {

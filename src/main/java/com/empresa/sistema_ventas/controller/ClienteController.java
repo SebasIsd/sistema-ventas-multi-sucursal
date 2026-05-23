@@ -2,12 +2,15 @@ package com.empresa.sistema_ventas.controller;
 
 import com.empresa.sistema_ventas.dto.ClienteDTO;
 import com.empresa.sistema_ventas.service.ClienteService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.empresa.sistema_ventas.entity.Cliente;
+
 @Controller
 @RequestMapping("/clientes")
+@PreAuthorize("hasAnyRole('CAJERO', 'ADMIN')")
 public class ClienteController {
 
     private final ClienteService clienteService;
