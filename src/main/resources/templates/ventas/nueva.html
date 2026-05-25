@@ -138,19 +138,33 @@
             color:#065f46;
             font-weight:700;
         }
-        .ts-wrapper.single .ts-control::after,
-.ts-wrapper.single .ts-control:after {
-    display: none !important;
-}.ts-control{
-    padding-right: 12px !important;
-}
-        select{
-    appearance:none !important;
-    -webkit-appearance:none !important;
-    -moz-appearance:none !important;
-    background-image:none !important;
+/* Elimina por completo el SVG de la flecha nativa de Bootstrap dentro de TomSelect */
+.ts-wrapper.form-select {
+    background-image: none !important;
+    padding-right: 0.75rem !important;
 }
 
+/* Oculta la flecha por defecto que genera TomSelect si la hubiera */
+.ts-wrapper.single .ts-control::after,
+.ts-wrapper.single .ts-control:after {
+    display: none !important;
+}
+
+/* Corrige el espaciado interno del control dinámico */
+.ts-control {
+    padding-right: 12px !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Asegura que el select nativo oculto no interfiera */
+select {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background-image: none !important;
+}
     </style>
 </head>
 

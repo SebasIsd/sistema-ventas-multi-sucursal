@@ -96,17 +96,56 @@
 
         <div class="text-end mt-4">
 
+            <!-- SUBTOTAL -->
+            <div class="mb-2">
+
+                <strong>
+                    Subtotal:
+                </strong>
+
+                <span th:text="${'$' + venta.subtotalSinIva}">
+        </span>
+
+            </div>
+
+            <!-- IVA -->
+            <div class="mb-2">
+
+                <strong>
+                    IVA:
+                </strong>
+
+                <span th:text="${'$' + venta.ivaTotal}">
+        </span>
+
+            </div>
+
+            <hr>
+
+            <!-- TOTAL -->
             <h4>
 
                 Total:
 
                 <span th:text="${'$' + venta.total}">
-                </span>
+        </span>
 
             </h4>
 
         </div>
+            <hr>
 
+            <!-- TOTAL -->
+            <h4>
+
+                Total:
+
+                <span th:text="${'$' + venta.total}">
+        </span>
+
+            </h4>
+
+        </div>
     </div>
 
 </div>
