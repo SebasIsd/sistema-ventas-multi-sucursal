@@ -53,44 +53,92 @@
     <!-- Modules -->
     <div class="modules-grid">
 
-        <!-- Control de Stock -->
-        <div class="module-card">
-            <div class="module-head">
-                <div class="module-icon" style="background:#e0f2fe;color:#006ECF;">
-                    <i class="bi bi-boxes"></i>
-                </div>
-                <p class="module-title">Control de Stock</p>
-            </div>
-            <p class="module-desc">Visualiza y actualiza el inventario disponible en tu sucursal.</p>
-            <div class="module-actions">
-                <a th:href="@{/bodega/stock}" class="btn-module btn-filled">
-                    <i class="bi bi-list-ul"></i> Ver Stock Actual
-                </a>
-                <a th:href="@{/bodega/ajustar}" class="btn-module btn-ghost">
-                    <i class="bi bi-sliders"></i> Ajuste de Inventario
-                </a>
-            </div>
+        <!-- Inventario -->
+<div class="module-card">
+
+    <div class="module-head">
+
+        <div class="module-icon"
+             style="background:#e0f2fe;color:#006ECF;">
+
+            <i class="bi bi-boxes"></i>
+
         </div>
 
+        <p class="module-title">
+            Inventario
+        </p>
+
+    </div>
+
+    <p class="module-desc">
+        Consulta productos, controla stock y registra movimientos de inventario.
+    </p>
+
+    <div class="module-actions">
+
+        <a th:href="@{/bodega/stock}"
+           class="btn-module btn-filled">
+
+            <i class="bi bi-box-seam"></i>
+            Ver Inventario
+
+        </a>
+
+        <a th:href="@{/bodega/entradas}"
+           class="btn-module btn-ghost">
+
+            <i class="bi bi-plus-circle"></i>
+            Registrar Entrada
+
+        </a>
+
+    </div>
+
+</div>
         <!-- Transferencias -->
-        <div class="module-card">
-            <div class="module-head">
-                <div class="module-icon" style="background:#dcfce7;color:#1DBD8E;">
-                    <i class="bi bi-arrow-left-right"></i>
-                </div>
-                <p class="module-title">Transferencias</p>
-            </div>
-            <p class="module-desc">Mueve stock entre sucursales de forma segura y con trazabilidad.</p>
-            <div class="module-actions">
-                <a th:href="@{/bodega/transferencias}" class="btn-module btn-filled">
-                    <i class="bi bi-plus"></i> Nueva Transferencia
-                </a>
-                <a th:href="@{/bodega/historial}" class="btn-module btn-ghost">
-                    <i class="bi bi-clock-rotate-left"></i> Historial
-                </a>
-            </div>
+<div class="module-card">
+
+    <div class="module-head">
+
+        <div class="module-icon"
+             style="background:#dcfce7;color:#1DBD8E;">
+
+            <i class="bi bi-arrow-left-right"></i>
+
         </div>
 
+        <p class="module-title">
+            Transferencias
+        </p>
+
+    </div>
+
+    <p class="module-desc">
+        Transfiere productos entre sucursales y consulta movimientos realizados.
+    </p>
+
+    <div class="module-actions">
+
+        <a th:href="@{/bodega/transferencias}"
+           class="btn-module btn-filled">
+
+            <i class="bi bi-arrow-left-right"></i>
+            Nueva Transferencia
+
+        </a>
+
+        <a th:href="@{/bodega/movimientos}"
+           class="btn-module btn-ghost">
+
+            <i class="bi bi-clock-history"></i>
+            Historial
+
+        </a>
+
+    </div>
+
+</div>
         <!-- Catálogo de Productos -->
         <div class="module-card">
             <div class="module-head">

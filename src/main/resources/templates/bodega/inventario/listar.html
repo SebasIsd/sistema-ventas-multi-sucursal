@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout/base :: head('Control de Stock')}">
+</head>
+
+<body class="role-bodega">
+
+<nav th:replace="~{layout/base :: navbar-bodega}"></nav>
+
+<div class="page-content">
+
+    <div class="page-header">
+        <div>
+            <h2 class="page-title">
+                <i class="bi bi-boxes"></i>
+                Control de Stock
+            </h2>
+
+            <p class="page-desc">
+                Consulta y búsqueda de inventario
+            </p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body" style="padding:1.5rem;">
+
+            <!-- FILTROS -->
+            <div class="row mb-4 g-3">
+
+                <!-- Buscar producto -->
+                <div class="col-md-4">
+
+                    <input type="text"
+                           id="buscarProducto"
+                           class="form-control"
+                           placeholder="Buscar producto..."
+                           oninput="filtrarInventario()">
+
+                </div>
+
+                <!-- Categorías -->
+                <div class="col-md-4">
+
+                    <select id="filtroCategoria"
+                            class="form-select"
+                            onchange="filtrarInventario()">
+
+                        <option value="">
+                            Todas las categorías
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- Sucursales -->
+                <div class="col-md-4">
+
+                    <select id="filtroSucursal"
+                            class="form-select"
+                            onchange="filtrarInventario()">
+
+                        <option value="">
+                            Todas las sucursales
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <!-- TABLA -->
+            <div class="table-wrapper">
+
+                <table class="table align-middle">
+
+                    <thead class="table-dark">
+
+                        <tr>
+                            <th>Producto</th>
+                            <th>Categoría</th>
+                            <th>Sucursal</th>
+                            <th>Stock</th>
+                            <th>Mínimo</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="tablaInventario"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<div th:replace="~{layout/base :: footer}"></div>
+<div th:replace="~{layout/base :: scripts}"></div>
+
+<script>
+
+let inventario = [];
+let categorias = [];
+let sucursales = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    cargarCategorias();
+    cargarSucursales();
+    cargarInventario();
+
+});
+
+async function cargarCategorias() {
+
+    const res = await fetch('/api/categorias');
+
+    categorias = await res.json();
+
+    let html = `
+        <option value="">
+            Todas las categorías
+        </option>
+    `;
+
+    categorias.forEach(c => {
+
+        html += `
+            <option value="${c.nombre}">
+                ${c.nombre}
+            </option>
+        `;
+
+    });
+
+    document.getElementById('filtroCategoria').innerHTML = html;
+
+}
+
+async function cargarSucursales() {
+
+    const res = await fetch('/api/sucursales');
+
+    sucursales = await res.json();
+
+    let html = `
+        <option value="">
+            Todas las sucursales
+        </option>
+    `;
+
+    sucursales.forEach(s => {
+
+        html += `
+            <option value="${s.ciudad}">
+                ${s.ciudad}
+            </option>
+        `;
+
+    });
+
+    document.getElementById('filtroSucursal').innerHTML = html;
+
+}
+
+async function cargarInventario() {
+
+    try {
+
+        const res = await fetch('/inventario/stock');
+
+        if (!res.ok) {
+            throw new Error('Error al cargar inventario');
+        }
+
+        inventario = await res.json();
+
+        renderTabla(inventario);
+
+    } catch (error) {
+
+        console.error(error);
+
+        inventario = [];
+
+        renderTabla([]);
+
+    }
+
+}
+function renderTabla(data) {
+
+    let html = '';
+
+    data.forEach(i => {
+
+        html += `
+            <tr>
+
+                <td>${i.producto.nombre}</td>
+
+                <td>${i.producto.categoria.nombre}</td>
+
+                <td>${i.sucursal.ciudad}</td>
+
+                <td>
+
+                    <span class="badge bg-success">
+                        ${i.stockActual}
+                    </span>
+
+                </td>
+
+                <td>${i.stockMinimo}</td>
+
+            </tr>
+        `;
+
+    });
+
+    document.getElementById('tablaInventario').innerHTML = html;
+
+}
+
+function filtrarInventario() {
+
+    const producto = document
+        .getElementById('buscarProducto')
+        .value
+        .toLowerCase();
+
+    const categoria = document
+        .getElementById('filtroCategoria')
+        .value;
+
+    const sucursal = document
+        .getElementById('filtroSucursal')
+        .value;
+
+    const filtrados = inventario.filter(i => {
+
+        const coincideProducto =
+            i.producto.nombre
+                .toLowerCase()
+                .includes(producto);
+
+        const coincideCategoria =
+            categoria === '' ||
+            i.producto.categoria.nombre === categoria;
+
+        const coincideSucursal =
+            sucursal === '' ||
+            i.sucursal.ciudad === sucursal;
+
+        return coincideProducto &&
+               coincideCategoria &&
+               coincideSucursal;
+
+    });
+
+    renderTabla(filtrados);
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout/base :: head('Transferencias')}">
+</head>
+
+<body class="role-bodega">
+
+<nav th:replace="~{layout/base :: navbar-bodega}"></nav>
+
+<div class="page-content">
+
+    <div class="page-header">
+        <div>
+
+            <h2 class="page-title">
+                <i class="bi bi-arrow-left-right"></i>
+                Transferencias
+            </h2>
+
+            <p class="page-desc">
+                Transferencia de stock entre sucursales
+            </p>
+
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body" style="padding:1.5rem;">
+
+            <div class="row g-3">
+
+                <!-- Producto -->
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Producto
+                    </label>
+
+                    <select id="producto"
+                            class="form-select">
+
+                    </select>
+
+                </div>
+
+                <!-- Cantidad -->
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Cantidad
+                    </label>
+
+                    <input type="number"
+                           id="cantidad"
+                           class="form-control">
+
+                </div>
+
+                <!-- Origen -->
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Sucursal Origen
+                    </label>
+
+                    <select id="origen"
+                            class="form-select">
+
+                    </select>
+
+                </div>
+
+                <!-- Destino -->
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Sucursal Destino
+                    </label>
+
+                    <select id="destino"
+                            class="form-select">
+
+                    </select>
+
+                </div>
+
+                <!-- Observación -->
+                <div class="col-12">
+
+                    <label class="form-label">
+                        Observación
+                    </label>
+
+                    <textarea id="observacion"
+                              class="form-control"
+                              rows="3"></textarea>
+
+                </div>
+
+            </div>
+
+            <div class="mt-4">
+
+                <button class="btn btn-filled"
+                        onclick="guardarTransferencia()">
+
+                    <i class="bi bi-check-circle"></i>
+                    Realizar Transferencia
+
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<div th:replace="~{layout/base :: footer}"></div>
+<div th:replace="~{layout/base :: scripts}"></div>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    cargarProductos();
+    cargarSucursales();
+
+});
+
+async function cargarProductos() {
+
+    const res = await fetch('/api/productos');
+
+    const productos = await res.json();
+
+    let html = '';
+
+    productos.forEach(p => {
+
+        html += `
+            <option value="${p.idProducto}">
+                ${p.nombre}
+            </option>
+        `;
+
+    });
+
+    document.getElementById('producto').innerHTML = html;
+
+}
+
+async function cargarSucursales() {
+
+    const res = await fetch('/api/sucursales');
+
+    const sucursales = await res.json();
+
+    let html = '';
+
+    sucursales.forEach(s => {
+
+        html += `
+            <option value="${s.id}">
+                ${s.ciudad}
+            </option>
+        `;
+
+    });
+
+    document.getElementById('origen').innerHTML = html;
+    document.getElementById('destino').innerHTML = html;
+
+}
+
+async function guardarTransferencia() {
+
+    const body = {
+
+        idProducto: document.getElementById('producto').value,
+
+        sucursalOrigen: document.getElementById('origen').value,
+
+        sucursalDestino: document.getElementById('destino').value,
+
+        cantidad: document.getElementById('cantidad').value,
+
+        observacion: document.getElementById('observacion').value
+
+    };
+
+    const res = await fetch('/api/inventario/transferencia', {
+
+        method: 'POST',
+
+        headers: {
+            'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify(body)
+
+    });
+
+    if(res.ok){
+
+        alert('Transferencia realizada');
+
+    } else {
+
+        alert('Error en transferencia');
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
