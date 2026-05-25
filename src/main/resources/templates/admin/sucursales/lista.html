@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout/base :: head('Sucursales — Sistema de Ventas')}">
+</head>
+
+<body class="role-admin">
+
+    <!-- NAVBAR -->
+    <nav th:replace="~{layout/base :: navbar-admin}"></nav>
+
+    <div class="page-content">
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb-wrapper">
+            <a th:href="@{/admin/dashboard}">
+                <i class="bi bi-house-door"></i> Inicio
+            </a>
+
+            <i class="bi bi-chevron-right sep"></i>
+
+            <span class="current">Sucursales</span>
+        </div>
+
+        <!-- Header -->
+        <div class="page-header">
+            <div>
+                <h2 class="page-title">
+                    <i class="bi bi-building"></i>
+                    Sucursales
+                </h2>
+
+                <p class="page-desc">
+                    Administración de sucursales del sistema
+                </p>
+            </div>
+
+            <button class="btn btn-filled" onclick="abrirModalNueva()">
+                <i class="bi bi-plus"></i>
+                Nueva Sucursal
+            </button>
+        </div>
+
+        <!-- Card -->
+        <div class="card slide-up">
+            <div class="card-body" style="padding:1.5rem;">
+
+                <!-- Buscador -->
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+
+                    <div class="search-wrapper flex-grow-1" style="max-width:320px;">
+                        <i class="bi bi-search search-icon"></i>
+
+                        <input type="text"
+                               id="buscador"
+                               class="search-input"
+                               placeholder="Buscar sucursal..."
+                               oninput="filtrarTabla()">
+                    </div>
+
+                </div>
+
+                <!-- Tabla -->
+                <div class="table-wrapper">
+
+                    <table class="table align-middle">
+
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col" width="80">ID</th>
+                                <th scope="col">Código</th>
+                                <th scope="col">Ciudad</th>
+                                <th scope="col">Dirección</th>
+                                <th scope="col" width="160" class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="tablaSucursales"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div th:replace="~{layout/base :: footer}"></div>
+
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal fade" id="modalSucursal" tabindex="-1">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content"
+                 style="border:none; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.15);">
+
+                <div class="modal-header"
+                     style="border-bottom:1px solid var(--border); padding:1.25rem 1.5rem;">
+
+                    <h5 class="modal-title" id="modalTitle">
+
+                        <i class="bi bi-building"
+                           style="color:var(--primary); margin-right:.5rem;"></i>
+
+                        Nueva Sucursal
+
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"></button>
+
+                </div>
+
+                <div class="modal-body" style="padding:1.5rem;">
+
+                    <input type="hidden" id="idSucursal">
+
+                    <div class="mb-3">
+                        <label class="form-label">Código</label>
+
+                        <input type="text"
+                               id="codigo"
+                               class="form-control"
+                               placeholder="Ej: UIO">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Ciudad</label>
+
+                        <input type="text"
+                               id="ciudad"
+                               class="form-control"
+                               placeholder="Ej: Quito">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Dirección</label>
+
+                        <textarea id="direccion"
+                                  class="form-control"
+                                  rows="3"></textarea>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer"
+                     style="border-top:1px solid var(--border); padding:1.25rem 1.5rem;">
+
+                    <button class="btn btn-ghost"
+                            data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button class="btn btn-filled"
+                            onclick="guardarSucursal()"
+                            id="btnGuardar">
+
+                        <i class="bi bi-floppy"></i>
+                        Guardar
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="~{layout/base :: scripts}"></div>
+
+    <script>
+
+        let bsModal;
+        let sucursales = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            bsModal = new bootstrap.Modal(
+                document.getElementById('modalSucursal')
+            );
+
+            cargarSucursales();
+
+        });
+
+        async function cargarSucursales() {
+
+            const res = await fetch('/api/sucursales');
+
+            sucursales = await res.json();
+
+            renderTabla(sucursales);
+
+        }
+
+        function renderTabla(data) {
+
+            let html = '';
+
+            data.forEach(s => {
+
+                html += `
+                    <tr>
+
+                        <td>#${s.id}</td>
+
+                        <td>${s.codigo}</td>
+
+                        <td>${s.ciudad}</td>
+
+                        <td>${s.direccion}</td>
+
+                        <td class="text-center">
+
+                            <div class="d-flex justify-content-center gap-2">
+
+                                <button class="btn btn-sm btn-icon-edit"
+                                        onclick='editarSucursal(${JSON.stringify(s)})'>
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </button>
+
+                                <button class="btn btn-sm btn-icon-delete"
+                                        onclick='eliminarSucursal(${s.id})'>
+
+                                    <i class="bi bi-trash"></i>
+
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+                `;
+
+            });
+
+            document.getElementById('tablaSucursales').innerHTML = html;
+
+        }
+
+        function filtrarTabla() {
+
+            const txt = document
+                .getElementById('buscador')
+                .value
+                .toLowerCase();
+
+            const filtradas = sucursales.filter(s =>
+                s.codigo.toLowerCase().includes(txt) ||
+                s.ciudad.toLowerCase().includes(txt)
+            );
+
+            renderTabla(filtradas);
+
+        }
+
+        function abrirModalNueva() {
+
+            document.getElementById('idSucursal').value = '';
+            document.getElementById('codigo').value = '';
+            document.getElementById('ciudad').value = '';
+            document.getElementById('direccion').value = '';
+
+            document.getElementById('modalTitle').innerHTML =
+                '<i class="bi bi-building" style="color:var(--primary); margin-right:.5rem;"></i> Nueva Sucursal';
+
+            bsModal.show();
+
+        }
+
+        function editarSucursal(s) {
+
+            document.getElementById('idSucursal').value = s.id;
+            document.getElementById('codigo').value = s.codigo;
+            document.getElementById('ciudad').value = s.ciudad;
+            document.getElementById('direccion').value = s.direccion;
+
+            document.getElementById('modalTitle').innerHTML =
+                '<i class="bi bi-pencil" style="color:orange; margin-right:.5rem;"></i> Editar Sucursal';
+
+            bsModal.show();
+
+        }
+
+        async function guardarSucursal() {
+
+            const id = document.getElementById('idSucursal').value;
+
+            const body = {
+
+                codigo: document.getElementById('codigo').value,
+                ciudad: document.getElementById('ciudad').value,
+                direccion: document.getElementById('direccion').value
+
+            };
+
+            const url = id
+                ? '/api/sucursales/' + id
+                : '/api/sucursales';
+
+            const method = id ? 'PUT' : 'POST';
+
+            const res = await fetch(url, {
+
+                method: method,
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify(body)
+
+            });
+
+            if (res.ok) {
+
+                bsModal.hide();
+
+                cargarSucursales();
+
+            }
+
+        }
+
+        async function eliminarSucursal(id) {
+
+            if (!confirm('¿Eliminar sucursal?')) return;
+
+            const res = await fetch('/api/sucursales/' + id, {
+                method: 'DELETE'
+            });
+
+            if (res.ok) {
+
+                cargarSucursales();
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>
