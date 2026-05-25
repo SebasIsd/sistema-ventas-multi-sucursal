@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// ✅ Cambiado a @RestController y mapeo correcto a /api/productos
-// ✅ Eliminado el viejo @Controller con vistas Thymeleaf (eso va en ProductoViewController)
+//  Cambiado a @RestController y mapeo correcto a /api/productos
+// liminado el viejo @Controller con vistas Thymeleaf (eso va en ProductoViewController)
 @RestController
 @RequestMapping("/api/productos")
 public class ProductoController {
