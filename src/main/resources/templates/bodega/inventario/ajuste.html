@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Registrar Entrada</title>
+</head>
+<body>
+
+<h1>Registrar Entrada de Inventario</h1>
+
+<form th:action="@{/bodega/inventario/ajuste}" method="post">
+
+  <label>Producto:</label>
+  <select name="productoId" required>
+    <option th:each="p : ${productos}"
+            th:value="${p.idProducto}"
+            th:text="${p.nombre}">
+    </option>
+  </select>
+
+  <br><br>
+
+  <label>Sucursal:</label>
+  <select name="sucursalId" required>
+    <option th:each="s : ${sucursales}"
+            th:value="${s.id}"
+            th:text="${s.ciudad}">
+    </option>
+  </select>
+
+  <br><br>
+
+  <label>Cantidad:</label>
+  <input type="number" name="cantidad" required>
+
+  <br><br>
+
+  <label>Observación:</label>
+  <input type="text" name="observacion">
+
+  <br><br>
+
+  <button type="submit">Guardar Entrada</button>
+
+</form>
+
+<br>
+
+<a href="/bodega/inventario">Volver</a>
+
+</body>
+</html>

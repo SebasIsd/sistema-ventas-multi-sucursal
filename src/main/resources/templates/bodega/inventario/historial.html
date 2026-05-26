@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de Movimientos</title>
+</head>
+<body>
+
+<h1>Historial de Movimientos</h1>
+
+<table border="1" cellpadding="8">
+
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Producto</th>
+        <th>Sucursal</th>
+        <th>Tipo</th>
+        <th>Cantidad</th>
+        <th>Stock Resultante</th>
+        <th>Observación</th>
+        <th>Fecha</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="m : ${movimientos}">
+        <td th:text="${m.id}"></td>
+        <td th:text="${m.producto.nombre}"></td>
+        <td th:text="${m.sucursal.ciudad}"></td>
+        <td th:text="${m.tipoMovimiento}"></td>
+        <td th:text="${m.cantidad}"></td>
+        <td th:text="${m.stockResultante}"></td>
+        <td th:text="${m.observacion}"></td>
+        <td th:text="${m.fechaMovimiento}"></td>
+    </tr>
+    </tbody>
+
+</table>
+
+<br>
+
+<a href="/bodega/inventario">Volver</a>
+
+</body>
+</html>

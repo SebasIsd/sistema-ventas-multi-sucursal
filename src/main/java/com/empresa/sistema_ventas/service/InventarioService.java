@@ -77,7 +77,7 @@ public class InventarioService {
         inventario.setStockActual(inventario.getStockActual() + cantidad);
         inventarioRepository.save(inventario);
 
-        guardarMovimiento(productoId, sucursalId, "ENTRADA_AJUSTE", cantidad,
+        guardarMovimiento(productoId, sucursalId, "AJUSTE", cantidad,
                 inventario.getStockActual(), observacion);
     }
 
@@ -118,10 +118,10 @@ public class InventarioService {
         inventarioRepository.save(inventarioOrigen);
         inventarioRepository.save(inventarioDestino);
 
-        guardarMovimiento(productoId, sucursalOrigenId, "SALIDA_TRANSFERENCIA", cantidad,
+        guardarMovimiento(productoId, sucursalOrigenId, "TRANSFERENCIA_SALIDA", cantidad,
                 inventarioOrigen.getStockActual(), observacion);
 
-        guardarMovimiento(productoId, sucursalDestinoId, "ENTRADA_TRANSFERENCIA", cantidad,
+        guardarMovimiento(productoId, sucursalDestinoId, "TRANSFERENCIA_ENTRADA", cantidad,
                 inventarioDestino.getStockActual(), observacion);
     }
 

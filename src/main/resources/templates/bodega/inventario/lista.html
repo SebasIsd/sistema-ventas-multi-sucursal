@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Inventario Bodega</title>
+</head>
+<body>
+
+<h1>Inventario - Bodega</h1>
+
+<a href="/bodega/inventario/ajuste">Registrar entrada</a> |
+<a href="/bodega/inventario/transferencia">Nueva transferencia</a> |
+<a href="/bodega/inventario/historial">Historial</a>
+
+<br><br>
+
+<table border="1" cellpadding="8">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Producto</th>
+    <th>Sucursal</th>
+    <th>Stock actual</th>
+    <th>Stock mínimo</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="inv : ${inventarios}">
+    <td th:text="${inv.id}"></td>
+    <td th:text="${inv.producto.nombre}"></td>
+    <td th:text="${inv.sucursal.ciudad}"></td>
+    <td th:text="${inv.stockActual}"></td>
+    <td th:text="${inv.stockMinimo}"></td>
+  </tr>
+  </tbody>
+</table>
+
+<br>
+<a href="/bodega/dashboard">Volver al dashboard</a>
+
+</body>
+</html>
