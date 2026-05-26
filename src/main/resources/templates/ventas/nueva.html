@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nueva Venta - Sistema Ventas</title>
-
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <link
@@ -138,7 +138,33 @@
             color:#065f46;
             font-weight:700;
         }
+/* Elimina por completo el SVG de la flecha nativa de Bootstrap dentro de TomSelect */
+.ts-wrapper.form-select {
+    background-image: none !important;
+    padding-right: 0.75rem !important;
+}
 
+/* Oculta la flecha por defecto que genera TomSelect si la hubiera */
+.ts-wrapper.single .ts-control::after,
+.ts-wrapper.single .ts-control:after {
+    display: none !important;
+}
+
+/* Corrige el espaciado interno del control dinámico */
+.ts-control {
+    padding-right: 12px !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Asegura que el select nativo oculto no interfiera */
+select {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background-image: none !important;
+}
     </style>
 </head>
 
@@ -193,6 +219,7 @@
                     </label>
 
                     <select
+                            id="clienteSelect"
                             name="clienteId"
                             class="form-select"
                             required>
@@ -208,6 +235,15 @@
                         </option>
 
                     </select>
+                    <button
+                            type="button"
+                            class="btn btn-success"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalCliente">
+
+                        <i class="fas fa-user-plus"></i>
+
+                    </button>
 
                 </div>
 
@@ -282,7 +318,7 @@
 
                         <select
                                 name="items[0].productoId"
-                                class="form-select producto-select"
+                                class="form-select producto-select buscador-producto"
                                 onchange="actualizarFila(this)"
                                 required>
 
@@ -549,85 +585,96 @@
             .innerText = "$" + total.toFixed(2);
     }
 
-    function agregarFila(){
+   function agregarFila(){
 
-        const tbody =
-            document.getElementById("tbodyProductos");
+    const tbody =
+        document.getElementById("tbodyProductos");
 
-        const fila = document.createElement("tr");
+    const fila = document.createElement("tr");
 
-        fila.innerHTML = `
+    fila.innerHTML = `
 
-            <td>
+        <td>
 
-                <select
-                        name="items[${contador}].productoId"
-                        class="form-select producto-select"
-                        onchange="actualizarFila(this)"
-                        required>
+            <select
+                    name="items[${contador}].productoId"
+                    class="form-select producto-select buscador-producto"
+                    onchange="actualizarFila(this)"
+                    required>
 
-                    ${generarOpciones()}
+                ${generarOpciones()}
 
-                </select>
+            </select>
 
-            </td>
+        </td>
 
-            <td>
+        <td>
 
-                <span class="stock-text badge bg-secondary">
-                    0
-                </span>
+            <span class="stock-text badge bg-secondary">
+                0
+            </span>
 
-            </td>
+        </td>
 
-            <td>
+        <td>
 
-                <span class="precio-text fw-bold">
-                    $0.00
-                </span>
+            <span class="precio-text fw-bold">
+                $0.00
+            </span>
 
-            </td>
+        </td>
 
-            <td>
+        <td>
 
-                <input
-                        type="number"
-                        name="items[${contador}].cantidad"
-                        class="form-control cantidad-input"
-                        min="1"
-                        value="1"
-                        oninput="calcularTotales()"
-                        required>
+            <input
+                    type="number"
+                    name="items[${contador}].cantidad"
+                    class="form-control cantidad-input"
+                    min="1"
+                    value="1"
+                    oninput="calcularTotales()"
+                    required>
 
-            </td>
+        </td>
 
-            <td>
+        <td>
 
-                <span class="subtotal-text text-success fw-bold">
-                    $0.00
-                </span>
+            <span class="subtotal-text text-success fw-bold">
+                $0.00
+            </span>
 
-            </td>
+        </td>
 
-            <td class="text-center">
+        <td class="text-center">
 
-                <button
-                        type="button"
-                        class="btn btn-danger"
-                        onclick="eliminarFila(this)">
+            <button
+                    type="button"
+                    class="btn btn-danger"
+                    onclick="eliminarFila(this)">
 
-                    <i class="fas fa-trash"></i>
+                <i class="fas fa-trash"></i>
 
-                </button>
+            </button>
 
-            </td>
+        </td>
 
-        `;
+    `;
 
-        tbody.appendChild(fila);
+    tbody.appendChild(fila);
 
-        contador++;
-    }
+    // ACTIVAR SOLO EL NUEVO SELECT
+    const nuevoSelect =
+        fila.querySelector(".buscador-producto");
+
+    new TomSelect(nuevoSelect,{
+        create:false,
+        maxOptions:10,
+        placeholder:"Buscar producto...",
+        searchField:["text"]
+    });
+
+    contador++;
+}
 
     function eliminarFila(btn){
 
@@ -635,6 +682,176 @@
 
         calcularTotales();
     }
+
+</script>
+<!-- MODAL NUEVO CLIENTE -->
+<div class="modal fade"
+     id="modalCliente"
+     tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <form th:action="@{/clientes/guardar-rapido}"
+                  method="post">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        Nuevo Cliente
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+
+                        <label>Nombres</label>
+
+                        <input type="text"
+                               name="nombres"
+                               class="form-control"
+                               required>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label>Apellidos</label>
+
+                        <input type="text"
+                               name="apellidos"
+                               class="form-control"
+                               required>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label>Cédula/RUC</label>
+
+                        <input type="text"
+                               name="cedulaRuc"
+                               class="form-control"
+                               required>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label>Teléfono</label>
+
+                        <input type="text"
+                               name="telefono"
+                               class="form-control">
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label>Email</label>
+
+                        <input type="email"
+                               name="email"
+                               class="form-control">
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label>Dirección</label>
+
+                        <input type="text"
+                               name="direccion"
+                               class="form-control">
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+
+                        Cancelar
+
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-success">
+
+                        Guardar Cliente
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+<script>
+
+    // BUSCADOR CLIENTES
+    new TomSelect("#clienteSelect",{
+        create:false,
+        sortField:{
+            field:"text",
+            direction:"asc"
+        },
+        placeholder:"Buscar cliente por nombre o cédula..."
+    });
+
+    // BUSCADOR PRODUCTOS
+    function activarBuscadoresProductos(){
+
+        document.querySelectorAll(".buscador-producto")
+            .forEach(select => {
+
+                if(select.tomselect){
+                    return;
+                }
+
+               new TomSelect(select,{
+    create:false,
+
+    maxOptions: 10,
+
+    placeholder:"Buscar producto...",
+
+    searchField:[
+        "text"
+    ],
+
+    render: {
+        option: function(data, escape) {
+            return `
+                <div>
+                    ${escape(data.text)}
+                </div>
+            `;
+        }
+    }
+});
+
+            });
+    }
+
+    activarBuscadoresProductos();
 
 </script>
 

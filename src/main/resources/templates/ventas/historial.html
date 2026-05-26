@@ -38,33 +38,159 @@
                 Volver
             </a>
         </div>
+        <form method="get"
+              th:action="@{/ventas/historial}"
+              class="row g-3 mb-4">
 
-        <table class="table table-bordered table-hover">
+            <div class="col-md-4">
+
+                <label class="form-label">
+                    Cédula Cliente
+                </label>
+
+                <input
+                        type="text"
+                        name="cedula"
+                        class="form-control"
+                        placeholder="Ingrese cédula"
+                        th:value="${cedula}">
+
+            </div>
+
+            <div class="col-md-3">
+
+                <label class="form-label">
+                    Fecha Inicio
+                </label>
+
+                <input
+                        type="date"
+                        name="fechaInicio"
+                        class="form-control"
+                        th:value="${fechaInicio}">
+
+            </div>
+
+            <div class="col-md-3">
+
+                <label class="form-label">
+                    Fecha Fin
+                </label>
+
+                <input
+                        type="date"
+                        name="fechaFin"
+                        class="form-control"
+                        th:value="${fechaFin}">
+
+            </div>
+
+            <div class="col-md-2 d-flex align-items-end">
+
+                <button class="btn btn-primary w-100">
+
+                    Buscar
+
+                </button>
+
+            </div>
+
+        </form>
+        <table class="table table-bordered">
 
             <thead class="table-dark">
+
             <tr>
+
                 <th>ID</th>
                 <th>Cliente</th>
                 <th>Fecha</th>
                 <th>Total</th>
+                <th>Acciones</th>
+
             </tr>
+
             </thead>
 
             <tbody>
 
             <tr th:each="venta : ${ventas}">
-                <td th:text="${venta.id}"></td>
 
-                <td th:text="${venta.cliente != null ? venta.cliente.nombres : 'Consumidor Final'}"></td>
+                <td th:text="${venta.id}">
+                </td>
 
-                <td th:text="${#temporals.format(venta.fecha, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${venta.cliente.nombres + ' ' + venta.cliente.apellidos}">
+                </td>
 
-                <td th:text="${venta.total}"></td>
+                <td th:text="${#temporals.format(venta.fecha,'dd/MM/yyyy HH:mm')}">
+                </td>
+
+                <td th:text="${'$' + venta.total}">
+                </td>
+
+                <td>
+
+                    <a
+                            th:href="@{/ventas/detalle/{id}(id=${venta.id})}"
+                            class="btn btn-primary btn-sm">
+
+                        Ver detalle
+
+                    </a>
+
+                </td>
+
             </tr>
 
             </tbody>
 
         </table>
+        <!-- PAGINACION -->
+        <div class="d-flex justify-content-center mt-4">
+
+            <nav>
+
+                <ul class="pagination">
+
+                    <!-- BOTON ANTERIOR -->
+                    <li class="page-item"
+                        th:classappend="${currentPage == 0} ? 'disabled'">
+
+                        <a class="page-link"
+                           th:href="@{/ventas/historial(page=${currentPage - 1})}">
+                            Anterior
+                        </a>
+
+                    </li>
+
+                    <!-- NUMEROS -->
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(0, ventas.totalPages - 1)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+
+                        <a class="page-link"
+                           th:href="@{/ventas/historial(page=${i})}"
+                           th:text="${i + 1}">
+                        </a>
+
+                    </li>
+
+                    <!-- SIGUIENTE -->
+                    <li class="page-item"
+                        th:classappend="${currentPage + 1 >= ventas.totalPages} ? 'disabled'">
+
+                        <a class="page-link"
+                           th:href="@{/ventas/historial(page=${currentPage + 1})}">
+                            Siguiente
+                        </a>
+
+                    </li>
+
+                </ul>
+
+            </nav>
+
+        </div>
 
     </div>
 </div>
