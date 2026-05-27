@@ -5,33 +5,48 @@
               name="inventario" pageWidth="595" pageHeight="842" columnWidth="535"
               leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20">
 
+    <parameter name="SUCURSAL" class="java.lang.String"/>
+
     <field name="producto" class="java.lang.String"/>
     <field name="sucursal" class="java.lang.String"/>
     <field name="stock" class="java.lang.Integer"/>
+    <field name="stockMin" class="java.lang.Integer"/>
+    <field name="estado" class="java.lang.String"/>
 
     <title>
-        <band height="35">
+        <band height="50">
             <staticText>
                 <reportElement x="0" y="0" width="300" height="30"/>
-                <textElement><font size="16" isBold="true"/></textElement>
+                <textElement><font size="18" isBold="true"/></textElement>
                 <text><![CDATA[Reporte de Inventario]]></text>
             </staticText>
+            <textField>
+                <reportElement x="300" y="30" width="235" height="20"/>
+                <textFieldExpression><![CDATA["Sucursal: " + ($P{SUCURSAL} != null ? $P{SUCURSAL} : "Todas")]]></textFieldExpression>
+            </textField>
         </band>
     </title>
 
     <columnHeader>
         <band height="22">
-            <staticText><reportElement x="0" y="0" width="225" height="22" mode="Opaque" backcolor="#EEEEEE"/><text><![CDATA[Producto]]></text></staticText>
-            <staticText><reportElement x="225" y="0" width="225" height="22" mode="Opaque" backcolor="#EEEEEE"/><text><![CDATA[Sucursal]]></text></staticText>
-            <staticText><reportElement x="450" y="0" width="85" height="22" mode="Opaque" backcolor="#EEEEEE"/><text><![CDATA[Stock]]></text></staticText>
+            <staticText><reportElement x="0" y="0" width="200" height="22" mode="Opaque" backcolor="#EEEEEE"/><text><![CDATA[Producto]]></text></staticText>
+            <staticText><reportElement x="200" y="0" width="120" height="22" mode="Opaque" backcolor="#EEEEEE"/><text><![CDATA[Sucursal]]></text></staticText>
+            <staticText><reportElement x="320" y="0" width="70" height="22" mode="Opaque" backcolor="#EEEEEE"/><text><![CDATA[Stock]]></text></staticText>
+            <staticText><reportElement x="390" y="0" width="70" height="22" mode="Opaque" backcolor="#EEEEEE"/><text><![CDATA[Min]]></text></staticText>
+            <staticText><reportElement x="460" y="0" width="75" height="22" mode="Opaque" backcolor="#EEEEEE"/><text><![CDATA[Estado]]></text></staticText>
         </band>
     </columnHeader>
 
     <detail>
         <band height="20">
-            <textField><reportElement x="0" y="0" width="225" height="20"/><textFieldExpression><![CDATA[$F{producto}]]></textFieldExpression></textField>
-            <textField><reportElement x="225" y="0" width="225" height="20"/><textFieldExpression><![CDATA[$F{sucursal}]]></textFieldExpression></textField>
-            <textField><reportElement x="450" y="0" width="85" height="20"/><textFieldExpression><![CDATA[$F{stock}]]></textFieldExpression></textField>
+            <textField><reportElement x="0" y="0" width="200" height="20"/><textFieldExpression><![CDATA[$F{producto}]]></textFieldExpression></textField>
+            <textField><reportElement x="200" y="0" width="120" height="20"/><textFieldExpression><![CDATA[$F{sucursal}]]></textFieldExpression></textField>
+            <textField><reportElement x="320" y="0" width="70" height="20"/><textFieldExpression><![CDATA[$F{stock}]]></textFieldExpression></textField>
+            <textField><reportElement x="390" y="0" width="70" height="20"/><textFieldExpression><![CDATA[$F{stockMin}]]></textFieldExpression></textField>
+            <textField>
+                <reportElement x="460" y="0" width="75" height="20"/>
+                <textFieldExpression><![CDATA[$F{estado}]]></textFieldExpression>
+            </textField>
         </band>
     </detail>
 </jasperReport>
