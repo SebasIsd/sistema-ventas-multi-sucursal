@@ -14,7 +14,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -41,6 +41,7 @@ public class ReporteService {
         this.inventarioRepository = inventarioRepository;
     }
 
+    @Transactional(readOnly = true)
     public byte[] generarReporteVentas(Long sucursalId, String fechaInicio, String fechaFin) {
         try {
             JasperReport jasperReport = cargarReporteVentas();
@@ -61,6 +62,7 @@ public class ReporteService {
         }
     }
 
+    @Transactional(readOnly = true)
     public byte[] generarReporteInventario(Long sucursalId) {
         try {
             JasperReport jasperReport = cargarReporteInventario();
