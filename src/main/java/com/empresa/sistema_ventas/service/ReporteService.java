@@ -152,6 +152,44 @@ public class ReporteService {
     }
 
     // DTO rows
-    public record VentaRow(Long idVenta, String fecha, String cliente, BigDecimal total) {}
-    public record InventarioRow(String producto, String sucursal, Integer stock, Integer stockMin, String estado) {}
+    public static class VentaRow {
+        private final Long idVenta;
+        private final String fecha;
+        private final String cliente;
+        private final BigDecimal total;
+
+        public VentaRow(Long idVenta, String fecha, String cliente, BigDecimal total) {
+            this.idVenta = idVenta;
+            this.fecha = fecha;
+            this.cliente = cliente;
+            this.total = total;
+        }
+
+        public Long getIdVenta() { return idVenta; }
+        public String getFecha() { return fecha; }
+        public String getCliente() { return cliente; }
+        public BigDecimal getTotal() { return total; }
+    }
+
+    public static class InventarioRow {
+        private final String producto;
+        private final String sucursal;
+        private final Integer stock;
+        private final Integer stockMin;
+        private final String estado;
+
+        public InventarioRow(String producto, String sucursal, Integer stock, Integer stockMin, String estado) {
+            this.producto = producto;
+            this.sucursal = sucursal;
+            this.stock = stock;
+            this.stockMin = stockMin;
+            this.estado = estado;
+        }
+
+        public String getProducto() { return producto; }
+        public String getSucursal() { return sucursal; }
+        public Integer getStock() { return stock; }
+        public Integer getStockMin() { return stockMin; }
+        public String getEstado() { return estado; }
+    }
 }
