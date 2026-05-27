@@ -1,11 +1,9 @@
 package com.empresa.sistema_ventas.service;
 
-import com.empresa.sistema_ventas.entity.DetalleVenta;
 import com.empresa.sistema_ventas.entity.Factura;
 import com.empresa.sistema_ventas.entity.Venta;
 import com.empresa.sistema_ventas.repository.FacturaRepository;
 import com.empresa.sistema_ventas.repository.VentaRepository;
-import jakarta.transaction.Transactional;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -17,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,6 +43,8 @@ public class FacturaService {
 
     @Value("${app.reports.output-dir:generated-reports}")
     private String reportsOutputDir;
+
+    private volatile JasperReport compiledReport;
 
     public FacturaService(
             VentaRepository ventaRepository,
@@ -102,13 +103,27 @@ public class FacturaService {
         return facturaRepository.findByVenta_Id(ventaId);
     }
 
-    private JasperReport cargarReporteFactura() throws IOException, JRException {
-        String basePath = reportsPath.endsWith("/") ? reportsPath : reportsPath + "/";
-        Resource resource = resourceLoader.getResource(basePath + "factura.jrxml");
-
-        try (InputStream inputStream = resource.getInputStream()) {
-            return JasperCompileManager.compileReport(inputStream);
+    public void validarSucursalVenta(Long ventaId, Long sucursalId) {
+        Venta venta = ventaRepository.findById(ventaId)
+                .orElseThrow(() -> new RuntimeException("Venta no encontrada"));
+        if (!venta.getSucursal().getId().equals(sucursalId)) {
+            throw new RuntimeException("No tienes acceso a esta factura");
         }
+    }
+
+    private JasperReport cargarReporteFactura() throws IOException, JRException {
+        if (compiledReport == null) {
+            synchronized (this) {
+                if (compiledReport == null) {
+                    String basePath = reportsPath.endsWith("/") ? reportsPath : reportsPath + "/";
+                    Resource resource = resourceLoader.getResource(basePath + "factura.jrxml");
+                    try (InputStream inputStream = resource.getInputStream()) {
+                        compiledReport = JasperCompileManager.compileReport(inputStream);
+                    }
+                }
+            }
+        }
+        return compiledReport;
     }
 
     private Map<String, Object> construirParametrosFactura(Venta venta, Factura factura) {
@@ -165,15 +180,20 @@ public class FacturaService {
     private Factura obtenerOCrearFactura(Venta venta) {
         return facturaRepository.findByVenta_Id(venta.getId())
                 .orElseGet(() -> {
-                    Factura nuevaFactura = new Factura();
-                    nuevaFactura.setVenta(venta);
-                    nuevaFactura.setSucursal(venta.getSucursal());
-                    nuevaFactura.setNumeroFactura(generarNumeroFactura(venta.getId()));
-                    nuevaFactura.setClaveAcceso(generarClaveAcceso(venta.getId()));
-                    nuevaFactura.setEstadoSri("PENDIENTE");
-                    nuevaFactura.setAmbiente(1);
-                    nuevaFactura.setTipoEmision(1);
-                    return facturaRepository.save(nuevaFactura);
+                    try {
+                        Factura nuevaFactura = new Factura();
+                        nuevaFactura.setVenta(venta);
+                        nuevaFactura.setSucursal(venta.getSucursal());
+                        nuevaFactura.setNumeroFactura(generarNumeroFactura(venta.getId()));
+                        nuevaFactura.setClaveAcceso(generarClaveAcceso(venta.getId()));
+                        nuevaFactura.setEstadoSri("PENDIENTE");
+                        nuevaFactura.setAmbiente(1);
+                        nuevaFactura.setTipoEmision(1);
+                        return facturaRepository.save(nuevaFactura);
+                    } catch (org.springframework.dao.DataIntegrityViolationException ex) {
+                        return facturaRepository.findByVenta_Id(venta.getId())
+                                .orElseThrow(() -> ex);
+                    }
                 });
     }
 

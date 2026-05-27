@@ -15,13 +15,14 @@
                     <h3 class="mb-3">Descargar factura en PDF</h3>
                     <p class="text-muted">Ingresa el ID de la venta para generar y descargar el archivo PDF.</p>
 
-                    <form method="get" onsubmit="this.action='/facturas/descargar/' + document.getElementById('ventaId').value;">
+                    <form method="get"
+                          th:onsubmit="|this.action='${#httpServletRequest.contextPath}/facturas/descargar/' + document.getElementById('ventaId').value;|">
                         <div class="mb-3">
                             <label for="ventaId" class="form-label">ID de venta</label>
                             <input id="ventaId" name="ventaId" class="form-control" type="number" min="1" required>
                         </div>
                         <button class="btn btn-primary" type="submit">Generar y descargar</button>
-                        <a class="btn btn-outline-secondary ms-2" href="/ventas/historial">Volver</a>
+                        <a class="btn btn-outline-secondary ms-2" th:href="@{/ventas/historial}">Volver</a>
                     </form>
                 </div>
             </div>

@@ -30,7 +30,7 @@
                 <textElement>
                     <font size="18" isBold="true"/>
                 </textElement>
-                <text><![CDATA[FACTURA ELECTRONICA]]></text>
+                <text><![CDATA[FACTURA ELECTRÓNICA]]></text>
             </staticText>
 
             <textField>

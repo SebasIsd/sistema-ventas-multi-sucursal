@@ -13,21 +13,24 @@
             <h2 class="mb-3">Factura de venta <span th:text="${ventaId}">0</span></h2>
 
             <div th:if="${factura != null}" class="mb-4">
-                <p class="mb-1"><strong>Numero:</strong> <span th:text="${factura.numeroFactura}"></span></p>
-                <p class="mb-1"><strong>Clave acceso:</strong> <span th:text="${factura.claveAcceso}"></span></p>
+                <p class="mb-1"><strong>Número:</strong> <span th:text="${factura.numeroFactura}"></span></p>
+                <p class="mb-1"><strong>Clave de acceso:</strong> <span th:text="${factura.claveAcceso}"></span></p>
                 <p class="mb-1"><strong>Estado SRI:</strong> <span class="badge bg-info" th:text="${factura.estadoSri}"></span></p>
                 <p class="mb-1" th:if="${factura.numeroAutorizacion != null}">
-                    <strong>Autorizacion:</strong> <span th:text="${factura.numeroAutorizacion}"></span>
+                    <strong>Autorización:</strong> <span th:text="${factura.numeroAutorizacion}"></span>
                 </p>
             </div>
 
             <div th:if="${factura == null}" class="alert alert-warning">
-                Aun no existe una factura registrada para esta venta. Se creara al descargar el PDF.
+                Aún no existe una factura registrada para esta venta. Se creará al descargar el PDF.
             </div>
 
             <div class="d-flex gap-2 flex-wrap">
                 <a class="btn btn-primary" th:href="@{/facturas/descargar/{ventaId}(ventaId=${ventaId})}">Descargar PDF</a>
-                <a class="btn btn-success" th:href="@{/facturas/enviar-sri/{ventaId}(ventaId=${ventaId})}">Enviar SRI</a>
+                <form th:action="@{/facturas/enviar-sri/{ventaId}(ventaId=${ventaId})}" method="post" class="m-0">
+                    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button class="btn btn-success" type="submit">Enviar SRI</button>
+                </form>
                 <a class="btn btn-outline-secondary" th:href="@{/ventas/historial}">Volver al historial</a>
             </div>
         </div>
