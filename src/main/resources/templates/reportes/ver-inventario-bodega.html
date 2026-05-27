@@ -2,20 +2,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/base :: head('Reporte de Inventario — Sistema de Ventas')}">
 </head>
-<body class="role-admin">
+<body class="role-bodega">
 
 <div class="app-container">
-    <aside th:switch="${isAdmin}">
-        <th:case th:case="true" th:replace="~{layout/base :: sidebar-admin}"></th:case>
-        <th:case th:case="false" th:replace="~{layout/base :: sidebar-bodega}"></th:case>
-    </aside>
+    <aside th:replace="~{layout/base :: sidebar-bodega}"></aside>
     <div class="main-wrapper">
         <header th:replace="~{layout/base :: top-bar}"></header>
         <div class="page-content">
 
             <!-- Breadcrumb -->
             <div class="breadcrumb-wrapper">
-                <a th:href="@{${isAdmin} ? '/admin/dashboard' : '/bodega/dashboard'}"><i class="bi bi-house-door"></i> Inicio</a>
+                <a th:href="@{/bodega/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
                 <i class="bi bi-chevron-right sep"></i>
                 <span class="current">Reporte de Inventario</span>
             </div>

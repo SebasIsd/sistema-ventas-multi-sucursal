@@ -94,7 +94,12 @@ public class ReportesController {
         boolean isAdmin = hasRole(auth, "ADMIN");
         model.addAttribute("sucursalId", userSucursalId);
         model.addAttribute("isAdmin", isAdmin);
-        return "reportes/ver-inventario";
+
+        if (isAdmin) {
+            return "reportes/ver-inventario-admin";
+        } else {
+            return "reportes/ver-inventario-bodega";
+        }
     }
 
     @GetMapping("/inventario/pdf")
