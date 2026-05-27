@@ -58,15 +58,9 @@
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">
                                             <i class="bi bi-box-arrow-up-right" style="color:#ef4444;"></i>
-                                            Sucursal Origen *
+                                            Sucursal Origen
                                         </label>
-                                        <select name="sucursalOrigenId" class="form-select" required id="selOrigen">
-                                            <option value="">-- Seleccione origen --</option>
-                                            <option th:each="s : ${sucursales}"
-                                                    th:value="${s.id}"
-                                                    th:text="${s.ciudad + ' (' + s.codigo + ')'}">
-                                            </option>
-                                        </select>
+                                        <input type="text" class="form-control" th:value="${sucursalOrigen.ciudad}" readonly style="background-color: var(--card-bg); cursor: not-allowed;">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">
@@ -109,7 +103,7 @@
                                 </div>
 
                                 <div class="d-flex gap-3">
-                                    <button type="submit" class="btn btn-filled px-4" onclick="return validarTransferencia()">
+                                    <button type="submit" class="btn btn-filled px-4">
                                         <i class="bi bi-arrow-left-right me-2"></i> Procesar Transferencia
                                     </button>
                                     <a th:href="@{/bodega/inventario}" class="btn btn-ghost px-4">
@@ -129,16 +123,5 @@
 </div>
 
 <div th:replace="~{layout/base :: scripts}"></div>
-<script>
-    function validarTransferencia() {
-        const origen = document.getElementById('selOrigen').value;
-        const destino = document.getElementById('selDestino').value;
-        if (origen && destino && origen === destino) {
-            showToast('warning', 'La sucursal origen y destino no pueden ser iguales');
-            return false;
-        }
-        return true;
-    }
-</script>
 </body>
 </html>

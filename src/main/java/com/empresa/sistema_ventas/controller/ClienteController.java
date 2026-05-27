@@ -60,7 +60,7 @@ public class ClienteController {
     }
 
     // NUEVO: Método para eliminar
-    @GetMapping("/eliminar/{id}")
+    @PostMapping("/eliminar/{id}")
     public String eliminarCliente(@PathVariable Long id) {
         clienteService.eliminarCliente(id);
         return "redirect:/clientes/listar";

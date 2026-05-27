@@ -55,14 +55,8 @@
                                 </div>
 
                                 <div class="mb-4">
-                                    <label class="form-label fw-semibold">Sucursal Destino *</label>
-                                    <select name="sucursalId" class="form-select" required>
-                                        <option value="">-- Seleccione una sucursal --</option>
-                                        <option th:each="s : ${sucursales}"
-                                                th:value="${s.id}"
-                                                th:text="${s.ciudad + ' (' + s.codigo + ')'}">
-                                        </option>
-                                    </select>
+                                    <label class="form-label fw-semibold">Sucursal Destino</label>
+                                    <input type="text" class="form-control" th:value="${sucursal.ciudad}" readonly style="background-color: var(--card-bg); cursor: not-allowed;">
                                 </div>
 
                                 <div class="mb-4">

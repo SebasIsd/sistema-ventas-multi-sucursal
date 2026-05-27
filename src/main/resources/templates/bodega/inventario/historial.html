@@ -22,8 +22,8 @@
             <!-- Header -->
             <div class="page-header">
                 <div>
-                    <h2 class="page-title"><i class="bi bi-clock-history"></i> Historial de Movimientos</h2>
-                    <p class="page-desc">Registro cronológico de todos los cambios de stock</p>
+                    <h2 class="page-title"><i class="bi bi-clock-history"></i> Historial de Movimientos — <span th:text="${sucursal.ciudad}"></span></h2>
+                    <p class="page-desc">Registro cronológico de todos los cambios de stock en tu sucursal</p>
                 </div>
                 <a th:href="@{/bodega/inventario}" class="btn btn-ghost">
                     <i class="bi bi-arrow-left"></i> Volver al Inventario
@@ -51,7 +51,6 @@
                             <thead>
                                 <tr>
                                     <th>Producto</th>
-                                    <th>Sucursal</th>
                                     <th>Tipo Movimiento</th>
                                     <th class="text-center">Cantidad</th>
                                     <th class="text-center">Stock Resultante</th>
@@ -62,7 +61,6 @@
                             <tbody id="tbodyHistorial">
                                 <tr th:each="m : ${movimientos}">
                                     <td class="fw-semibold text-main" th:text="${m.producto.nombre}">Producto</td>
-                                    <td th:text="${m.sucursal.ciudad}">Ciudad</td>
                                     <td>
                                         <span th:switch="${m.tipoMovimiento}">
                                             <span th:case="'AJUSTE'" class="badge-status active">AJUSTE</span>

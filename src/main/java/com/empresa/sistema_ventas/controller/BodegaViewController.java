@@ -125,11 +125,7 @@ public class BodegaViewController {
         return "bodega/historial";
     }
 
-    @GetMapping("/productos")
-    public String catalogoProductos(Model model) {
-        model.addAttribute("productos", productoService.listar());
-        return "bodega/productos";
-    }
+
 
     private Sucursal requireSucursal(Authentication auth) {
         Usuario usuario = usuarioRepository.findByUsername(auth.getName())

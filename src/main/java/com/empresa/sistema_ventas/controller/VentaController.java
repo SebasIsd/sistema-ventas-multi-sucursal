@@ -2,6 +2,7 @@ package com.empresa.sistema_ventas.controller;
 
 import com.empresa.sistema_ventas.dto.VentaRequest;
 import com.empresa.sistema_ventas.entity.Inventario;
+import com.empresa.sistema_ventas.entity.Producto;
 import com.empresa.sistema_ventas.entity.Sucursal;
 import com.empresa.sistema_ventas.entity.Usuario;
 import com.empresa.sistema_ventas.entity.Venta;
@@ -54,9 +55,23 @@ public class VentaController {
         // SUCURSAL DEL CAJERO
         Sucursal sucursal = usuario.getSucursal();
 
-        // INVENTARIO DE ESA SUCURSAL
-        List<Inventario> inventarios =
-                inventarioRepository.findBySucursal(sucursal);
+        // INVENTARIO DE ESA SUCURSAL (Cargar todos los productos activos)
+        List<Producto> productosActivos = productoRepository.findByActivoTrue();
+        List<Inventario> inventariosExistentes = inventarioRepository.findBySucursal(sucursal);
+
+        List<Inventario> inventarios = productosActivos.stream().<Inventario>map(prod -> {
+            return inventariosExistentes.stream()
+                    .filter(inv -> inv.getProducto().getIdProducto().equals(prod.getIdProducto()))
+                    .findFirst()
+                    .orElseGet(() -> {
+                        Inventario inv = new Inventario();
+                        inv.setProducto(prod);
+                        inv.setSucursal(sucursal);
+                        inv.setStockActual(0);
+                        inv.setStockMinimo(0);
+                        return inv;
+                    });
+        }).toList();
 
         model.addAttribute("clientes", clienteRepository.findAll());
 
@@ -67,8 +82,8 @@ public class VentaController {
 
     @PostMapping("/procesar")
     public String procesarVenta(
-            @ModelAttribute VentaRequest request,
-            Authentication authentication
+             @ModelAttribute VentaRequest request,
+             Authentication authentication
     ) {
 
         String username = authentication.getName();
@@ -109,7 +124,7 @@ public class VentaController {
         ){
 
             ventas = ventaRepository.findAll(
-                    PageRequest.of(page, 5)
+                    PageRequest.of(page, 10)
             );
 
         } else {
@@ -118,7 +133,7 @@ public class VentaController {
                     cedula,
                     fechaInicio,
                     fechaFin,
-                    PageRequest.of(page, 5)
+                    PageRequest.of(page, 10)
             );
         }
 

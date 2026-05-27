@@ -6,6 +6,8 @@ import com.empresa.sistema_ventas.entity.Producto;
 import com.empresa.sistema_ventas.entity.Sucursal;
 import com.empresa.sistema_ventas.repository.InventarioRepository;
 import com.empresa.sistema_ventas.repository.MovimientoInventarioRepository;
+import com.empresa.sistema_ventas.repository.ProductoRepository;
+import com.empresa.sistema_ventas.repository.SucursalRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +18,17 @@ public class InventarioService {
 
     private final InventarioRepository inventarioRepository;
     private final MovimientoInventarioRepository movimientoRepository;
+    private final ProductoRepository productoRepository;
+    private final SucursalRepository sucursalRepository;
 
     public InventarioService(InventarioRepository inventarioRepository,
-                             MovimientoInventarioRepository movimientoRepository) {
+                             MovimientoInventarioRepository movimientoRepository,
+                             ProductoRepository productoRepository,
+                             SucursalRepository sucursalRepository) {
         this.inventarioRepository = inventarioRepository;
         this.movimientoRepository = movimientoRepository;
+        this.productoRepository = productoRepository;
+        this.sucursalRepository = sucursalRepository;
     }
 
     public boolean verificarStock(Integer productoId, Long sucursalId, Integer cantidad) {
@@ -60,7 +68,7 @@ public class InventarioService {
     public void descontarStock(Integer productoId, Long sucursalId, Integer cantidad) {
         Inventario inventario = inventarioRepository
                 .findByProducto_IdProductoAndSucursal_Id(productoId, sucursalId)
-                .orElseThrow(() -> new RuntimeException("Inventario no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Inventario no encontrado en la sucursal de origen"));
 
         if (inventario.getStockActual() < cantidad) {
             throw new RuntimeException("Stock insuficiente");
@@ -82,7 +90,18 @@ public class InventarioService {
     public void aumentarStock(Integer productoId, Long sucursalId, Integer cantidad, String observacion) {
         Inventario inventario = inventarioRepository
                 .findByProducto_IdProductoAndSucursal_Id(productoId, sucursalId)
-                .orElseThrow(() -> new RuntimeException("Inventario no encontrado"));
+                .orElseGet(() -> {
+                    Inventario newInv = new Inventario();
+                    Producto prod = productoRepository.findById(productoId)
+                            .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+                    Sucursal suc = sucursalRepository.findById(sucursalId)
+                            .orElseThrow(() -> new RuntimeException("Sucursal no encontrada"));
+                    newInv.setProducto(prod);
+                    newInv.setSucursal(suc);
+                    newInv.setStockActual(0);
+                    newInv.setStockMinimo(5);
+                    return inventarioRepository.save(newInv);
+                });
 
         inventario.setStockActual(inventario.getStockActual() + cantidad);
         inventarioRepository.save(inventario);
@@ -116,7 +135,18 @@ public class InventarioService {
 
         Inventario inventarioDestino = inventarioRepository
                 .findByProducto_IdProductoAndSucursal_Id(productoId, sucursalDestinoId)
-                .orElseThrow(() -> new RuntimeException("Inventario de destino no encontrado"));
+                .orElseGet(() -> {
+                    Inventario newInv = new Inventario();
+                    Producto prod = productoRepository.findById(productoId)
+                            .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+                    Sucursal suc = sucursalRepository.findById(sucursalDestinoId)
+                            .orElseThrow(() -> new RuntimeException("Sucursal no encontrada"));
+                    newInv.setProducto(prod);
+                    newInv.setSucursal(suc);
+                    newInv.setStockActual(0);
+                    newInv.setStockMinimo(5);
+                    return inventarioRepository.save(newInv);
+                });
 
         if (inventarioOrigen.getStockActual() < cantidad) {
             throw new RuntimeException("Stock insuficiente en la sucursal origen");
