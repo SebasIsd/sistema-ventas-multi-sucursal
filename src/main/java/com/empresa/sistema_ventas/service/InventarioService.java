@@ -24,16 +24,30 @@ public class InventarioService {
     }
 
     public boolean verificarStock(Integer productoId, Long sucursalId, Integer cantidad) {
-        // CORREGIDO: Nombre del método del repositorio
         return inventarioRepository
                 .findByProducto_IdProductoAndSucursal_Id(productoId, sucursalId)
                 .map(inventario -> inventario.getStockActual() >= cantidad)
                 .orElse(false);
     }
 
+    public List<Inventario> listarTodos() {
+        return inventarioRepository.findAll();
+    }
+
+    public List<Inventario> listarInventarioPorSucursal(Sucursal sucursal) {
+        return inventarioRepository.findBySucursal(sucursal);
+    }
+
+    public List<MovimientoInventario> getHistorialMovimientos() {
+        return movimientoRepository.findAllByOrderByFechaMovimientoDesc();
+    }
+
+    public List<Inventario> getStockBajo() {
+        return inventarioRepository.findStockBajo();
+    }
+
     @Transactional
     public void descontarStock(Integer productoId, Long sucursalId, Integer cantidad) {
-        // CORREGIDO: Nombre del método del repositorio
         Inventario inventario = inventarioRepository
                 .findByProducto_IdProductoAndSucursal_Id(productoId, sucursalId)
                 .orElseThrow(() -> new RuntimeException("Inventario no encontrado"));
@@ -45,27 +59,17 @@ public class InventarioService {
         inventario.setStockActual(inventario.getStockActual() - cantidad);
         inventarioRepository.save(inventario);
 
-        MovimientoInventario movimiento = new MovimientoInventario();
-
-        Producto prod = new Producto();
-        prod.setIdProducto(productoId);
-        movimiento.setProducto(prod);
-
-        Sucursal suc = new Sucursal();
-        suc.setId(sucursalId);
-        movimiento.setSucursal(suc);
-
-        movimiento.setTipoMovimiento("SALIDA_VENTA");
-        movimiento.setCantidad(cantidad);
-        movimiento.setStockResultante(inventario.getStockActual());
-        movimiento.setObservacion("Descuento por venta");
-
-        movimientoRepository.save(movimiento);
+        guardarMovimiento(productoId, sucursalId, "SALIDA_VENTA", cantidad,
+                inventario.getStockActual(), "Descuento por venta");
     }
 
     @Transactional
     public void aumentarStock(Integer productoId, Long sucursalId, Integer cantidad) {
-        // CORREGIDO: Nombre del método del repositorio
+        aumentarStock(productoId, sucursalId, cantidad, "Aumento de stock");
+    }
+
+    @Transactional
+    public void aumentarStock(Integer productoId, Long sucursalId, Integer cantidad, String observacion) {
         Inventario inventario = inventarioRepository
                 .findByProducto_IdProductoAndSucursal_Id(productoId, sucursalId)
                 .orElseThrow(() -> new RuntimeException("Inventario no encontrado"));
@@ -73,22 +77,8 @@ public class InventarioService {
         inventario.setStockActual(inventario.getStockActual() + cantidad);
         inventarioRepository.save(inventario);
 
-        MovimientoInventario movimiento = new MovimientoInventario();
-
-        Producto prod = new Producto();
-        prod.setIdProducto(productoId);
-        movimiento.setProducto(prod);
-
-        Sucursal suc = new Sucursal();
-        suc.setId(sucursalId);
-        movimiento.setSucursal(suc);
-
-        movimiento.setTipoMovimiento("ENTRADA_COMPRA");
-        movimiento.setCantidad(cantidad);
-        movimiento.setStockResultante(inventario.getStockActual());
-        movimiento.setObservacion("Aumento de stock");
-
-        movimientoRepository.save(movimiento);
+        guardarMovimiento(productoId, sucursalId, "AJUSTE", cantidad,
+                inventario.getStockActual(), observacion);
     }
 
     @Transactional
@@ -96,12 +86,67 @@ public class InventarioService {
                                 Long sucursalOrigenId,
                                 Long sucursalDestinoId,
                                 Integer cantidad) {
-        descontarStock(productoId, sucursalOrigenId, cantidad);
-        aumentarStock(productoId, sucursalDestinoId, cantidad);
+        transferirStock(productoId, sucursalOrigenId, sucursalDestinoId, cantidad, "Transferencia entre sucursales");
     }
 
-    public List<Inventario> getStockBajo() {
-        return inventarioRepository.findStockBajo();
+    @Transactional
+    public void transferirStock(Integer productoId,
+                                Long sucursalOrigenId,
+                                Long sucursalDestinoId,
+                                Integer cantidad,
+                                String observacion) {
+
+        if (sucursalOrigenId.equals(sucursalDestinoId)) {
+            throw new RuntimeException("La sucursal origen y destino no pueden ser iguales");
+        }
+
+        Inventario inventarioOrigen = inventarioRepository
+                .findByProducto_IdProductoAndSucursal_Id(productoId, sucursalOrigenId)
+                .orElseThrow(() -> new RuntimeException("Inventario de origen no encontrado"));
+
+        Inventario inventarioDestino = inventarioRepository
+                .findByProducto_IdProductoAndSucursal_Id(productoId, sucursalDestinoId)
+                .orElseThrow(() -> new RuntimeException("Inventario de destino no encontrado"));
+
+        if (inventarioOrigen.getStockActual() < cantidad) {
+            throw new RuntimeException("Stock insuficiente en la sucursal origen");
+        }
+
+        inventarioOrigen.setStockActual(inventarioOrigen.getStockActual() - cantidad);
+        inventarioDestino.setStockActual(inventarioDestino.getStockActual() + cantidad);
+
+        inventarioRepository.save(inventarioOrigen);
+        inventarioRepository.save(inventarioDestino);
+
+        guardarMovimiento(productoId, sucursalOrigenId, "TRANSFERENCIA_SALIDA", cantidad,
+                inventarioOrigen.getStockActual(), observacion);
+
+        guardarMovimiento(productoId, sucursalDestinoId, "TRANSFERENCIA_ENTRADA", cantidad,
+                inventarioDestino.getStockActual(), observacion);
     }
-    public List<Inventario> listarTodos() {return inventarioRepository.findAll();}
+
+    private void guardarMovimiento(Integer productoId,
+                                   Long sucursalId,
+                                   String tipoMovimiento,
+                                   Integer cantidad,
+                                   Integer stockResultante,
+                                   String observacion) {
+
+        MovimientoInventario movimiento = new MovimientoInventario();
+
+        Producto producto = new Producto();
+        producto.setIdProducto(productoId);
+        movimiento.setProducto(producto);
+
+        Sucursal sucursal = new Sucursal();
+        sucursal.setId(sucursalId);
+        movimiento.setSucursal(sucursal);
+
+        movimiento.setTipoMovimiento(tipoMovimiento);
+        movimiento.setCantidad(cantidad);
+        movimiento.setStockResultante(stockResultante);
+        movimiento.setObservacion(observacion);
+
+        movimientoRepository.save(movimiento);
+    }
 }
