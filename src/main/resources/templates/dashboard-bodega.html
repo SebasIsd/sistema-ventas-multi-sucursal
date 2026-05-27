@@ -72,6 +72,25 @@
             </div>
         </div>
 
+        <!-- Inventario -->
+        <div class="module-card">
+            <div class="module-head">
+                <div class="module-icon" style="background:#fef3c7;color:#d97706;">
+                    <i class="bi bi-clipboard-data"></i>
+                </div>
+                <p class="module-title">Inventario</p>
+            </div>
+            <p class="module-desc">Consulta el stock disponible por producto y sucursal.</p>
+            <div class="module-actions">
+                <a th:href="@{/bodega/inventario}" class="btn-module btn-filled">
+                    <i class="bi bi-list-ul"></i> Ver Inventario
+                </a>
+                <a th:href="@{/bodega/inventario/ajuste}" class="btn-module btn-ghost">
+                    <i class="bi bi-sliders"></i> Ajustar Stock
+                </a>
+            </div>
+        </div>
+
         <!-- Transferencias -->
         <div class="module-card">
             <div class="module-head">
@@ -82,10 +101,10 @@
             </div>
             <p class="module-desc">Mueve stock entre sucursales de forma segura y con trazabilidad.</p>
             <div class="module-actions">
-                <a th:href="@{/bodega/transferencias}" class="btn-module btn-filled">
+                <a th:href="@{/bodega/inventario/transferencia}" class="btn-module btn-filled">
                     <i class="bi bi-plus"></i> Nueva Transferencia
                 </a>
-                <a th:href="@{/bodega/historial}" class="btn-module btn-ghost">
+                <a th:href="@{/bodega/inventario/historial}" class="btn-module btn-ghost">
                     <i class="bi bi-clock-rotate-left"></i> Historial
                 </a>
             </div>

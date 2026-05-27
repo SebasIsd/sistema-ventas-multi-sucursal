@@ -38,13 +38,22 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <label class="form-label">Seleccionar Cliente</label>
-                                            <select name="clienteId" class="form-select" required>
-                                                <option value="">-- Seleccione un cliente --</option>
-                                                <option th:each="cliente : ${clientes}"
-                                                        th:value="${cliente.id}"
-                                                        th:text="${cliente.nombres + ' ' + cliente.apellidos + ' - ' + cliente.cedulaRuc}">
-                                                </option>
-                                            </select>
+                                            <div class="input-group">
+                                                <select name="clienteId" id="clienteId" class="form-select" required>
+                                                    <option value="">-- Seleccione un cliente --</option>
+                                                    <option th:each="cliente : ${clientes}"
+                                                            th:value="${cliente.id}"
+                                                            th:text="${cliente.nombres + ' ' + cliente.apellidos + ' (' + cliente.cedulaRuc + ')'}">
+                                                    </option>
+                                                </select>
+                                                <button type="button"
+                                                        class="btn btn-ghost"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#modalNuevoCliente"
+                                                        title="Crear nuevo cliente">
+                                                    <i class="bi bi-person-plus"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -264,5 +273,58 @@
             }
         }
     </script>
+</div>
+
+<!-- MODAL: Nuevo Cliente Rápido -->
+<div class="modal fade" id="modalNuevoCliente" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border:none; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.15);">
+            <div class="modal-header" style="border-bottom:1px solid var(--border); padding:1.25rem 1.5rem;">
+                <h5 class="modal-title">
+                    <i class="bi bi-person-plus" style="color:var(--primary); margin-right:.5rem;"></i>
+                    Nuevo Cliente
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form th:action="@{/clientes/guardar-rapido}" method="post">
+                <div class="modal-body" style="padding:1.5rem;">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Nombres *</label>
+                            <input type="text" name="nombres" class="form-control" required placeholder="Juan">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Apellidos *</label>
+                            <input type="text" name="apellidos" class="form-control" required placeholder="Pérez">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Cédula / RUC *</label>
+                            <input type="text" name="cedulaRuc" class="form-control" required placeholder="1712345678">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Teléfono</label>
+                            <input type="text" name="telefono" class="form-control" placeholder="0999999999">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Email</label>
+                            <input type="email" name="email" class="form-control" placeholder="cliente@email.com">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Dirección</label>
+                            <input type="text" name="direccion" class="form-control" placeholder="Av. Principal 123">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top:1px solid var(--border); padding:1.25rem 1.5rem;">
+                    <button class="btn btn-ghost" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-filled">
+                        <i class="bi bi-floppy"></i> Guardar Cliente
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

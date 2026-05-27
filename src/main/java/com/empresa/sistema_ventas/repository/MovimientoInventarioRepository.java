@@ -16,4 +16,6 @@ public interface MovimientoInventarioRepository extends JpaRepository<Movimiento
             ORDER BY m.fechaMovimiento DESC
             """)
     List<MovimientoInventario> findBySucursalIdOrderByFechaMovimientoDesc(@Param("sucursalId") Long sucursalId);
+
+    List<MovimientoInventario> findAllByOrderByFechaMovimientoDesc();
 }

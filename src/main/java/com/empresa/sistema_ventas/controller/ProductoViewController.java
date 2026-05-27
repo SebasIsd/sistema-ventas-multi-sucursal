@@ -4,7 +4,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-// ✅ Solo maneja las vistas HTML, sin lógica de negocio
+// Solo maneja las vistas HTML, sin lógica de negocio
 @Controller
 public class ProductoViewController {
 

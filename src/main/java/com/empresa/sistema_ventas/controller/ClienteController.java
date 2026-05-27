@@ -1,6 +1,7 @@
 package com.empresa.sistema_ventas.controller;
 
 import com.empresa.sistema_ventas.dto.ClienteDTO;
+import com.empresa.sistema_ventas.repository.ClienteRepository;
 import com.empresa.sistema_ventas.service.ClienteService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -14,9 +15,11 @@ import com.empresa.sistema_ventas.entity.Cliente;
 public class ClienteController {
 
     private final ClienteService clienteService;
-
-    public ClienteController(ClienteService clienteService) {
+    private final ClienteRepository clienteRepository;
+    public ClienteController(ClienteService clienteService,ClienteRepository clienteRepository) {
         this.clienteService = clienteService;
+        this.clienteRepository = clienteRepository;
+
     }
 
     @GetMapping("/listar")
@@ -61,5 +64,12 @@ public class ClienteController {
     public String eliminarCliente(@PathVariable Long id) {
         clienteService.eliminarCliente(id);
         return "redirect:/clientes/listar";
+    }
+    @PostMapping("/guardar-rapido")
+    public String guardarRapido(Cliente cliente) {
+
+        clienteRepository.save(cliente);
+
+        return "redirect:/ventas/nueva";
     }
 }

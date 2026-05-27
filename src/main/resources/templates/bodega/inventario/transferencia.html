@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Transferencia de Stock — Bodega')}">
+</head>
+<body class="role-bodega">
+
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-bodega}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
+
+            <!-- Breadcrumb -->
+            <div class="breadcrumb-wrapper">
+                <a th:href="@{/bodega/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+                <i class="bi bi-chevron-right sep"></i>
+                <a th:href="@{/bodega/inventario}">Inventario</a>
+                <i class="bi bi-chevron-right sep"></i>
+                <span class="current">Transferencia</span>
+            </div>
+
+            <!-- Header -->
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title"><i class="bi bi-arrow-left-right"></i> Nueva Transferencia</h2>
+                    <p class="page-desc">Mover stock entre sucursales de forma trazable</p>
+                </div>
+                <a th:href="@{/bodega/inventario}" class="btn btn-ghost">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+            </div>
+
+            <!-- Formulario -->
+            <div class="row justify-content-center">
+                <div class="col-lg-7">
+                    <div class="card slide-up">
+                        <div class="card-body" style="padding:2rem;">
+
+                            <h5 style="font-weight:700; color:var(--text-main); margin-bottom:1.5rem;">
+                                <i class="bi bi-arrow-left-right" style="color:var(--primary);"></i>
+                                Datos de la Transferencia
+                            </h5>
+
+                            <form th:action="@{/bodega/inventario/transferencia}" method="post">
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">Producto *</label>
+                                    <select name="productoId" class="form-select" required>
+                                        <option value="">-- Seleccione un producto --</option>
+                                        <option th:each="p : ${productos}"
+                                                th:value="${p.idProducto}"
+                                                th:text="${p.nombre}">
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">
+                                            <i class="bi bi-box-arrow-up-right" style="color:#ef4444;"></i>
+                                            Sucursal Origen *
+                                        </label>
+                                        <select name="sucursalOrigenId" class="form-select" required id="selOrigen">
+                                            <option value="">-- Seleccione origen --</option>
+                                            <option th:each="s : ${sucursales}"
+                                                    th:value="${s.id}"
+                                                    th:text="${s.ciudad + ' (' + s.codigo + ')'}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">
+                                            <i class="bi bi-box-arrow-in-down" style="color:#22c55e;"></i>
+                                            Sucursal Destino *
+                                        </label>
+                                        <select name="sucursalDestinoId" class="form-select" required id="selDestino">
+                                            <option value="">-- Seleccione destino --</option>
+                                            <option th:each="s : ${sucursales}"
+                                                    th:value="${s.id}"
+                                                    th:text="${s.ciudad + ' (' + s.codigo + ')'}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">Cantidad *</label>
+                                    <input type="number"
+                                           name="cantidad"
+                                           class="form-control"
+                                           min="1"
+                                           required
+                                           placeholder="Ej: 20">
+                                    <small class="text-muted">Número de unidades a transferir</small>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">Observación</label>
+                                    <textarea name="observacion"
+                                              class="form-control"
+                                              rows="3"
+                                              placeholder="Motivo de la transferencia..."></textarea>
+                                </div>
+
+                                <!-- Alerta -->
+                                <div class="alert alert-warning d-flex align-items-center gap-2 mb-4" style="border-radius:10px; font-size:.9rem;">
+                                    <i class="bi bi-exclamation-triangle-fill"></i>
+                                    <span>Asegúrese de que origen y destino sean <strong>diferentes</strong> y que haya stock suficiente en la sucursal origen.</span>
+                                </div>
+
+                                <div class="d-flex gap-3">
+                                    <button type="submit" class="btn btn-filled px-4" onclick="return validarTransferencia()">
+                                        <i class="bi bi-arrow-left-right me-2"></i> Procesar Transferencia
+                                    </button>
+                                    <a th:href="@{/bodega/inventario}" class="btn btn-ghost px-4">
+                                        Cancelar
+                                    </a>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:replace="~{layout/base :: footer}"></div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+<script>
+    function validarTransferencia() {
+        const origen = document.getElementById('selOrigen').value;
+        const destino = document.getElementById('selDestino').value;
+        if (origen && destino && origen === destino) {
+            showToast('warning', 'La sucursal origen y destino no pueden ser iguales');
+            return false;
+        }
+        return true;
+    }
+</script>
+</body>
+</html>

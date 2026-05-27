@@ -1,6 +1,6 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{layout/base :: head(${modo == 'crear' ? 'Nuevo Usuario' : 'Editar Usuario'})}">
+<head th:replace="~{layout/base :: head(${modo == 'crear' ? 'Nuevo Usuario — Admin' : 'Editar Usuario — Admin'})}">
 </head>
 <body class="role-admin">
 
@@ -10,213 +10,231 @@
         <header th:replace="~{layout/base :: top-bar}"></header>
         <div class="page-content">
 
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>
-            <i class="fas fa-user-cog me-2"></i>
-            <span th:text="${modo == 'crear' ? 'Nuevo Usuario' : 'Editar Usuario'}">Formulario</span>
-        </h2>
-        <a th:href="@{/admin/usuarios}" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Volver
-        </a>
-    </div>
+            <!-- Breadcrumb -->
+            <div class="breadcrumb-wrapper">
+                <a th:href="@{/admin/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+                <i class="bi bi-chevron-right sep"></i>
+                <a th:href="@{/admin/usuarios}">Usuarios</a>
+                <i class="bi bi-chevron-right sep"></i>
+                <span class="current" th:text="${modo == 'crear' ? 'Nuevo Usuario' : 'Editar Usuario'}">Usuario</span>
+            </div>
 
-    <!-- Formulario -->
-    <div class="card shadow-sm">
-        <div class="card-body p-4">
+            <!-- Header -->
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title"
+                        th:text="${modo == 'crear'} ? '🆕 Nuevo Usuario' : '✏️ Editar Usuario'">
+                        Usuario
+                    </h2>
+                    <p class="page-desc"
+                       th:text="${modo == 'crear'} ? 'Complete los datos para crear una nueva cuenta de acceso' : 'Modifique los datos del usuario seleccionado'">
+                    </p>
+                </div>
+                <a th:href="@{/admin/usuarios}" class="btn btn-ghost">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+            </div>
 
-            <form th:action="@{/admin/usuarios/guardar}" th:object="${usuario}" method="post">
+            <!-- Mensajes Flash -->
+            <div th:if="${mensaje}"
+                 class="alert alert-dismissible fade show mb-4"
+                 th:classappend="${tipoMensaje == 'success'} ? 'alert-success' : 'alert-danger'"
+                 role="alert">
+                <i class="bi bi-info-circle me-2"></i>
+                <span th:text="${mensaje}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
 
-                <!-- ID oculto para edición -->
-                <input type="hidden" th:field="*{id}">
+            <!-- Formulario -->
+            <div class="card slide-up">
+                <div class="card-body" style="padding:2rem;">
 
-                <div class="row g-4">
+                    <form th:action="@{/admin/usuarios/guardar}" method="post" th:object="${usuario}">
+                        <input type="hidden" th:field="*{id}">
 
-                    <!-- Columna Izquierda: Datos de Acceso -->
-                    <div class="col-lg-6">
-                        <h5 class="mb-3 pb-2 border-bottom">
-                            <i class="fas fa-key me-2"></i>Datos de Acceso
-                        </h5>
+                        <div class="row g-4">
 
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Nombre de Usuario *</label>
-                            <input type="text"
-                                   id="username"
-                                   class="form-control"
-                                   th:field="*{username}"
-                                   required
-                                   th:readonly="${modo == 'editar'}"
-                                   th:classappend="${modo == 'editar'} ? 'bg-light'"
-                                   placeholder="ej. juan.perez">
-                            <small class="text-muted" th:if="${modo == 'editar'}">
-                                <i class="fas fa-lock me-1"></i>No se puede modificar
-                            </small>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">
-                                Contraseña
-                                <span th:if="${modo == 'editar'}" class="text-muted">(dejar vacío para mantener)</span>
-                                <span th:if="${modo == 'crear'}" class="text-danger">*</span>
-                            </label>
-                            <input type="password"
-                                   id="password"
-                                   class="form-control"
-                                   name="password"
-                                   th:required="${modo == 'crear'}"
-                                   minlength="6"
-                                   autocomplete="new-password">
-                            <small class="text-muted">
-                                <span th:if="${modo == 'editar'}">Mínimo 6 caracteres si desea cambiarla</span>
-                                <span th:if="${modo == 'crear'}">Mínimo 6 caracteres</span>
-                            </small>
-                        </div>
+                            <!-- Columna Izquierda: Credenciales -->
+                            <div class="col-lg-6">
+                                <h5 class="mb-3 pb-2 border-bottom fw-bold">
+                                    <i class="bi bi-key me-2" style="color:var(--primary);"></i>Credenciales de Acceso
+                                </h5>
 
-                        <!-- Columna Derecha: Datos Personales -->
-                        <div class="col-lg-6">
-                            <h5 class="mb-3 pb-2 border-bottom">
-                                <i class="fas fa-id-card me-2"></i>Datos Personales
-                            </h5>
-
-                            <div class="mb-3">
-                                <label for="nombreCompleto" class="form-label">Nombre Completo *</label>
-                                <input type="text"
-                                       id="nombreCompleto"
-                                       class="form-control"
-                                       th:field="*{nombreCompleto}"
-                                       required
-                                       placeholder="Juan Pérez García">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email *</label>
-                                <input type="email"
-                                       id="email"
-                                       class="form-control"
-                                       th:field="*{email}"
-                                       required
-                                       placeholder="juan.perez@empresa.com">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="telefono" class="form-label">Teléfono</label>
-                                <input type="tel"
-                                       id="telefono"
-                                       class="form-control"
-                                       th:field="*{telefono}"
-                                       placeholder="0999999999"
-                                       pattern="[0-9]{10}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Fila: Rol y Sucursal -->
-                    <div class="row g-4 mt-2">
-                        <div class="col-lg-6">
-                            <h5 class="mb-3 pb-2 border-bottom">
-                                <i class="fas fa-user-tag me-2"></i>Asignación
-                            </h5>
-
-                            <div class="mb-3">
-                                <label for="rolId" class="form-label">Rol *</label>
-                                <select id="rolId"
-                                        class="form-select"
-                                        name="rolId"
-                                        required>
-                                    <option value="">Seleccionar Rol...</option>
-                                    <option th:each="rol : ${roles}"
-                                            th:value="${rol.id}"
-                                            th:text="${rol.nombre}"
-                                            th:selected="${usuario.rol != null && usuario.rol.id == rol.id}">
-                                    </option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="sucursalId" class="form-label">Sucursal</label>
-                                <select id="sucursalId"
-                                        class="form-select"
-                                        name="sucursalId">
-                                    <option value="">Sin sucursal específica</option>
-                                    <option th:each="suc : ${sucursales}"
-                                            th:value="${suc.id}"
-                                            th:text="${suc.ciudad}"
-                                            th:selected="${usuario.sucursal != null && usuario.sucursal.id == suc.id}">
-                                    </option>
-                                </select>
-                                <small class="text-muted">Dejar vacío para acceso global (solo ADMIN)</small>
-                            </div>
-                        </div>
-
-                        <!-- Columna: Estado -->
-                        <div class="col-lg-6">
-                            <h5 class="mb-3 pb-2 border-bottom">
-                                <i class="fas fa-toggle-on me-2"></i>Estado
-                            </h5>
-
-                            <div class="mb-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input"
-                                           type="checkbox"
-                                           role="switch"
-                                           id="activo"
-                                           th:field="*{activo}"
-                                           checked>
-                                    <label class="form-check-label" for="activo">
-                                        Usuario Activo
-                                    </label>
+                                <div class="mb-3">
+                                    <label for="username" class="form-label fw-semibold">Nombre de Usuario *</label>
+                                    <input type="text"
+                                           id="username"
+                                           class="form-control"
+                                           th:field="*{username}"
+                                           th:readonly="${modo == 'editar'}"
+                                           required
+                                           placeholder="juan.perez">
+                                    <small class="text-muted" th:if="${modo == 'editar'}">
+                                        El nombre de usuario no puede modificarse
+                                    </small>
                                 </div>
-                                <small class="text-muted">
-                                    <i class="fas fa-info-circle me-1"></i>
-                                    Los usuarios inactivos no podrán iniciar sesión
-                                </small>
+
+                                <div class="mb-3">
+                                    <label for="password" class="form-label fw-semibold">
+                                        Contraseña
+                                        <span th:if="${modo == 'crear'}" class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="password"
+                                               id="password"
+                                               class="form-control"
+                                               name="password"
+                                               th:required="${modo == 'crear'}"
+                                               minlength="6"
+                                               autocomplete="new-password"
+                                               placeholder="Mínimo 6 caracteres">
+                                        <button class="btn btn-ghost" type="button" id="togglePassword" title="Mostrar/ocultar contraseña">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                    <small class="text-muted">
+                                        <span th:if="${modo == 'editar'}">Dejar vacío para mantener la contraseña actual</span>
+                                        <span th:if="${modo == 'crear'}">Mínimo 6 caracteres</span>
+                                    </small>
+                                </div>
                             </div>
 
-                            <!-- Info de creación/edición -->
-                            <div th:if="${modo == 'editar' && usuario.id != null}" class="alert alert-info small">
-                                <i class="fas fa-info-circle me-2"></i>
-                                <strong>Creado:</strong>
-                                <span th:text="${#temporals.format(usuario.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></span>
+                            <!-- Columna Derecha: Datos personales -->
+                            <div class="col-lg-6">
+                                <h5 class="mb-3 pb-2 border-bottom fw-bold">
+                                    <i class="bi bi-person-badge me-2" style="color:var(--primary);"></i>Datos Personales
+                                </h5>
+
+                                <div class="mb-3">
+                                    <label for="nombreCompleto" class="form-label fw-semibold">Nombre Completo *</label>
+                                    <input type="text"
+                                           id="nombreCompleto"
+                                           class="form-control"
+                                           th:field="*{nombreCompleto}"
+                                           required
+                                           placeholder="Juan Pérez García">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="email" class="form-label fw-semibold">Email *</label>
+                                    <input type="email"
+                                           id="email"
+                                           class="form-control"
+                                           th:field="*{email}"
+                                           required
+                                           placeholder="juan.perez@empresa.com">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="telefono" class="form-label fw-semibold">Teléfono</label>
+                                    <input type="tel"
+                                           id="telefono"
+                                           class="form-control"
+                                           th:field="*{telefono}"
+                                           placeholder="0999999999">
+                                </div>
                             </div>
+
+                            <!-- Fila: Asignación y Estado -->
+                            <div class="col-lg-6">
+                                <h5 class="mb-3 pb-2 border-bottom fw-bold">
+                                    <i class="bi bi-person-gear me-2" style="color:var(--primary);"></i>Asignación
+                                </h5>
+
+                                <div class="mb-3">
+                                    <label for="rolId" class="form-label fw-semibold">Rol *</label>
+                                    <select id="rolId" class="form-select" name="rolId" required>
+                                        <option value="">-- Seleccionar Rol --</option>
+                                        <option th:each="rol : ${roles}"
+                                                th:value="${rol.id}"
+                                                th:text="${rol.nombre}"
+                                                th:selected="${usuario.rol != null and usuario.rol.id == rol.id}">
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="sucursalId" class="form-label fw-semibold">Sucursal</label>
+                                    <select id="sucursalId" class="form-select" name="sucursalId">
+                                        <option value="">Sin sucursal específica (ADMIN)</option>
+                                        <option th:each="suc : ${sucursales}"
+                                                th:value="${suc.id}"
+                                                th:text="${suc.ciudad + ' (' + suc.codigo + ')'}"
+                                                th:selected="${usuario.sucursal != null and usuario.sucursal.id == suc.id}">
+                                        </option>
+                                    </select>
+                                    <small class="text-muted">Dejar vacío para acceso global (solo ADMIN)</small>
+                                </div>
+                            </div>
+
+                            <!-- Estado -->
+                            <div class="col-lg-6">
+                                <h5 class="mb-3 pb-2 border-bottom fw-bold">
+                                    <i class="bi bi-toggle-on me-2" style="color:var(--primary);"></i>Estado
+                                </h5>
+
+                                <div class="mb-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input"
+                                               type="checkbox"
+                                               role="switch"
+                                               id="activo"
+                                               th:field="*{activo}"
+                                               checked>
+                                        <label class="form-check-label fw-semibold" for="activo">
+                                            Usuario Activo
+                                        </label>
+                                    </div>
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Los usuarios inactivos no podrán iniciar sesión
+                                    </small>
+                                </div>
+
+                                <!-- Info de creación -->
+                                <div th:if="${modo == 'editar' and usuario.id != null}"
+                                     class="alert alert-info small" style="border-radius:10px;">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    <strong>ID:</strong> <span th:text="${usuario.id}"></span> —
+                                    <strong>Editando cuenta existente</strong>
+                                </div>
+                            </div>
+
                         </div>
-                    </div>
 
-                    <!-- Botones de acción -->
-                    <div class="d-flex justify-content-end gap-2 mt-5 pt-3 border-top">
-                        <a th:href="@{/admin/usuarios}" class="btn btn-outline-secondary">
-                            <i class="fas fa-times me-2"></i>Cancelar
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-2"></i>
-                            <span th:text="${modo == 'crear' ? 'Crear Usuario' : 'Actualizar Usuario'}">Guardar</span>
-                        </button>
-                    </div>
+                        <!-- Botones de acción -->
+                        <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top">
+                            <a th:href="@{/admin/usuarios}" class="btn btn-ghost px-4">
+                                <i class="bi bi-x-lg me-1"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-filled px-4">
+                                <i class="bi bi-floppy me-1"></i>
+                                <span th:text="${modo == 'crear'} ? 'Crear Usuario' : 'Actualizar Usuario'">Guardar</span>
+                            </button>
+                        </div>
 
-            </form>
-        </div>
-    </div>
+                    </form>
+                </div>
+            </div>
 
-    <div th:replace="~{layout/base :: footer}"></div>
+            <div th:replace="~{layout/base :: footer}"></div>
         </div>
     </div>
 </div>
 
 <div th:replace="~{layout/base :: scripts}"></div>
-
-<!-- Script para toggle de password (inline, ya que script.js está vacío) -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const toggleBtn = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('password');
-
         if (toggleBtn && passwordInput) {
             toggleBtn.addEventListener('click', function () {
-                const type = passwordInput.type === 'password' ? 'text' : 'password';
-                passwordInput.type = type;
-                this.querySelector('i').className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+                const isText = passwordInput.type === 'text';
+                passwordInput.type = isText ? 'password' : 'text';
+                this.querySelector('i').className = isText ? 'bi bi-eye' : 'bi bi-eye-slash';
             });
         }
     });
 </script>
-
 </body>
 </html>

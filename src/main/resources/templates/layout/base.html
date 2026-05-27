@@ -87,22 +87,22 @@
         </div>
         <div class="nav-section">
             <div class="nav-label">Inventario</div>
-            <a th:href="@{/bodega/stock}" class="sidebar-link">
-                <i class="bi bi-boxes"></i> Stock
+            <a th:href="@{/bodega/inventario}" class="sidebar-link">
+                <i class="bi bi-clipboard-data"></i> Inventario
             </a>
-            <a th:href="@{/bodega/ajustar}" class="sidebar-link">
-                <i class="bi bi-sliders"></i> Ajuste
+            <a th:href="@{/bodega/inventario/ajuste}" class="sidebar-link">
+                <i class="bi bi-sliders"></i> Ajuste de Stock
             </a>
-            <a th:href="@{/bodega/transferencias}" class="sidebar-link">
+            <a th:href="@{/bodega/inventario/transferencia}" class="sidebar-link">
                 <i class="bi bi-arrow-left-right"></i> Transferencias
             </a>
-            <a th:href="@{/bodega/historial}" class="sidebar-link">
+            <a th:href="@{/bodega/inventario/historial}" class="sidebar-link">
                 <i class="bi bi-clock-history"></i> Historial
             </a>
         </div>
         <div class="nav-section">
             <div class="nav-label">Consulta</div>
-            <a th:href="@{/bodega/productos}" class="sidebar-link">
+            <a th:href="@{/productos/listar}" class="sidebar-link">
                 <i class="bi bi-box-seam"></i> Productos
             </a>
         </div>

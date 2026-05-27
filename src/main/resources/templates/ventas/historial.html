@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/base :: head('Historial de Ventas — Sistema de Ventas')}">
 </head>
@@ -10,59 +10,151 @@
         <header th:replace="~{layout/base :: top-bar}"></header>
         <div class="page-content">
 
-                <!-- Breadcrumb -->
-                <div class="breadcrumb-wrapper">
-                    <a th:href="@{/cajero/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
-                    <i class="bi bi-chevron-right sep"></i>
-                    <span class="current">Historial de Ventas</span>
-                </div>
+            <!-- Breadcrumb -->
+            <div class="breadcrumb-wrapper">
+                <a th:href="@{/cajero/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+                <i class="bi bi-chevron-right sep"></i>
+                <span class="current">Historial de Ventas</span>
+            </div>
 
-                <!-- Header -->
-                <div class="page-header">
-                    <div>
-                        <h2 class="page-title"><i class="bi bi-clock-history"></i> Historial de Ventas</h2>
-                        <p class="page-desc">Registro completo de transacciones realizadas</p>
+            <!-- Header -->
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title"><i class="bi bi-clock-history"></i> Historial de Ventas</h2>
+                    <p class="page-desc">Registro completo de transacciones realizadas</p>
+                </div>
+            </div>
+
+            <!-- Filtros de búsqueda -->
+            <div class="card slide-up" style="margin-bottom:1.5rem;">
+                <div class="card-body" style="padding:1.25rem 1.5rem;">
+                    <form method="get" th:action="@{/ventas/historial}" class="row g-3 align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-person-badge me-1"></i>Cédula del Cliente
+                            </label>
+                            <input type="text"
+                                   name="cedula"
+                                   class="form-control"
+                                   placeholder="Ingrese cédula..."
+                                   th:value="${cedula}">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-calendar-event me-1"></i>Fecha Inicio
+                            </label>
+                            <input type="date"
+                                   name="fechaInicio"
+                                   class="form-control"
+                                   th:value="${fechaInicio}">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-calendar-check me-1"></i>Fecha Fin
+                            </label>
+                            <input type="date"
+                                   name="fechaFin"
+                                   class="form-control"
+                                   th:value="${fechaFin}">
+                        </div>
+                        <div class="col-md-2 d-flex gap-2">
+                            <button type="submit" class="btn btn-filled w-100">
+                                <i class="bi bi-search"></i> Buscar
+                            </button>
+                            <a th:href="@{/ventas/historial}" class="btn btn-ghost" title="Limpiar filtros">
+                                <i class="bi bi-x-lg"></i>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tabla de ventas -->
+            <div class="card slide-up">
+                <div class="card-body" style="padding:1.5rem;">
+                    <div class="table-wrapper">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th width="80">ID</th>
+                                    <th>Cliente</th>
+                                    <th>Fecha</th>
+                                    <th class="text-end">Subtotal</th>
+                                    <th class="text-end">IVA</th>
+                                    <th class="text-end">Total</th>
+                                    <th class="text-center" width="100">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="venta : ${ventas}">
+                                    <td><span class="text-muted fw-semibold" th:text="${'#' + venta.id}"></span></td>
+                                    <td class="fw-semibold text-main"
+                                        th:text="${venta.cliente != null ? venta.cliente.nombres + ' ' + venta.cliente.apellidos : 'Consumidor Final'}"></td>
+                                    <td th:text="${#temporals.format(venta.fecha, 'dd/MM/yyyy HH:mm')}"></td>
+                                    <td class="text-end">
+                                        <span th:text="${'$' + #numbers.formatDecimal(venta.subtotalSinIva, 0, 'COMMA', 2, 'POINT')}"></span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span th:text="${'$' + #numbers.formatDecimal(venta.ivaTotal, 0, 'COMMA', 2, 'POINT')}"></span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="price-tag" th:text="${'$' + #numbers.formatDecimal(venta.total, 0, 'COMMA', 2, 'POINT')}"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <a th:href="@{/ventas/detalle/{id}(id=${venta.id})}"
+                                           class="btn btn-sm btn-icon-edit"
+                                           title="Ver detalle">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Estado vacío -->
+                    <div th:if="${ventas.isEmpty()}" style="text-align:center; padding:3rem 1rem;">
+                        <i class="bi bi-receipt" style="font-size:3rem; color:#cbd5e1; margin-bottom:1rem;"></i>
+                        <h5 style="color:var(--text-main); font-weight:600;">Sin ventas</h5>
+                        <p style="color:var(--text-muted); font-size:.9rem;">No se encontraron ventas con los filtros aplicados.</p>
                     </div>
                 </div>
+            </div>
 
-                <div class="card slide-up">
-                    <div class="card-body" style="padding:1.5rem;">
-                        <div class="table-wrapper">
-                            <table class="table align-middle">
-                                <thead >
-                                    <tr>
-                                        <th width="80">ID</th>
-                                        <th>Cliente</th>
-                                        <th>Fecha</th>
-                                        <th class="text-end">Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="venta : ${ventas}">
-                                        <td><span class="text-muted fw-semibold" th:text="${'#' + venta.id}"></span></td>
-                                        <td class="fw-semibold text-main" th:text="${venta.cliente != null ? venta.cliente.nombres + ' ' + venta.cliente.apellidos : 'Consumidor Final'}"></td>
-                                        <td th:text="${#temporals.format(venta.fecha, 'dd/MM/yyyy HH:mm')}"></td>
-                                        <td class="text-end"><span class="price-tag" th:text="${#numbers.formatCurrency(venta.total)}"></span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+            <!-- Paginación -->
+            <div class="d-flex justify-content-center mt-4" th:if="${ventas.totalPages > 1}">
+                <nav>
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/ventas/historial(page=${currentPage - 1}, cedula=${cedula}, fechaInicio=${fechaInicio}, fechaFin=${fechaFin})}">
+                                <i class="bi bi-chevron-left"></i> Anterior
+                            </a>
+                        </li>
+                        <li class="page-item"
+                            th:each="i : ${#numbers.sequence(0, ventas.totalPages - 1)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link"
+                               th:href="@{/ventas/historial(page=${i}, cedula=${cedula}, fechaInicio=${fechaInicio}, fechaFin=${fechaFin})}"
+                               th:text="${i + 1}"></a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage + 1 >= ventas.totalPages} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/ventas/historial(page=${currentPage + 1}, cedula=${cedula}, fechaInicio=${fechaInicio}, fechaFin=${fechaFin})}">
+                                Siguiente <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
 
-                        <!-- Estado Vacío si no hay ventas -->
-                        <div th:if="${#lists.isEmpty(ventas)}" style="text-align:center; padding:3rem 1rem;">
-                            <i class="bi bi-receipt" style="font-size:3rem; color:#cbd5e1; margin-bottom:1rem;"></i>
-                            <h5 style="color:var(--text-main); font-weight:600;">Sin ventas</h5>
-                            <p style="color:var(--text-muted); font-size:.9rem;">No se han registrado ventas aún.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- FOOTER MODULAR -->
-    <div th:replace="~{layout/base :: footer}"></div>
-    </div>
+            <!-- Footer -->
+            <div th:replace="~{layout/base :: footer}"></div>
+        </div>
     </div>
 </div>
-<!-- SCRIPTS MODULAR -->
-    <div th:replace="~{layout/base :: scripts}"></div>
+
+<!-- Scripts -->
+<div th:replace="~{layout/base :: scripts}"></div>
 </body>
 </html>

@@ -4,8 +4,8 @@ import com.empresa.sistema_ventas.dto.VentaRequest;
 import com.empresa.sistema_ventas.entity.Inventario;
 import com.empresa.sistema_ventas.entity.Sucursal;
 import com.empresa.sistema_ventas.entity.Usuario;
-import com.empresa.sistema_ventas.repository.InventarioRepository;
-import com.empresa.sistema_ventas.repository.UsuarioRepository;
+import com.empresa.sistema_ventas.entity.Venta;
+import com.empresa.sistema_ventas.repository.*;
 import com.empresa.sistema_ventas.service.VentaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,8 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import com.empresa.sistema_ventas.repository.ClienteRepository;
-import com.empresa.sistema_ventas.repository.ProductoRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
@@ -29,18 +29,19 @@ public class VentaController {
     private final UsuarioRepository usuarioRepository;
     private final ClienteRepository clienteRepository;
     private final ProductoRepository productoRepository;
-
+    private final VentaRepository ventaRepository;
     public VentaController(
             VentaService ventaService,
             UsuarioRepository usuarioRepository,
             ClienteRepository clienteRepository,
-            ProductoRepository productoRepository
+            ProductoRepository productoRepository,
+            VentaRepository ventaRepository
     ) {
         this.ventaService = ventaService;
         this.usuarioRepository = usuarioRepository;
         this.clienteRepository = clienteRepository;
         this.productoRepository = productoRepository;
-    }
+        this.ventaRepository = ventaRepository;    }
 
     @GetMapping("/nueva")
     public String nuevaVenta(Authentication auth, Model model) {
@@ -86,22 +87,64 @@ public class VentaController {
 
     @GetMapping("/historial")
     public String historialVentas(
-            Authentication authentication,
+
+            @RequestParam(defaultValue = "0") int page,
+
+            @RequestParam(required = false) String cedula,
+
+            @RequestParam(required = false) String fechaInicio,
+
+            @RequestParam(required = false) String fechaFin,
+
             Model model
     ) {
 
-        String username = authentication.getName();
+        Page<Venta> ventas;
 
-        Usuario usuario = usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        // SI NO HAY FILTROS
+        if(
+                (cedula == null || cedula.isEmpty()) &&
+                        (fechaInicio == null || fechaInicio.isEmpty()) &&
+                        (fechaFin == null || fechaFin.isEmpty())
+        ){
 
-        model.addAttribute(
-                "ventas",
-                ventaService.getHistorialVentas(
-                        usuario.getSucursal().getId()
-                )
-        );
+            ventas = ventaRepository.findAll(
+                    PageRequest.of(page, 5)
+            );
+
+        } else {
+
+            ventas = ventaRepository.buscarVentas(
+                    cedula,
+                    fechaInicio,
+                    fechaFin,
+                    PageRequest.of(page, 5)
+            );
+        }
+
+        model.addAttribute("ventas", ventas);
+
+        model.addAttribute("currentPage", page);
+
+        model.addAttribute("cedula", cedula);
+
+        model.addAttribute("fechaInicio", fechaInicio);
+
+        model.addAttribute("fechaFin", fechaFin);
 
         return "ventas/historial";
+    }
+    @GetMapping("/detalle/{id}")
+    public String detalleVenta(
+            @PathVariable Long id,
+            Model model
+    ) {
+
+        Venta venta = ventaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Venta no encontrada"));
+
+        model.addAttribute("venta", venta);
+
+        return "ventas/detalle";
     }
 }
