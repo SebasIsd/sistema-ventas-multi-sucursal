@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/base :: head('Panel Bodega — Sistema de Ventas')}">
 </head>
@@ -28,7 +28,7 @@
         <div class="alert-text">
             <h4>⚠️ Alerta de Stock Bajo</h4>
             <p>Hay <strong th:text="${stockBajo.size()}">0</strong> productos con stock mínimo en tu sucursal.</p>
-            <a th:href="@{/bodega/stock}" class="btn btn-sm btn-light mt-2">
+            <a th:href="@{/bodega/inventario}" class="btn btn-sm btn-light mt-2">
                 <i class="bi bi-eye"></i> Revisar inventario
             </a>
         </div>
@@ -63,10 +63,10 @@
             </div>
             <p class="module-desc">Visualiza y actualiza el inventario disponible en tu sucursal.</p>
             <div class="module-actions">
-                <a th:href="@{/bodega/stock}" class="btn-module btn-filled">
+                <a th:href="@{/bodega/inventario}" class="btn-module btn-filled">
                     <i class="bi bi-list-ul"></i> Ver Stock Actual
                 </a>
-                <a th:href="@{/bodega/ajustar}" class="btn-module btn-ghost">
+                <a th:href="@{/bodega/inventario/ajuste}" class="btn-module btn-ghost">
                     <i class="bi bi-sliders"></i> Ajuste de Inventario
                 </a>
             </div>
@@ -120,7 +120,7 @@
             </div>
             <p class="module-desc">Consulta el catálogo de productos y sus categorías disponibles.</p>
             <div class="module-actions">
-                <a th:href="@{/bodega/productos}" class="btn-module btn-filled">
+                <a th:href="@{/productos/listar}" class="btn-module btn-filled">
                     <i class="bi bi-list-ul"></i> Ver Productos
                 </a>
                 <!-- Opcional: solo si el bodeguero puede crear productos -->
