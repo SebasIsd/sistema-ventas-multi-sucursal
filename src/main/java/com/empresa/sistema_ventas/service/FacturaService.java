@@ -19,8 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -138,12 +138,12 @@ public class FacturaService {
                     if (!resource.exists()) {
                         throw new IOException("No se encontro reports/factura.jrxml en classpath");
                     }
-                    try (InputStream inputStream = resource.getInputStream()) {
-                        log.info("InputStream obtenido, {} bytes disponibles",
-                                inputStream.available());
-                        compiledReport = JasperCompileManager.compileReport(inputStream);
-                        log.info("Reporte compilado exitosamente");
-                    }
+                    byte[] xmlBytes = resource.getInputStream().readAllBytes();
+                    log.info("XML leido: {} bytes", xmlBytes.length);
+                    log.info("Primeros 200 chars: {}", new String(xmlBytes, 0, Math.min(200, xmlBytes.length)));
+                    compiledReport = JasperCompileManager.compileReport(
+                            new ByteArrayInputStream(xmlBytes));
+                    log.info("Reporte compilado exitosamente");
                 }
             }
         }
