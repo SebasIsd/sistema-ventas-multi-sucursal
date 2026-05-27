@@ -15,13 +15,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -134,9 +133,14 @@ public class FacturaService {
         if (compiledReport == null) {
             synchronized (this) {
                 if (compiledReport == null) {
-                    log.info("Cargando y compilando factura.jrxml...");
-                    try (ByteArrayInputStream inputStream = new ByteArrayInputStream(
-                            new ClassPathResource("reports/factura.jrxml").getInputStream().readAllBytes())) {
+                    log.info("Cargando factura.jrxml desde classpath...");
+                    ClassPathResource resource = new ClassPathResource("reports/factura.jrxml");
+                    if (!resource.exists()) {
+                        throw new IOException("No se encontro reports/factura.jrxml en classpath");
+                    }
+                    try (InputStream inputStream = resource.getInputStream()) {
+                        log.info("InputStream obtenido, {} bytes disponibles",
+                                inputStream.available());
                         compiledReport = JasperCompileManager.compileReport(inputStream);
                         log.info("Reporte compilado exitosamente");
                     }
