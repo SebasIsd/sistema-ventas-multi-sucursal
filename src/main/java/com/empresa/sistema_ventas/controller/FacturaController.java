@@ -55,6 +55,7 @@ public class FacturaController {
         headers.setContentDisposition(ContentDisposition.inline()
                 .filename("factura-" + ventaId + ".pdf")
                 .build());
+        headers.set("X-Frame-Options", "SAMEORIGIN");
 
         return ResponseEntity.ok()
                 .headers(headers)
