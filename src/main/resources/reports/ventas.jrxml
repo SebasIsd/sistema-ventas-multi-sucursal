@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="ventas" pageWidth="595" pageHeight="842" columnWidth="535"
+              leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20">
+
+    <field name="idVenta" class="java.lang.Long"/>
+    <field name="fecha" class="java.lang.String"/>
+    <field name="cliente" class="java.lang.String"/>
+    <field name="total" class="java.math.BigDecimal"/>
+
+    <title>
+        <band height="35">
+            <staticText>
+                <reportElement x="0" y="0" width="300" height="30"/>
+                <textElement><font size="16" isBold="true"/></textElement>
+                <text><![CDATA[Reporte de Ventas]]></text>
+            </staticText>
+        </band>
+    </title>
+
+    <columnHeader>
+        <band height="22">
+            <staticText><reportElement x="0" y="0" width="70" height="22" mode="Opaque" backcolor="#EEEEEE"/><text><![CDATA[ID]]></text></staticText>
+            <staticText><reportElement x="70" y="0" width="150" height="22" mode="Opaque" backcolor="#EEEEEE"/><text><![CDATA[Fecha]]></text></staticText>
+            <staticText><reportElement x="220" y="0" width="205" height="22" mode="Opaque" backcolor="#EEEEEE"/><text><![CDATA[Cliente]]></text></staticText>
+            <staticText><reportElement x="425" y="0" width="110" height="22" mode="Opaque" backcolor="#EEEEEE"/><text><![CDATA[Total]]></text></staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="20">
+            <textField><reportElement x="0" y="0" width="70" height="20"/><textFieldExpression><![CDATA[$F{idVenta}]]></textFieldExpression></textField>
+            <textField><reportElement x="70" y="0" width="150" height="20"/><textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression></textField>
+            <textField><reportElement x="220" y="0" width="205" height="20"/><textFieldExpression><![CDATA[$F{cliente}]]></textFieldExpression></textField>
+            <textField pattern="$ #,##0.00"><reportElement x="425" y="0" width="110" height="20"/><textFieldExpression><![CDATA[$F{total}]]></textFieldExpression></textField>
+        </band>
+    </detail>
+</jasperReport>

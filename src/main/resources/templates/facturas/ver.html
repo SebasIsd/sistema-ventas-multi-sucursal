@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Factura</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <h2 class="mb-3">Factura de venta <span th:text="${ventaId}">0</span></h2>
+
+            <div th:if="${factura != null}" class="mb-4">
+                <p class="mb-1"><strong>Número:</strong> <span th:text="${factura.numeroFactura}"></span></p>
+                <p class="mb-1"><strong>Clave de acceso:</strong> <span th:text="${factura.claveAcceso}"></span></p>
+                <p class="mb-1"><strong>Estado SRI:</strong> <span class="badge bg-info" th:text="${factura.estadoSri}"></span></p>
+                <p class="mb-1" th:if="${factura.numeroAutorizacion != null}">
+                    <strong>Autorización:</strong> <span th:text="${factura.numeroAutorizacion}"></span>
+                </p>
+            </div>
+
+            <div th:if="${factura == null}" class="alert alert-warning">
+                Aún no existe una factura registrada para esta venta. Se creará al descargar el PDF.
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap">
+                <a class="btn btn-primary" th:href="@{/facturas/descargar/{ventaId}(ventaId=${ventaId})}">Descargar PDF</a>
+                <form th:action="@{/facturas/enviar-sri/{ventaId}(ventaId=${ventaId})}" method="post" class="m-0">
+                    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button class="btn btn-success" type="submit">Enviar SRI</button>
+                </form>
+                <a class="btn btn-outline-secondary" th:href="@{/ventas/historial}">Volver al historial</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

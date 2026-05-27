@@ -82,6 +82,7 @@
                                     <th class="text-end">Subtotal</th>
                                     <th class="text-end">IVA</th>
                                     <th class="text-end">Total</th>
+                                    <th class="text-center">Factura</th>
                                     <th class="text-center" width="100">Acciones</th>
                                 </tr>
                             </thead>
@@ -99,6 +100,20 @@
                                     </td>
                                     <td class="text-end">
                                         <span class="price-tag" th:text="${'$' + #numbers.formatDecimal(venta.total, 0, 'COMMA', 2, 'POINT')}"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex gap-1 justify-content-center">
+                                            <a class="btn btn-sm btn-outline-primary"
+                                               th:href="@{/facturas/ver/{ventaId}(ventaId=${venta.id})}"
+                                               title="Ver factura">
+                                                <i class="bi bi-file-earmark-text"></i>
+                                            </a>
+                                            <a class="btn btn-sm btn-success"
+                                               th:href="@{/facturas/descargar/{ventaId}(ventaId=${venta.id})}"
+                                               title="Descargar PDF">
+                                                <i class="bi bi-download"></i>
+                                            </a>
+                                        </div>
                                     </td>
                                     <td class="text-center">
                                         <a th:href="@{/ventas/detalle/{id}(id=${venta.id})}"
