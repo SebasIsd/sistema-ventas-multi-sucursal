@@ -1,52 +1,103 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <title>Registrar Entrada</title>
+<head th:replace="~{layout/base :: head('Ajuste de Stock — Bodega')}">
 </head>
-<body>
+<body class="role-bodega">
 
-<h1>Registrar Entrada de Inventario</h1>
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-bodega}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
 
-<form th:action="@{/bodega/inventario/ajuste}" method="post">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb-wrapper">
+                <a th:href="@{/bodega/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+                <i class="bi bi-chevron-right sep"></i>
+                <a th:href="@{/bodega/inventario}">Inventario</a>
+                <i class="bi bi-chevron-right sep"></i>
+                <span class="current">Ajuste de Stock</span>
+            </div>
 
-  <label>Producto:</label>
-  <select name="productoId" required>
-    <option th:each="p : ${productos}"
-            th:value="${p.idProducto}"
-            th:text="${p.nombre}">
-    </option>
-  </select>
+            <!-- Header -->
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title"><i class="bi bi-sliders"></i> Ajuste de Stock</h2>
+                    <p class="page-desc">Registrar entradas o ajustes manuales de inventario</p>
+                </div>
+                <a th:href="@{/bodega/inventario}" class="btn btn-ghost">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+            </div>
 
-  <br><br>
+            <!-- Formulario -->
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="card slide-up">
+                        <div class="card-body" style="padding:2rem;">
 
-  <label>Sucursal:</label>
-  <select name="sucursalId" required>
-    <option th:each="s : ${sucursales}"
-            th:value="${s.id}"
-            th:text="${s.ciudad}">
-    </option>
-  </select>
+                            <h5 style="font-weight:700; color:var(--text-main); margin-bottom:1.5rem;">
+                                <i class="bi bi-plus-circle" style="color:var(--primary);"></i>
+                                Registrar Entrada
+                            </h5>
 
-  <br><br>
+                            <form th:action="@{/bodega/inventario/ajuste}" method="post">
 
-  <label>Cantidad:</label>
-  <input type="number" name="cantidad" required>
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">Producto *</label>
+                                    <select name="productoId" class="form-select" required>
+                                        <option value="">-- Seleccione un producto --</option>
+                                        <option th:each="p : ${productos}"
+                                                th:value="${p.idProducto}"
+                                                th:text="${p.nombre}">
+                                        </option>
+                                    </select>
+                                </div>
 
-  <br><br>
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">Sucursal Destino</label>
+                                    <input type="text" class="form-control" th:value="${sucursal.ciudad}" readonly style="background-color: var(--card-bg); cursor: not-allowed;">
+                                </div>
 
-  <label>Observación:</label>
-  <input type="text" name="observacion">
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">Cantidad a Ingresar *</label>
+                                    <input type="number"
+                                           name="cantidad"
+                                           class="form-control"
+                                           min="1"
+                                           required
+                                           placeholder="Ej: 50">
+                                    <small class="text-muted">Cantidad de unidades a agregar al stock</small>
+                                </div>
 
-  <br><br>
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">Observación</label>
+                                    <textarea name="observacion"
+                                              class="form-control"
+                                              rows="3"
+                                              placeholder="Motivo del ajuste, proveedor, etc..."></textarea>
+                                </div>
 
-  <button type="submit">Guardar Entrada</button>
+                                <div class="d-flex gap-3">
+                                    <button type="submit" class="btn btn-filled px-4">
+                                        <i class="bi bi-floppy me-2"></i> Guardar Entrada
+                                    </button>
+                                    <a th:href="@{/bodega/inventario}" class="btn btn-ghost px-4">
+                                        Cancelar
+                                    </a>
+                                </div>
 
-</form>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-<br>
+            <div th:replace="~{layout/base :: footer}"></div>
+        </div>
+    </div>
+</div>
 
-<a href="/bodega/inventario">Volver</a>
-
+<div th:replace="~{layout/base :: scripts}"></div>
 </body>
 </html>

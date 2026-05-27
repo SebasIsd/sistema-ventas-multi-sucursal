@@ -1,14 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/base :: head('Panel Admin — Sistema de Ventas')}">
 </head>
 <body class="role-admin">
 
-    <!-- NAVBAR MODULAR -->
-    <nav th:replace="~{layout/base :: navbar-admin}"></nav>
-
-    <!-- CONTENT -->
-    <div class="page-content">
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-admin}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
 
         <!-- Welcome -->
         <div class="welcome-banner">
@@ -25,7 +25,7 @@
         <!-- Stats -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon blue"><i class="bi bi-people"></i></div>
+                <div class="stat-icon navy"><i class="bi bi-people"></i></div>
                 <div class="stat-data">
                     <h3 th:text="${totalUsuarios ?: 0}">0</h3>
                     <p>Usuarios Activos</p>
@@ -33,7 +33,7 @@
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon green"><i class="bi bi-cart3"></i></div>
+                <div class="stat-icon blue"><i class="bi bi-cart3"></i></div>
                 <div class="stat-data">
                     <h3 th:text="${totalVentas ?: 0}">0</h3>
                     <p>Ventas Totales</p>
@@ -41,7 +41,7 @@
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon purple"><i class="bi bi-boxes"></i></div>
+                <div class="stat-icon teal"><i class="bi bi-boxes"></i></div>
                 <div class="stat-data">
                     <h3 th:text="${totalProductos ?: 0}">0</h3>
                     <p>Productos</p>
@@ -49,7 +49,7 @@
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon orange"><i class="bi bi-currency-dollar"></i></div>
+                <div class="stat-icon green"><i class="bi bi-currency-dollar"></i></div>
                 <div class="stat-data">
                     <h3 th:text="'$' + ${#numbers.formatDecimal(totalIngresos ?: 0, 0, 'COMMA', 2, 'POINT')}">$0.00</h3>
                     <p>Ingresos Totales</p>
@@ -129,6 +129,9 @@
                     <a th:href="@{/admin/inventario}" class="btn-module btn-filled">
                         <i class="bi bi-list-ul"></i> Ver Inventario
                     </a>
+                    <a th:href="@{/admin/inventario/ajustar}" class="btn-module btn-ghost">
+                        <i class="bi bi-sliders"></i> Ajustar Stock
+                    </a>
                 </div>
             </div>
 
@@ -154,11 +157,11 @@
         </div>
 
         <!-- FOOTER MODULAR -->
-        <div th:replace="~{layout/base :: footer}"></div>
-
+    <div th:replace="~{layout/base :: footer}"></div>
     </div>
-
-    <!-- SCRIPTS MODULAR -->
+    </div>
+</div>
+<!-- SCRIPTS MODULAR -->
     <div th:replace="~{layout/base :: scripts}"></div>
 
 </body>

@@ -3,12 +3,15 @@ package com.empresa.sistema_ventas.controller;
 import com.empresa.sistema_ventas.dto.ClienteDTO;
 import com.empresa.sistema_ventas.repository.ClienteRepository;
 import com.empresa.sistema_ventas.service.ClienteService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.empresa.sistema_ventas.entity.Cliente;
+
 @Controller
 @RequestMapping("/clientes")
+@PreAuthorize("hasAnyRole('CAJERO', 'ADMIN')")
 public class ClienteController {
 
     private final ClienteService clienteService;
@@ -57,7 +60,7 @@ public class ClienteController {
     }
 
     // NUEVO: Método para eliminar
-    @GetMapping("/eliminar/{id}")
+    @PostMapping("/eliminar/{id}")
     public String eliminarCliente(@PathVariable Long id) {
         clienteService.eliminarCliente(id);
         return "redirect:/clientes/listar";

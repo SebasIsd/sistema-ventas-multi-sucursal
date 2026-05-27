@@ -1,93 +1,96 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/base :: head('Productos — Sistema de Ventas')}">
 </head>
 <body class="role-admin">
 
-    <!-- NAVBAR MODULAR -->
-    <nav th:replace="~{layout/base :: navbar-admin}"></nav>
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-admin}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
 
-    <div class="page-content">
+                <!-- Breadcrumb -->
+                <div class="breadcrumb-wrapper">
+                    <a th:href="@{/admin/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+                    <i class="bi bi-chevron-right sep"></i>
+                    <span class="current">Productos</span>
+                </div>
 
-        <!-- Breadcrumb -->
-        <div class="breadcrumb-wrapper">
-            <a th:href="@{/admin/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
-            <i class="bi bi-chevron-right sep"></i>
-            <span class="current">Productos</span>
-        </div>
+                <!-- Header -->
+                <div class="page-header">
+                    <div>
+                        <h2 class="page-title"><i class="bi bi-box-seam"></i> Productos</h2>
+                        <p class="page-desc">Catálogo completo de productos e inventario base</p>
+                    </div>
+                    <button class="btn btn-filled" onclick="abrirModalNuevo()">
+                        <i class="bi bi-plus"></i> Nuevo Producto
+                    </button>
+                </div>
 
-        <!-- Header -->
-        <div class="page-header">
-            <div>
-                <h2 class="page-title"><i class="bi bi-box-seam"></i> Productos</h2>
-                <p class="page-desc">Catálogo completo de productos e inventario base</p>
-            </div>
-            <button class="btn btn-filled" onclick="abrirModalNuevo()">
-                <i class="bi bi-plus"></i> Nuevo Producto
-            </button>
-        </div>
+                <div class="card slide-up">
+                    <div class="card-body" style="padding:1.5rem;">
 
-        <div class="card slide-up">
-            <div class="card-body" style="padding:1.5rem;">
+                        <!-- Tools -->
+                        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                            <div class="search-wrapper flex-grow-1" style="max-width:360px;">
+                                <i class="bi bi-search search-icon"></i>
+                                <input type="text" id="buscador" class="search-input"
+                                       placeholder="Buscar por nombre, código o categoría..." oninput="filtrarTabla()">
+                            </div>
+                        </div>
 
-                <!-- Tools -->
-                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-                    <div class="search-wrapper flex-grow-1" style="max-width:360px;">
-                        <i class="bi bi-search search-icon"></i>
-                        <input type="text" id="buscador" class="search-input"
-                               placeholder="Buscar por nombre, código o categoría..." oninput="filtrarTabla()">
+                        <!-- Tabla -->
+                        <div class="table-wrapper">
+                            <table class="table align-middle">
+                                <thead >
+                                    <tr>
+                                        <th width="70">ID</th>
+                                        <th>Código</th>
+                                        <th>Nombre de Producto</th>
+                                        <th class="text-end">Precio</th>
+                                        <th class="text-center">IVA</th>
+                                        <th>Categoría</th>
+                                        <th width="110">Estado</th>
+                                        <th width="150" class="text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaProductos">
+                                    <!-- Renderizado por JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Estado Vacío -->
+                        <div id="sinResultados" style="display:none; text-align:center; padding:3rem 1rem;">
+                            <i class="bi bi-boxes" style="font-size:3rem; color:#cbd5e1; margin-bottom:1rem;"></i>
+                            <h5 style="color:var(--text-main); font-weight:600;">Sin resultados</h5>
+                            <p style="color:var(--text-muted); font-size:.9rem;">No se encontraron productos con ese criterio.</p>
+                        </div>
+
+                        <!-- Paginación UI -->
+                        <div class="pagination-container" id="paginationWrap">
+                            <div class="page-per-row">
+                                <span>Mostrar</span>
+                                <select onchange="cambiarFilasPorPagina(this.value)">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                </select>
+                                <span>filas</span>
+                            </div>
+                            <div class="pagination-info" id="pageInfoText"></div>
+                            <div class="pagination-controls" id="pageControls"></div>
+                        </div>
+
                     </div>
                 </div>
 
-                <!-- Tabla -->
-                <div class="table-wrapper">
-                    <table class="table align-middle">
-                        <thead style="background:var(--primary);">
-                            <tr>
-                                <th width="70">ID</th>
-                                <th>Código</th>
-                                <th>Nombre de Producto</th>
-                                <th class="text-end">Precio</th>
-                                <th class="text-center">IVA</th>
-                                <th>Categoría</th>
-                                <th width="110">Estado</th>
-                                <th width="150" class="text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tablaProductos">
-                            <!-- Renderizado por JS -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Estado Vacío -->
-                <div id="sinResultados" style="display:none; text-align:center; padding:3rem 1rem;">
-                    <i class="bi bi-boxes" style="font-size:3rem; color:#cbd5e1; margin-bottom:1rem;"></i>
-                    <h5 style="color:var(--text-main); font-weight:600;">Sin resultados</h5>
-                    <p style="color:var(--text-muted); font-size:.9rem;">No se encontraron productos con ese criterio.</p>
-                </div>
-
-                <!-- Paginación UI -->
-                <div class="pagination-container" id="paginationWrap">
-                    <div class="page-per-row">
-                        <span>Mostrar</span>
-                        <select onchange="cambiarFilasPorPagina(this.value)">
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                        </select>
-                        <span>filas</span>
-                    </div>
-                    <div class="pagination-info" id="pageInfoText"></div>
-                    <div class="pagination-controls" id="pageControls"></div>
-                </div>
-
-            </div>
+                <!-- FOOTER MODULAR -->
+    <div th:replace="~{layout/base :: footer}"></div>
         </div>
-
-        <!-- FOOTER MODULAR -->
-        <div th:replace="~{layout/base :: footer}"></div>
     </div>
+</div>
 
     <!-- MODAL -->
     <div class="modal fade" id="modalProducto" tabindex="-1">
