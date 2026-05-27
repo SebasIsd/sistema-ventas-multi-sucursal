@@ -4,6 +4,8 @@ import com.empresa.sistema_ventas.entity.Factura;
 import com.empresa.sistema_ventas.entity.Usuario;
 import com.empresa.sistema_ventas.repository.UsuarioRepository;
 import com.empresa.sistema_ventas.service.FacturaService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -20,6 +22,8 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/facturas")
 public class FacturaController {
+
+    private static final Logger log = LoggerFactory.getLogger(FacturaController.class);
 
     private final FacturaService facturaService;
     private final UsuarioRepository usuarioRepository;
@@ -70,8 +74,16 @@ public class FacturaController {
     }
 
     private void validarSucursal(Long ventaId, Authentication auth) {
-        Usuario usuario = usuarioRepository.findByUsername(auth.getName())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        facturaService.validarSucursalVenta(ventaId, usuario.getSucursal().getId());
+        try {
+            Usuario usuario = usuarioRepository.findByUsername(auth.getName())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            log.info("validarSucursal: usuario={}, sucursal={}",
+                    auth.getName(), usuario.getSucursal().getCodigo());
+            facturaService.validarSucursalVenta(ventaId, usuario.getSucursal().getId());
+        } catch (RuntimeException ex) {
+            log.warn("ACCESO DENEGADO: usuario={}, ventaId={}, error={}",
+                    auth.getName(), ventaId, ex.getMessage());
+            throw ex;
+        }
     }
 }

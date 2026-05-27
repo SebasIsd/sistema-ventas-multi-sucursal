@@ -119,7 +119,13 @@ public class FacturaService {
     public void validarSucursalVenta(Long ventaId, Long sucursalId) {
         Venta venta = ventaRepository.findById(ventaId)
                 .orElseThrow(() -> new RuntimeException("Venta no encontrada"));
-        if (!venta.getSucursal().getId().equals(sucursalId)) {
+        Long ventaSucursalId = venta.getSucursal().getId();
+        String ventaSucursalCod = venta.getSucursal().getCodigo();
+        log.info("VALIDACION access: ventaId={}, sucursalVenta={}(id={}), sucursalUsuario={}(id={}) → {}",
+                ventaId, ventaSucursalCod, ventaSucursalId,
+                sucursalId, sucursalId,
+                ventaSucursalId.equals(sucursalId) ? "OK" : "DENIED");
+        if (!ventaSucursalId.equals(sucursalId)) {
             throw new RuntimeException("No tienes acceso a esta factura");
         }
     }
