@@ -11,14 +11,17 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,9 +37,10 @@ import java.util.stream.Collectors;
 @Service
 public class FacturaService {
 
+    private static final Logger log = LoggerFactory.getLogger(FacturaService.class);
+
     private final VentaRepository ventaRepository;
     private final FacturaRepository facturaRepository;
-    private final ResourceLoader resourceLoader;
 
     @Value("${app.reports.path:classpath:/reports/}")
     private String reportsPath;
@@ -46,39 +50,48 @@ public class FacturaService {
 
     private volatile JasperReport compiledReport;
 
-    public FacturaService(
-            VentaRepository ventaRepository,
-            FacturaRepository facturaRepository,
-            ResourceLoader resourceLoader
-    ) {
+    public FacturaService(VentaRepository ventaRepository, FacturaRepository facturaRepository) {
         this.ventaRepository = ventaRepository;
         this.facturaRepository = facturaRepository;
-        this.resourceLoader = resourceLoader;
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public byte[] generarPDF(Long ventaId) {
+        log.info("Iniciando generación de PDF para ventaId={}", ventaId);
+
         Venta venta = ventaRepository.findById(ventaId)
                 .orElseThrow(() -> new RuntimeException("Venta no encontrada"));
+        log.info("Venta cargada: id={}, total={}", venta.getId(), venta.getTotal());
 
         Factura factura = obtenerOCrearFactura(venta);
+        log.info("Factura obtenida/creada: numero={}", factura.getNumeroFactura());
 
         try {
             JasperReport jasperReport = cargarReporteFactura();
+            log.info("JasperReport cargado OK");
+
             Map<String, Object> parametros = construirParametrosFactura(venta, factura);
+            log.info("Parámetros construidos: SUBTOTAL={}, IVA={}, TOTAL={}",
+                    parametros.get("SUBTOTAL"), parametros.get("IVA_TOTAL"), parametros.get("TOTAL"));
+
             List<DetalleFacturaRow> detalleRows = construirDetalleRows(venta);
+            log.info("Detalle rows construidos: {} items", detalleRows.size());
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(
                     jasperReport,
                     parametros,
                     new JRBeanCollectionDataSource(detalleRows)
             );
+            log.info("JasperPrint generado OK");
 
             byte[] pdfBytes = JasperExportManager.exportReportToPdf(jasperPrint);
+            log.info("PDF exportado: {} bytes", pdfBytes.length);
+
             guardarPdfEnDisco(factura, pdfBytes);
 
             return pdfBytes;
         } catch (IOException | JRException ex) {
+            log.error("Error generando PDF", ex);
             throw new RuntimeException("No se pudo generar el PDF de factura", ex);
         }
     }
@@ -115,10 +128,11 @@ public class FacturaService {
         if (compiledReport == null) {
             synchronized (this) {
                 if (compiledReport == null) {
-                    String basePath = reportsPath.endsWith("/") ? reportsPath : reportsPath + "/";
-                    Resource resource = resourceLoader.getResource(basePath + "factura.jrxml");
-                    try (InputStream inputStream = resource.getInputStream()) {
+                    log.info("Cargando y compilando factura.jrxml...");
+                    try (ByteArrayInputStream inputStream = new ByteArrayInputStream(
+                            new ClassPathResource("reports/factura.jrxml").getInputStream().readAllBytes())) {
                         compiledReport = JasperCompileManager.compileReport(inputStream);
+                        log.info("Reporte compilado exitosamente");
                     }
                 }
             }
