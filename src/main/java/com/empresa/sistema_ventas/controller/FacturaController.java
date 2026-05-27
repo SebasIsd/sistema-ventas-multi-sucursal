@@ -44,6 +44,23 @@ public class FacturaController {
         return "facturas/ver";
     }
 
+    @GetMapping("/ver/{ventaId}/pdf")
+    public ResponseEntity<byte[]> verFacturaPdf(@PathVariable Long ventaId, Authentication auth) {
+        validarSucursal(ventaId, auth);
+
+        byte[] pdf = facturaService.generarPDF(ventaId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.inline()
+                .filename("factura-" + ventaId + ".pdf")
+                .build());
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdf);
+    }
+
     @GetMapping("/descargar")
     public String pantallaDescarga() {
         return "facturas/descargar";
