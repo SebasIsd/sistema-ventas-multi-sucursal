@@ -140,10 +140,12 @@ public class FacturaService {
                     }
                     byte[] xmlBytes = resource.getInputStream().readAllBytes();
                     log.info("XML leido: {} bytes", xmlBytes.length);
-                    log.info("Primeros 200 chars: {}", new String(xmlBytes, 0, Math.min(200, xmlBytes.length)));
+
+                    // Reset compiledReport para forzar recompilacion con la nueva version
+                    compiledReport = null;
                     compiledReport = JasperCompileManager.compileReport(
                             new ByteArrayInputStream(xmlBytes));
-                    log.info("Reporte compilado exitosamente");
+                    log.info("Reporte compilado exitosamente con JasperReports 6.x");
                 }
             }
         }
