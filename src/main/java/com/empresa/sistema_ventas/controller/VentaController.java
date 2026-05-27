@@ -91,13 +91,13 @@ public class VentaController {
         Usuario usuario = usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        ventaService.procesarVenta(
+        Venta venta = ventaService.procesarVenta(
                 request.getClienteId(),
                 request.getItems(),
                 usuario.getId()
         );
 
-        return "redirect:/ventas/historial";
+        return "redirect:/facturas/ver/" + venta.getId();
     }
 
     @GetMapping("/historial")

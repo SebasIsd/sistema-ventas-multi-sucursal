@@ -1,57 +1,97 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ver Factura</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .pdf-viewer {
-            width: 100%;
-            height: 600px;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-        }
-    </style>
+<head th:replace="~{layout/base :: head('Ver Factura — Sistema de Ventas')}">
 </head>
-<body class="bg-light">
-<div class="container py-4">
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body p-4">
-            <h4 class="mb-3">Factura de venta #<span th:text="${ventaId}">0</span></h4>
+<body class="role-cajero">
 
-            <div th:if="${factura != null}" class="mb-3">
-                <p class="mb-1"><strong>Número:</strong> <span th:text="${factura.numeroFactura}"></span></p>
-                <p class="mb-1"><strong>Clave de acceso:</strong> <span th:text="${factura.claveAcceso}"></span></p>
-                <p class="mb-1"><strong>Estado SRI:</strong> <span class="badge bg-info" th:text="${factura.estadoSri}"></span></p>
-                <p class="mb-1" th:if="${factura.numeroAutorizacion != null}">
-                    <strong>Autorización:</strong> <span th:text="${factura.numeroAutorizacion}"></span>
-                </p>
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-cajero}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
+
+            <!-- Breadcrumb -->
+            <div class="breadcrumb-wrapper">
+                <a th:href="@{/cajero/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+                <i class="bi bi-chevron-right sep"></i>
+                <a th:href="@{/ventas/historial}"><i class="bi bi-clock-history"></i> Historial</a>
+                <i class="bi bi-chevron-right sep"></i>
+                <span class="current">Factura #<span th:text="${ventaId}">0</span></span>
             </div>
 
-            <div th:if="${factura == null}" class="alert alert-warning mb-3">
-                Aún no existe una factura registrada para esta venta. Se creará al visualizar el PDF.
+            <!-- Header -->
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title"><i class="bi bi-file-earmark-text"></i> Ver Factura</h2>
+                    <p class="page-desc">Vista previa y gestión de la factura</p>
+                </div>
             </div>
 
-            <div class="d-flex gap-2 flex-wrap">
-                <a class="btn btn-primary" th:href="@{/facturas/descargar/{ventaId}(ventaId=${ventaId})}">Descargar PDF</a>
-                <form th:action="@{/facturas/enviar-sri/{ventaId}(ventaId=${ventaId})}" method="post" class="m-0">
-                    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                    <button class="btn btn-success" type="submit">Enviar SRI</button>
-                </form>
-                <a class="btn btn-outline-secondary" th:href="@{/ventas/historial}">Volver al historial</a>
+            <!-- Info de factura -->
+            <div class="card slide-up" style="margin-bottom:1.5rem;">
+                <div class="card-body" style="padding:1.25rem 1.5rem;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div th:if="${factura != null}">
+                                <p class="mb-2"><strong>Número:</strong> <span th:text="${factura.numeroFactura}"></span></p>
+                                <p class="mb-2"><strong>Clave de acceso:</strong> <span class="text-break" th:text="${factura.claveAcceso}"></span></p>
+                                <p class="mb-2"><strong>Estado SRI:</strong>
+                                    <span class="badge"
+                                          th:classappend="${factura.estadoSri == 'AUTORIZADO'} ? 'bg-success' : (${factura.estadoSri == 'PENDIENTE'} ? 'bg-warning' : 'bg-secondary')"
+                                          th:text="${factura.estadoSri}">ESTADO</span>
+                                </p>
+                                <p class="mb-2" th:if="${factura.numeroAutorizacion != null}">
+                                    <strong>Autorización:</strong> <span th:text="${factura.numeroAutorizacion}"></span>
+                                </p>
+                            </div>
+                            <div th:if="${factura == null}" class="alert alert-warning mb-0">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                Aún no existe una factura. Se creará al visualizar el PDF.
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <div class="d-flex gap-2 flex-wrap justify-content-md-end">
+                                <a class="btn btn-outline-primary"
+                                   th:href="@{/facturas/descargar/{ventaId}(ventaId=${ventaId})}">
+                                    <i class="bi bi-download"></i> Descargar PDF
+                                </a>
+                                <form th:action="@{/facturas/enviar-sri/{ventaId}(ventaId=${ventaId})}" method="post" class="m-0">
+                                    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                    <button class="btn btn-success" type="submit">
+                                        <i class="bi bi-send"></i> Enviar SRI
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
 
-    <div class="card shadow-sm border-0">
-        <div class="card-body p-3">
-            <iframe class="pdf-viewer"
-                    th:src="@{/facturas/ver/{ventaId}/pdf(ventaId=${ventaId})}"
-                    title="Vista previa de factura">
-            </iframe>
+            <!-- Visor PDF -->
+            <div class="card slide-up">
+                <div class="card-body p-3">
+                    <iframe class="pdf-viewer"
+                            th:src="@{/facturas/ver/{ventaId}/pdf(ventaId=${ventaId})}"
+                            title="Vista previa de factura">
+                    </iframe>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div th:replace="~{layout/base :: footer}"></div>
         </div>
     </div>
 </div>
+
+<style>
+.pdf-viewer {
+    width: 100%;
+    height: 700px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+</style>
+
+<div th:replace="~{layout/base :: scripts}"></div>
 </body>
 </html>
