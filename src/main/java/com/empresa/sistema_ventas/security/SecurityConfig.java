@@ -50,6 +50,9 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/auth/login?logout=true")
                         .permitAll()
                 )
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.sameOrigin())
+                )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) ->
                                 response.sendRedirect("/auth/login"))
