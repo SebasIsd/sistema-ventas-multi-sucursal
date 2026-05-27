@@ -47,26 +47,4 @@ public class InventarioViewController {
         return "redirect:/admin/inventario";
     }
 
-    @GetMapping("/bodega/stock")
-    public String inventarioBodega(Model model) {
-        model.addAttribute("inventarios", inventarioService.listarTodos());
-        return "admin/inventario/lista";
-    }
-
-    @GetMapping("/bodega/ajustar")
-    public String mostrarFormularioAjusteBodega(Model model) {
-        model.addAttribute("productos", productoRepository.findAll());
-        model.addAttribute("sucursales", sucursalRepository.findAll());
-        return "admin/inventario/ajustar";
-    }
-
-    @PostMapping("/bodega/ajustar")
-    public String ajustarStockBodega(@RequestParam Integer productoId,
-                                     @RequestParam Long sucursalId,
-                                     @RequestParam Integer cantidad) {
-
-        inventarioService.aumentarStock(productoId, sucursalId, cantidad);
-
-        return "redirect:/bodega/stock";
-    }
 }
