@@ -107,18 +107,6 @@
 			<version>${jasperreports.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>net.sf.jasperreports</groupId>
-			<artifactId>jasperreports-pdf</artifactId>
-			<version>${jasperreports.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>net.sf.jasperreports</groupId>
-			<artifactId>jasperreports-jdt</artifactId>
-			<version>${jasperreports.version}</version>
-		</dependency>
-
 		<!-- Test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
