@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/base :: head('Categorías — Sistema de Ventas')}">
 </head>
@@ -106,12 +106,12 @@
 
                     <div class="mb-3">
                         <label class="form-label">Nombre de Categoría <span class="text-danger">*</span></label>
-                        <input type="text" id="nombre" class="form-control" placeholder="Ej. Lácteos">
+                        <input type="text" id="nombre" class="form-control" placeholder="Ej. Lácteos" required minlength="3" maxlength="100" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s]+$" title="De 3 a 100 caracteres. Solo letras, números y espacios.">
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Descripción</label>
-                        <textarea id="descripcion" class="form-control" rows="3" placeholder="Opcional..."></textarea>
+                        <textarea id="descripcion" class="form-control" rows="3" placeholder="Opcional..." maxlength="255"></textarea>
                     </div>
 
                     <div class="form-check form-switch mt-4">
@@ -243,9 +243,24 @@
         async function guardarCategoria() {
             const id = document.getElementById('idCategoria').value;
             const nombre = document.getElementById('nombre').value.trim();
+            const descripcion = document.getElementById('descripcion').value.trim();
             
             if (!nombre) {
-                showToast('error', 'El nombre es obligatorio');
+                showToast('warning', 'El nombre es obligatorio');
+                return;
+            }
+            if (nombre.length < 3 || nombre.length > 100) {
+                showToast('warning', 'El nombre debe tener entre 3 y 100 caracteres');
+                return;
+            }
+            const regexNombre = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s]+$/;
+            if (!regexNombre.test(nombre)) {
+                showToast('warning', 'El nombre debe contener solo letras, números y espacios');
+                return;
+            }
+
+            if (descripcion && descripcion.length > 255) {
+                showToast('warning', 'La descripción no debe exceder los 255 caracteres');
                 return;
             }
 
@@ -255,7 +270,7 @@
 
             const body = {
                 nombre: nombre,
-                descripcion: document.getElementById('descripcion').value.trim(),
+                descripcion: descripcion,
                 activo: document.getElementById('activo').checked
             };
 

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/base :: head('Ajustar Stock — Bodega')}"></head>
 <body class="role-bodega">
@@ -26,17 +26,17 @@
 
     <div class="card slide-up" style="max-width:560px;">
         <div class="card-body" style="padding:1.5rem;">
-            <form th:action="@{/bodega/ajustar}" method="post">
+            <form th:action="@{/bodega/ajustar}" method="post" id="formAjusteStockViejo">
                 <div class="mb-3">
                     <label class="form-label">Producto</label>
-                    <select name="productoId" class="form-select" required>
+                    <select name="productoId" id="selProducto" class="form-select" required>
                         <option value="">-- Seleccione --</option>
                         <option th:each="p : ${productos}" th:value="${p.idProducto}" th:text="${p.nombre}"></option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Cantidad a aumentar</label>
-                    <input type="number" name="cantidad" class="form-control" min="1" required>
+                    <input type="number" name="cantidad" id="inputCantidad" class="form-control" min="1" required>
                 </div>
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-filled"><i class="bi bi-check-lg"></i> Guardar</button>
@@ -50,5 +50,62 @@
     </div>
 </div>
 <div th:replace="~{layout/base :: scripts}"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('formAjusteStockViejo');
+        const cantidadInput = document.getElementById('inputCantidad');
+
+        if (cantidadInput) {
+            cantidadInput.addEventListener('input', function () {
+                let rawVal = this.value;
+                if (/[^0-9]/.test(rawVal)) {
+                    this.value = rawVal.replace(/[^0-9]/g, '');
+                }
+            });
+        }
+
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                const prod = document.getElementById('selProducto').value;
+                const rawCant = cantidadInput.value;
+                const cant = parseInt(rawCant) || 0;
+
+                if (!prod) {
+                    e.preventDefault();
+                    showToast('error', 'Debe seleccionar un producto.');
+                    return;
+                }
+
+                if (cant < 1) {
+                    e.preventDefault();
+                    showToast('error', 'La cantidad debe ser un entero positivo mayor o igual a 1.');
+                    return;
+                }
+            });
+        }
+    });
+</script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function () {
+        const errorMsg = /*[[${errorMessage}]]*/ null;
+        const successMsg = /*[[${successMessage}]]*/ null;
+        const msg = /*[[${mensaje}]]*/ null;
+        const tipoMsg = /*[[${tipoMensaje}]]*/ null;
+
+        if (errorMsg) {
+            showToast('error', errorMsg);
+        }
+        if (successMsg) {
+            showToast('success', successMsg);
+        }
+        if (msg) {
+            showToast(tipoMsg === 'success' ? 'success' : 'error', msg);
+        }
+    });
+    /*]]>*/
+</script>
 </body>
 </html>

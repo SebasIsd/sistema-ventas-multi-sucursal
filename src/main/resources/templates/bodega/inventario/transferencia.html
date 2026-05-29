@@ -41,15 +41,16 @@
                                 Datos de la Transferencia
                             </h5>
 
-                            <form th:action="@{/bodega/inventario/transferencia}" method="post">
+                            <form th:action="@{/bodega/inventario/transferencia}" method="post" id="formTransferenciaInventario">
 
                                 <div class="mb-4">
                                     <label class="form-label fw-semibold">Producto *</label>
-                                    <select name="productoId" class="form-select" required>
+                                    <select name="productoId" id="selProducto" class="form-select" required>
                                         <option value="">-- Seleccione un producto --</option>
-                                        <option th:each="p : ${productos}"
-                                                th:value="${p.idProducto}"
-                                                th:text="${p.nombre}">
+                                        <option th:each="inv : ${inventarios}"
+                                                th:value="${inv.producto.idProducto}"
+                                                th:data-stock="${inv.stockActual}"
+                                                th:text="${inv.producto.nombre + ' (Stock: ' + inv.stockActual + ')'}">
                                         </option>
                                     </select>
                                 </div>
@@ -81,6 +82,7 @@
                                     <label class="form-label fw-semibold">Cantidad *</label>
                                     <input type="number"
                                            name="cantidad"
+                                           id="inputCantidad"
                                            class="form-control"
                                            min="1"
                                            required
@@ -91,6 +93,7 @@
                                 <div class="mb-4">
                                     <label class="form-label fw-semibold">Observación</label>
                                     <textarea name="observacion"
+                                              id="inputObservacion"
                                               class="form-control"
                                               rows="3"
                                               placeholder="Motivo de la transferencia..."></textarea>
@@ -123,5 +126,88 @@
 </div>
 
 <div th:replace="~{layout/base :: scripts}"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('formTransferenciaInventario');
+        const cantidadInput = document.getElementById('inputCantidad');
+        const selectProducto = document.getElementById('selProducto');
+        const selectDestino = document.getElementById('selDestino');
+        const obsInput = document.getElementById('inputObservacion');
+
+        if (cantidadInput) {
+            cantidadInput.addEventListener('input', function () {
+                let rawVal = this.value;
+                if (/[^0-9]/.test(rawVal)) {
+                    this.value = rawVal.replace(/[^0-9]/g, '');
+                }
+            });
+        }
+
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                const prodOption = selectProducto.options[selectProducto.selectedIndex];
+                const destVal = selectDestino.value;
+                const rawCant = cantidadInput.value;
+                const cant = parseInt(rawCant) || 0;
+
+                if (!prodOption || !prodOption.value) {
+                    e.preventDefault();
+                    showToast('error', 'Debe seleccionar un producto.');
+                    return;
+                }
+
+                if (!destVal) {
+                    e.preventDefault();
+                    showToast('error', 'Debe seleccionar una sucursal de destino.');
+                    return;
+                }
+
+                if (cant < 1) {
+                    e.preventDefault();
+                    showToast('error', 'La cantidad debe ser un entero positivo mayor o igual a 1.');
+                    return;
+                }
+
+                const stockDisponible = parseInt(prodOption.getAttribute('data-stock')) || 0;
+                if (cant > stockDisponible) {
+                    e.preventDefault();
+                    showToast('error', 'Stock insuficiente para transferir. Stock disponible: ' + stockDisponible);
+                    return;
+                }
+
+                if (obsInput) {
+                    obsInput.value = obsInput.value.trim();
+                    if (obsInput.value.length > 255) {
+                        e.preventDefault();
+                        showToast('error', 'La observación no puede superar los 255 caracteres.');
+                        return;
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function () {
+        const errorMsg = /*[[${errorMessage}]]*/ null;
+        const successMsg = /*[[${successMessage}]]*/ null;
+        const msg = /*[[${mensaje}]]*/ null;
+        const tipoMsg = /*[[${tipoMensaje}]]*/ null;
+
+        if (errorMsg) {
+            showToast('error', errorMsg);
+        }
+        if (successMsg) {
+            showToast('success', successMsg);
+        }
+        if (msg) {
+            showToast(tipoMsg === 'success' ? 'success' : 'error', msg);
+        }
+    });
+    /*]]>*/
+</script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/base :: head('Clientes — Sistema de Ventas')}">
 </head>
@@ -33,9 +33,9 @@
                                 <h5 class="card-title mb-3" style="font-weight:700; color:var(--text-main);">
                                     <i class="bi bi-search" style="color:var(--primary); margin-right:.5rem;"></i> Buscar Cliente
                                 </h5>
-                                <form th:action="@{/clientes/buscar}" method="get">
+                                <form th:action="@{/clientes/buscar}" method="get" id="formBuscarCliente">
                                     <div class="input-group">
-                                        <input type="text" name="cedula" class="form-control" placeholder="Ingrese cédula o RUC" required>
+                                        <input type="text" name="cedula" id="search_cedula" class="form-control" placeholder="Ingrese cédula o RUC" required>
                                         <button type="submit" class="btn btn-filled">
                                             <i class="bi bi-search"></i>
                                         </button>
@@ -65,26 +65,26 @@
                                 <h5 class="card-title mb-3" style="font-weight:700; color:var(--text-main);">
                                     <i class="bi bi-person-plus" style="color:var(--primary); margin-right:.5rem;"></i> Nuevo Cliente
                                 </h5>
-                                <form th:action="@{/clientes/guardar}" method="post">
+                                <form id="formNuevoCliente" th:action="@{/clientes/guardar}" method="post">
                                     <div class="row g-2">
                                         <div class="col-md-6">
-                                            <label class="form-label small">Cédula / RUC</label>
-                                            <input type="text" name="cedulaRuc" class="form-control form-control-sm" required>
+                                            <label class="form-label small fw-semibold">Cédula / RUC *</label>
+                                            <input type="text" name="cedulaRuc" id="new_cedula" class="form-control form-control-sm" required maxlength="13" pattern="^\d{10}(\d{3})?$" title="Cédula de 10 dígitos o RUC de 13 dígitos">
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label small">Tipo Cliente</label>
-                                            <select name="tipoCliente" class="form-select form-select-sm">
+                                            <label class="form-label small fw-semibold">Tipo Cliente *</label>
+                                            <select name="tipoCliente" id="new_tipo" class="form-select form-select-sm">
                                                 <option value="NORMAL">NORMAL</option>
                                                 <option value="EMPRESA">EMPRESA</option>
                                             </select>
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label small">Nombres</label>
-                                            <input type="text" name="nombres" class="form-control form-control-sm" required>
+                                            <label class="form-label small fw-semibold">Nombres *</label>
+                                            <input type="text" name="nombres" id="new_nombres" class="form-control form-control-sm" required maxlength="100" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$" title="Solo letras y espacios">
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label small">Apellidos</label>
-                                            <input type="text" name="apellidos" class="form-control form-control-sm" required>
+                                            <label class="form-label small fw-semibold">Apellidos *</label>
+                                            <input type="text" name="apellidos" id="new_apellidos" class="form-control form-control-sm" required maxlength="100" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$" title="Solo letras y espacios">
                                         </div>
                                         <div class="col-12 text-end mt-3">
                                             <button type="submit" class="btn btn-filled btn-sm">
@@ -177,35 +177,35 @@
                         <input type="hidden" name="id" id="edit_id">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label">Cédula / RUC</label>
-                                <input type="text" name="cedulaRuc" id="edit_cedula" class="form-control" required>
+                                <label class="form-label fw-semibold">Cédula / RUC *</label>
+                                <input type="text" name="cedulaRuc" id="edit_cedula" class="form-control" required maxlength="13" pattern="^\d{10}(\d{3})?$" title="Cédula de 10 dígitos o RUC de 13 dígitos">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Tipo Cliente</label>
+                                <label class="form-label fw-semibold">Tipo Cliente *</label>
                                 <select name="tipoCliente" id="edit_tipo" class="form-select">
                                     <option value="NORMAL">NORMAL</option>
                                     <option value="EMPRESA">EMPRESA</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Nombres</label>
-                                <input type="text" name="nombres" id="edit_nombres" class="form-control" required>
+                                <label class="form-label fw-semibold">Nombres *</label>
+                                <input type="text" name="nombres" id="edit_nombres" class="form-control" required maxlength="100" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$" title="Solo letras y espacios">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Apellidos</label>
-                                <input type="text" name="apellidos" id="edit_apellidos" class="form-control" required>
+                                <label class="form-label fw-semibold">Apellidos *</label>
+                                <input type="text" name="apellidos" id="edit_apellidos" class="form-control" required maxlength="100" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$" title="Solo letras y espacios">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Teléfono</label>
-                                <input type="text" name="telefono" id="edit_telefono" class="form-control">
+                                <label class="form-label fw-semibold">Teléfono</label>
+                                <input type="text" name="telefono" id="edit_telefono" class="form-control" pattern="^\+?\d{7,15}$" title="De 7 a 15 dígitos numéricos, opcional + al inicio" maxlength="15">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Email</label>
-                                <input type="email" name="email" id="edit_email" class="form-control">
+                                <label class="form-label fw-semibold">Email</label>
+                                <input type="email" name="email" id="edit_email" class="form-control" maxlength="150">
                             </div>
                             <div class="col-12">
-                                <label class="form-label">Dirección</label>
-                                <input type="text" name="direccion" id="edit_direccion" class="form-control">
+                                <label class="form-label fw-semibold">Dirección</label>
+                                <input type="text" name="direccion" id="edit_direccion" class="form-control" maxlength="255">
                             </div>
                         </div>
                     </div>
@@ -224,6 +224,72 @@
     <div th:replace="~{layout/base :: scripts}"></div>
 
     <script>
+        function validarCedulaRucEcuador(idVal) {
+            idVal = idVal.trim();
+            if (!/^\d+$/.test(idVal)) return false;
+            
+            const len = idVal.length;
+            if (len !== 10 && len !== 13) return false;
+            
+            // Provincia check (first two digits)
+            const prov = parseInt(idVal.substring(0, 2), 10);
+            if ((prov < 1 || prov > 24) && prov !== 30) return false;
+            
+            const d3 = parseInt(idVal.charAt(2), 10);
+            
+            if (len === 10) {
+                // Cédula: third digit must be < 6
+                if (d3 >= 6) return false;
+                return validarCedula(idVal);
+            } else {
+                // RUC: last 3 digits must not be 000
+                const sufix = idVal.substring(10);
+                if (sufix === "000") return false;
+                
+                if (d3 < 6) {
+                    // Natural person RUC: first 10 digits is a cédula
+                    return validarCedula(idVal.substring(0, 10));
+                } else if (d3 === 9) {
+                    // Private company / Society
+                    const weights = [4, 3, 2, 7, 6, 5, 4, 3, 2];
+                    let sum = 0;
+                    for (let i = 0; i < 9; i++) {
+                        sum += parseInt(idVal.charAt(i), 10) * weights[i];
+                    }
+                    const verifier = parseInt(idVal.charAt(9), 10);
+                    const remainder = sum % 11;
+                    const computedVal = remainder === 0 ? 0 : 11 - remainder;
+                    return computedVal === verifier;
+                } else if (d3 === 6) {
+                    // Public institution
+                    const weights = [3, 2, 7, 6, 5, 4, 3, 2];
+                    let sum = 0;
+                    for (let i = 0; i < 8; i++) {
+                        sum += parseInt(idVal.charAt(i), 10) * weights[i];
+                    }
+                    const verifier = parseInt(idVal.charAt(8), 10);
+                    const remainder = sum % 11;
+                    const computedVal = remainder === 0 ? 0 : 11 - remainder;
+                    return computedVal === verifier && idVal.charAt(9) === '0';
+                }
+                return false;
+            }
+        }
+
+        function validarCedula(cedula) {
+            const verifier = parseInt(cedula.charAt(9), 10);
+            let sum = 0;
+            const weights = [2, 1, 2, 1, 2, 1, 2, 1, 2];
+            for (let i = 0; i < 9; i++) {
+                let prod = parseInt(cedula.charAt(i), 10) * weights[i];
+                if (prod >= 10) prod -= 9;
+                sum += prod;
+            }
+            const remainder = sum % 10;
+            const computedVal = remainder === 0 ? 0 : 10 - remainder;
+            return computedVal === verifier;
+        }
+
         const modalEditar = document.getElementById('modalEditar');
         if (modalEditar) {
             modalEditar.addEventListener('show.bs.modal', function(event) {
@@ -232,12 +298,183 @@
                 document.getElementById('edit_cedula').value = button.getAttribute('data-cedula');
                 document.getElementById('edit_nombres').value = button.getAttribute('data-nombres');
                 document.getElementById('edit_apellidos').value = button.getAttribute('data-apellidos');
-                document.getElementById('edit_telefono').value = button.getAttribute('data-telefono');
-                document.getElementById('edit_email').value = button.getAttribute('data-email');
-                document.getElementById('edit_direccion').value = button.getAttribute('data-direccion');
+                document.getElementById('edit_telefono').value = button.getAttribute('data-telefono') || '';
+                document.getElementById('edit_email').value = button.getAttribute('data-email') || '';
+                document.getElementById('edit_direccion').value = button.getAttribute('data-direccion') || '';
                 document.getElementById('edit_tipo').value = button.getAttribute('data-tipo');
             });
         }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Validar Buscar Cliente
+            const formBuscar = document.getElementById('formBuscarCliente');
+            if (formBuscar) {
+                formBuscar.addEventListener('submit', function (e) {
+                    const input = document.getElementById('search_cedula');
+                    const value = input.value.trim();
+                    input.value = value;
+
+                    if (!value) {
+                        e.preventDefault();
+                        showToast('error', 'Debe ingresar una cédula o RUC para buscar.');
+                        return;
+                    }
+                    if (!/^\d+$/.test(value)) {
+                        e.preventDefault();
+                        showToast('error', 'La cédula o RUC debe contener únicamente números.');
+                        return;
+                    }
+                });
+            }
+
+            // Validar Nuevo Cliente
+            const formNuevo = document.getElementById('formNuevoCliente');
+            if (formNuevo) {
+                formNuevo.addEventListener('submit', function (e) {
+                    const inputCedula = document.getElementById('new_cedula');
+                    const inputNombres = document.getElementById('new_nombres');
+                    const inputApellidos = document.getElementById('new_apellidos');
+
+                    const cedula = inputCedula.value.trim();
+                    const nombres = inputNombres.value.trim();
+                    const apellidos = inputApellidos.value.trim();
+
+                    inputCedula.value = cedula;
+                    inputNombres.value = nombres;
+                    inputApellidos.value = apellidos;
+
+                    if (!validarCedulaRucEcuador(cedula)) {
+                        e.preventDefault();
+                        showToast('error', 'La Cédula o RUC ingresado no es válido para Ecuador.');
+                        return;
+                    }
+
+                    const regexLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/;
+                    if (!regexLetras.test(nombres)) {
+                        e.preventDefault();
+                        showToast('error', 'Los nombres deben contener únicamente letras y espacios.');
+                        return;
+                    }
+                    if (nombres.length > 100) {
+                        e.preventDefault();
+                        showToast('error', 'Los nombres no pueden exceder los 100 caracteres.');
+                        return;
+                    }
+
+                    if (!regexLetras.test(apellidos)) {
+                        e.preventDefault();
+                        showToast('error', 'Los apellidos deben contener únicamente letras y espacios.');
+                        return;
+                    }
+                    if (apellidos.length > 100) {
+                        e.preventDefault();
+                        showToast('error', 'Los apellidos no pueden exceder los 100 caracteres.');
+                        return;
+                    }
+                });
+            }
+
+            // Validar Editar Cliente
+            const formEditar = document.getElementById('formEditar');
+            if (formEditar) {
+                formEditar.addEventListener('submit', function (e) {
+                    const inputCedula = document.getElementById('edit_cedula');
+                    const inputNombres = document.getElementById('edit_nombres');
+                    const inputApellidos = document.getElementById('edit_apellidos');
+                    const inputTelefono = document.getElementById('edit_telefono');
+                    const inputEmail = document.getElementById('edit_email');
+                    const inputDireccion = document.getElementById('edit_direccion');
+
+                    const cedula = inputCedula.value.trim();
+                    const nombres = inputNombres.value.trim();
+                    const apellidos = inputApellidos.value.trim();
+                    const telefono = inputTelefono.value.trim();
+                    const email = inputEmail.value.trim();
+                    const direccion = inputDireccion.value.trim();
+
+                    inputCedula.value = cedula;
+                    inputNombres.value = nombres;
+                    inputApellidos.value = apellidos;
+                    inputTelefono.value = telefono;
+                    inputEmail.value = email;
+                    inputDireccion.value = direccion;
+
+                    if (!validarCedulaRucEcuador(cedula)) {
+                        e.preventDefault();
+                        showToast('error', 'La Cédula o RUC ingresado no es válido para Ecuador.');
+                        return;
+                    }
+
+                    const regexLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/;
+                    if (!regexLetras.test(nombres)) {
+                        e.preventDefault();
+                        showToast('error', 'Los nombres deben contener únicamente letras y espacios.');
+                        return;
+                    }
+                    if (nombres.length > 100) {
+                        e.preventDefault();
+                        showToast('error', 'Los nombres no pueden exceder los 100 caracteres.');
+                        return;
+                    }
+
+                    if (!regexLetras.test(apellidos)) {
+                        e.preventDefault();
+                        showToast('error', 'Los apellidos deben contener únicamente letras y espacios.');
+                        return;
+                    }
+                    if (apellidos.length > 100) {
+                        e.preventDefault();
+                        showToast('error', 'Los apellidos no pueden exceder los 100 caracteres.');
+                        return;
+                    }
+
+                    if (telefono) {
+                        const regexTelefono = /^\+?\d{7,15}$/;
+                        if (!regexTelefono.test(telefono)) {
+                            e.preventDefault();
+                            showToast('error', 'El teléfono debe contener entre 7 y 15 dígitos numéricos.');
+                            return;
+                        }
+                    }
+
+                    if (email) {
+                        const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                        if (!regexEmail.test(email)) {
+                            e.preventDefault();
+                            showToast('error', 'El formato del correo electrónico no es válido.');
+                            return;
+                        }
+                    }
+
+                    if (direccion && direccion.length > 255) {
+                        e.preventDefault();
+                        showToast('error', 'La dirección no puede exceder los 255 caracteres.');
+                        return;
+                    }
+                });
+            }
+        });
+    </script>
+    
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function () {
+            const errorMsg = /*[[${errorMessage}]]*/ null;
+            const successMsg = /*[[${successMessage}]]*/ null;
+            const msg = /*[[${mensaje}]]*/ null;
+            const tipoMsg = /*[[${tipoMensaje}]]*/ null;
+
+            if (errorMsg) {
+                showToast('error', errorMsg);
+            }
+            if (successMsg) {
+                showToast('success', successMsg);
+            }
+            if (msg) {
+                showToast(tipoMsg === 'success' ? 'success' : 'error', msg);
+            }
+        });
+        /*]]>*/
     </script>
 </body>
 </html>

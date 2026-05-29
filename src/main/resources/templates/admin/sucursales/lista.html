@@ -93,19 +93,19 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Código *</label>
-                        <input type="text" id="codigo" class="form-control" placeholder="Ej: UIO-01" required>
+                        <input type="text" id="codigo" class="form-control" placeholder="Ej: UIO-01" required maxlength="10" pattern="^[A-Z0-9-]+$" title="Alfanumérico en mayúsculas con guiones (máx 10)">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Ciudad *</label>
-                        <input type="text" id="ciudad" class="form-control" placeholder="Ej: Quito" required>
+                        <input type="text" id="ciudad" class="form-control" placeholder="Ej: Quito" required maxlength="100" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$" title="Solo letras y espacios (máx 100)">
                     </div>
                     <div class="col-12">
-                        <label class="form-label fw-semibold">Dirección</label>
-                        <textarea id="direccion" class="form-control" rows="2" placeholder="Av. Principal 123..."></textarea>
+                        <label class="form-label fw-semibold">Dirección *</label>
+                        <textarea id="direccion" class="form-control" rows="2" placeholder="Av. Principal 123..." required maxlength="255"></textarea>
                     </div>
                     <div class="col-12">
-                        <label class="form-label fw-semibold">Teléfono</label>
-                        <input type="text" id="telefono" class="form-control" placeholder="02-2345678">
+                        <label class="form-label fw-semibold">Teléfono *</label>
+                        <input type="text" id="telefono" class="form-control" placeholder="02-2345678" required pattern="^\+?\d{7,15}$" title="De 7 a 15 dígitos numéricos, opcional + al inicio">
                     </div>
                 </div>
             </div>
@@ -215,8 +215,50 @@
             telefono: document.getElementById('telefono').value.trim()
         };
 
-        if (!body.codigo || !body.ciudad) {
-            showToast('warning', 'Código y ciudad son requeridos');
+        if (!body.codigo) {
+            showToast('warning', 'El código de la sucursal es requerido');
+            return;
+        }
+        const regexCodigo = /^[A-Z0-9-]+$/;
+        if (!regexCodigo.test(body.codigo)) {
+            showToast('warning', 'Código debe ser alfanumérico en mayúsculas y puede incluir guiones (ej: UIO-01)');
+            return;
+        }
+        if (body.codigo.length > 10) {
+            showToast('warning', 'Código no debe exceder 10 caracteres');
+            return;
+        }
+
+        if (!body.ciudad) {
+            showToast('warning', 'La ciudad es requerida');
+            return;
+        }
+        const regexCiudad = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/;
+        if (!regexCiudad.test(body.ciudad)) {
+            showToast('warning', 'Ciudad debe contener solo letras y espacios');
+            return;
+        }
+        if (body.ciudad.length > 100) {
+            showToast('warning', 'Ciudad no debe exceder 100 caracteres');
+            return;
+        }
+
+        if (!body.direccion) {
+            showToast('warning', 'La dirección es requerida');
+            return;
+        }
+        if (body.direccion.length > 255) {
+            showToast('warning', 'Dirección no debe exceder 255 caracteres');
+            return;
+        }
+
+        if (!body.telefono) {
+            showToast('warning', 'El teléfono es requerido');
+            return;
+        }
+        const regexTelefono = /^\+?\d{7,15}$/;
+        if (!regexTelefono.test(body.telefono)) {
+            showToast('warning', 'Teléfono debe contener entre 7 y 15 dígitos numéricos (puede empezar con +)');
             return;
         }
 

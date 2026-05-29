@@ -121,5 +121,26 @@
         });
     }
 </script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function () {
+        const errorMsg = /*[[${errorMessage}]]*/ null;
+        const successMsg = /*[[${successMessage}]]*/ null;
+        const msg = /*[[${mensaje}]]*/ null;
+        const tipoMsg = /*[[${tipoMensaje}]]*/ null;
+
+        if (errorMsg) {
+             showToast('error', errorMsg);
+        }
+        if (successMsg) {
+             showToast('success', successMsg);
+        }
+        if (msg) {
+             showToast(tipoMsg === 'success' ? 'success' : 'error', msg);
+        }
+    });
+    /*]]>*/
+</script>
 </body>
 </html>

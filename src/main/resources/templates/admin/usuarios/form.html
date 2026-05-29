@@ -68,6 +68,10 @@
                                            th:field="*{username}"
                                            th:readonly="${modo == 'editar'}"
                                            required
+                                           minlength="3"
+                                           maxlength="50"
+                                           pattern="^[a-zA-Z0-9._-]+$"
+                                           title="Debe tener entre 3 y 50 caracteres. Solo alfanuméricos, puntos, guión o guión bajo. Sin espacios."
                                            placeholder="juan.perez">
                                     <small class="text-muted" th:if="${modo == 'editar'}">
                                         El nombre de usuario no puede modificarse
@@ -86,6 +90,7 @@
                                                name="password"
                                                th:required="${modo == 'crear'}"
                                                minlength="6"
+                                               maxlength="100"
                                                autocomplete="new-password"
                                                placeholder="Mínimo 6 caracteres">
                                         <button class="btn btn-ghost" type="button" id="togglePassword" title="Mostrar/ocultar contraseña">
@@ -94,7 +99,7 @@
                                     </div>
                                     <small class="text-muted">
                                         <span th:if="${modo == 'editar'}">Dejar vacío para mantener la contraseña actual</span>
-                                        <span th:if="${modo == 'crear'}">Mínimo 6 caracteres</span>
+                                        <span th:if="${modo == 'crear'}">Mínimo 6 caracteres (máximo 100)</span>
                                     </small>
                                 </div>
                             </div>
@@ -102,7 +107,7 @@
                             <!-- Columna Derecha: Datos personales -->
                             <div class="col-lg-6">
                                 <h5 class="mb-3 pb-2 border-bottom fw-bold">
-                                    <i class="bi bi-person-badge me-2" style="color:var(--primary);"></i>Datos Personales
+                                    <i class="bi bi-person-badge me-2" style="color:var(--primary); margin-right:.5rem;"></i>Datos Personales
                                 </h5>
 
                                 <div class="mb-3">
@@ -112,6 +117,10 @@
                                            class="form-control"
                                            th:field="*{nombreCompleto}"
                                            required
+                                           minlength="3"
+                                           maxlength="150"
+                                           pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$"
+                                           title="Debe tener entre 3 y 150 caracteres. Solo letras y espacios."
                                            placeholder="Juan Pérez García">
                                 </div>
 
@@ -122,6 +131,7 @@
                                            class="form-control"
                                            th:field="*{email}"
                                            required
+                                           maxlength="150"
                                            placeholder="juan.perez@empresa.com">
                                 </div>
 
@@ -131,6 +141,8 @@
                                            id="telefono"
                                            class="form-control"
                                            th:field="*{telefono}"
+                                           pattern="^\d{7,15}$"
+                                           title="Debe contener entre 7 y 15 dígitos numéricos sin espacios."
                                            placeholder="0999999999">
                                 </div>
                             </div>
@@ -138,7 +150,7 @@
                             <!-- Fila: Asignación y Estado -->
                             <div class="col-lg-6">
                                 <h5 class="mb-3 pb-2 border-bottom fw-bold">
-                                    <i class="bi bi-person-gear me-2" style="color:var(--primary);"></i>Asignación
+                                    <i class="bi bi-person-gear me-2" style="color:var(--primary); margin-right:.5rem;"></i>Asignación
                                 </h5>
 
                                 <div class="mb-3">
@@ -163,14 +175,14 @@
                                                 th:selected="${usuario.sucursal != null and usuario.sucursal.id == suc.id}">
                                         </option>
                                     </select>
-                                    <small class="text-muted">Dejar vacío para acceso global (solo ADMIN)</small>
+                                    <small class="text-muted" id="sucursalHelp">Dejar vacío para acceso global (solo ADMIN)</small>
                                 </div>
                             </div>
 
                             <!-- Estado -->
                             <div class="col-lg-6">
                                 <h5 class="mb-3 pb-2 border-bottom fw-bold">
-                                    <i class="bi bi-toggle-on me-2" style="color:var(--primary);"></i>Estado
+                                    <i class="bi bi-toggle-on me-2" style="color:var(--primary); margin-right:.5rem;"></i>Estado
                                 </h5>
 
                                 <div class="mb-3">
@@ -233,6 +245,36 @@
                 passwordInput.type = isText ? 'password' : 'text';
                 this.querySelector('i').className = isText ? 'bi bi-eye' : 'bi bi-eye-slash';
             });
+        }
+
+        // Validación dinámica de Sucursal según el Rol
+        const rolSelect = document.getElementById('rolId');
+        const sucursalSelect = document.getElementById('sucursalId');
+        const sucursalHelp = document.getElementById('sucursalHelp');
+        const sucursalLabel = document.querySelector('label[for="sucursalId"]');
+
+        function actualizarRequerimientoSucursal() {
+            if (!rolSelect || !sucursalSelect) return;
+            const selectedOption = rolSelect.options[rolSelect.selectedIndex];
+            if (!selectedOption) return;
+            const rolNombre = selectedOption.text.toUpperCase();
+
+            // Si es Cajero o Bodeguero, requiere sucursal obligatoriamente
+            if (rolNombre.includes('CAJERO') || rolNombre.includes('BODEGA')) {
+                sucursalSelect.setAttribute('required', 'required');
+                sucursalLabel.innerHTML = 'Sucursal *';
+                sucursalHelp.innerHTML = '<span class="text-danger"><i class="bi bi-exclamation-circle me-1"></i>Obligatorio para Cajeros y personal de Bodega.</span>';
+            } else {
+                sucursalSelect.removeAttribute('required');
+                sucursalLabel.innerHTML = 'Sucursal';
+                sucursalHelp.innerHTML = 'Dejar vacío para acceso global (solo ADMIN)';
+            }
+        }
+
+        if (rolSelect) {
+            rolSelect.addEventListener('change', actualizarRequerimientoSucursal);
+            // Ejecutar al cargar la página (para el modo edición)
+            actualizarRequerimientoSucursal();
         }
     });
 </script>

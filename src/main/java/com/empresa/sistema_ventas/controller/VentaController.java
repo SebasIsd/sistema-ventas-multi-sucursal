@@ -16,6 +16,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -82,20 +85,59 @@ public class VentaController {
 
     @PostMapping("/procesar")
     public String procesarVenta(
-             @ModelAttribute VentaRequest request,
-             Authentication authentication
+             @Valid @ModelAttribute VentaRequest request,
+             BindingResult bindingResult,
+             Authentication authentication,
+             RedirectAttributes redirectAttributes
     ) {
+        if (bindingResult.hasErrors()) {
+            String errorMsg = bindingResult.getFieldErrors().stream()
+                    .map(error -> error.getDefaultMessage())
+                    .findFirst()
+                    .orElse("Datos de venta inválidos");
+            redirectAttributes.addFlashAttribute("errorMessage", errorMsg);
+            return "redirect:/ventas/nueva";
+        }
+
+        if (request.getItems() == null || request.getItems().isEmpty()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Debe agregar al menos un producto a la venta");
+            return "redirect:/ventas/nueva";
+        }
+
+        // Validar productos duplicados y cantidades negativas/cero
+        java.util.Set<Integer> productIds = new java.util.HashSet<>();
+        for (com.empresa.sistema_ventas.dto.ItemVentaDTO item : request.getItems()) {
+            if (item.getProductoId() == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Fila de producto inválida o sin producto seleccionado");
+                return "redirect:/ventas/nueva";
+            }
+            if (item.getCantidad() == null || item.getCantidad() < 1) {
+                redirectAttributes.addFlashAttribute("errorMessage", "La cantidad para cada producto debe ser mayor o igual a 1");
+                return "redirect:/ventas/nueva";
+            }
+            if (productIds.contains(item.getProductoId())) {
+                redirectAttributes.addFlashAttribute("errorMessage", "No se permiten productos duplicados. Consolide las cantidades en una sola fila.");
+                return "redirect:/ventas/nueva";
+            }
+            productIds.add(item.getProductoId());
+        }
 
         String username = authentication.getName();
 
         Usuario usuario = usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        ventaService.procesarVenta(
-                request.getClienteId(),
-                request.getItems(),
-                usuario.getId()
-        );
+        try {
+            ventaService.procesarVenta(
+                    request.getClienteId(),
+                    request.getItems(),
+                    usuario.getId()
+            );
+            redirectAttributes.addFlashAttribute("successMessage", "Venta registrada con éxito.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error al procesar venta: " + e.getMessage());
+            return "redirect:/ventas/nueva";
+        }
 
         return "redirect:/ventas/historial";
     }

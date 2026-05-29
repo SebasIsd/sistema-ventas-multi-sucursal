@@ -28,13 +28,14 @@
             <!-- Filtros de búsqueda -->
             <div class="card slide-up" style="margin-bottom:1.5rem;">
                 <div class="card-body" style="padding:1.25rem 1.5rem;">
-                    <form method="get" th:action="@{/ventas/historial}" class="row g-3 align-items-end">
+                    <form method="get" th:action="@{/ventas/historial}" class="row g-3 align-items-end" id="formFiltroHistorial">
                         <div class="col-md-4">
                             <label class="form-label fw-semibold">
                                 <i class="bi bi-person-badge me-1"></i>Cédula del Cliente
                             </label>
                             <input type="text"
                                    name="cedula"
+                                   id="filtro_cedula"
                                    class="form-control"
                                    placeholder="Ingrese cédula..."
                                    th:value="${cedula}">
@@ -45,6 +46,7 @@
                             </label>
                             <input type="date"
                                    name="fechaInicio"
+                                   id="filtro_fecha_inicio"
                                    class="form-control"
                                    th:value="${fechaInicio}">
                         </div>
@@ -54,6 +56,7 @@
                             </label>
                             <input type="date"
                                    name="fechaFin"
+                                   id="filtro_fecha_fin"
                                    class="form-control"
                                    th:value="${fechaFin}">
                         </div>
@@ -156,5 +159,82 @@
 
 <!-- Scripts -->
 <div th:replace="~{layout/base :: scripts}"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('formFiltroHistorial');
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                const inputCedula = document.getElementById('filtro_cedula');
+                const inputFechaInicio = document.getElementById('filtro_fecha_inicio');
+                const inputFechaFin = document.getElementById('filtro_fecha_fin');
+
+                const cedula = inputCedula.value.trim();
+                const fechaInicioVal = inputFechaInicio.value;
+                const fechaFinVal = inputFechaFin.value;
+
+                inputCedula.value = cedula;
+
+                // Validar Cédula si se ingresa
+                if (cedula !== "") {
+                    if (!/^\d+$/.test(cedula)) {
+                        e.preventDefault();
+                        showToast('error', 'La cédula para buscar debe contener únicamente números.');
+                        return;
+                    }
+                    if (cedula.length > 13) {
+                        e.preventDefault();
+                        showToast('error', 'La cédula o RUC no puede exceder los 13 dígitos.');
+                        return;
+                    }
+                }
+
+                // Validar Fechas
+                if (fechaInicioVal && fechaFinVal) {
+                    const dateInicio = new Date(fechaInicioVal);
+                    const dateFin = new Date(fechaFinVal);
+                    if (dateInicio > dateFin) {
+                        e.preventDefault();
+                        showToast('error', 'La Fecha Inicio no puede ser posterior a la Fecha Fin.');
+                        return;
+                    }
+                }
+
+                if (fechaFinVal) {
+                    const dateFin = new Date(fechaFinVal);
+                    const today = new Date();
+                    // Reset hours to compare only date parts
+                    today.setHours(0,0,0,0);
+                    if (dateFin > today) {
+                        e.preventDefault();
+                        showToast('error', 'La Fecha Fin no puede ser superior a la fecha actual.');
+                        return;
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function () {
+        const errorMsg = /*[[${errorMessage}]]*/ null;
+        const successMsg = /*[[${successMessage}]]*/ null;
+        const msg = /*[[${mensaje}]]*/ null;
+        const tipoMsg = /*[[${tipoMensaje}]]*/ null;
+
+        if (errorMsg) {
+            showToast('error', errorMsg);
+        }
+        if (successMsg) {
+            showToast('success', successMsg);
+        }
+        if (msg) {
+            showToast(tipoMsg === 'success' ? 'success' : 'error', msg);
+        }
+    });
+    /*]]>*/
+</script>
 </body>
 </html>
