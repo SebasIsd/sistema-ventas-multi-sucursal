@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/base :: head('Stock — Bodega')}"></head>
 <body class="role-bodega">
@@ -68,5 +68,26 @@
     </div>
 </div>
 <div th:replace="~{layout/base :: scripts}"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function () {
+        const errorMsg = /*[[${errorMessage}]]*/ null;
+        const successMsg = /*[[${successMessage}]]*/ null;
+        const msg = /*[[${mensaje}]]*/ null;
+        const tipoMsg = /*[[${tipoMensaje}]]*/ null;
+
+        if (errorMsg) {
+             showToast('error', errorMsg);
+        }
+        if (successMsg) {
+             showToast('success', successMsg);
+        }
+        if (msg) {
+             showToast(tipoMsg === 'success' ? 'success' : 'error', msg);
+        }
+    });
+    /*]]>*/
+</script>
 </body>
 </html>

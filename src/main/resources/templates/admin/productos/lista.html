@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/base :: head('Productos — Sistema de Ventas')}">
 </head>
@@ -110,22 +110,22 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Código de Barras</label>
-                            <input type="text" id="codigoBarras" class="form-control" placeholder="Ej. 786123456789">
+                            <input type="text" id="codigoBarras" class="form-control" placeholder="Ej. 786123456789" pattern="^\d{8,20}$" title="Debe contener entre 8 y 20 dígitos numéricos">
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label">Nombre del Producto <span class="text-danger">*</span></label>
-                            <input type="text" id="nombreProducto" class="form-control" placeholder="Nombre descriptivo">
+                            <input type="text" id="nombreProducto" class="form-control" placeholder="Nombre descriptivo" required maxlength="150">
                         </div>
 
                         <div class="col-12">
                             <label class="form-label">Descripción</label>
-                            <textarea id="descripcionProducto" class="form-control" rows="2" placeholder="Opcional..."></textarea>
+                            <textarea id="descripcionProducto" class="form-control" rows="2" placeholder="Opcional..." maxlength="255"></textarea>
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label">Precio Unitario ($) <span class="text-danger">*</span></label>
-                            <input type="number" step="0.01" min="0" id="precioUnitario" class="form-control" placeholder="0.00">
+                            <input type="number" step="0.01" min="0.01" id="precioUnitario" class="form-control" placeholder="0.00" required>
                         </div>
 
                         <div class="col-md-4">
@@ -301,12 +301,42 @@
 
         async function guardarProducto() {
             const id = document.getElementById('idProducto').value;
+            const codigoBarras = document.getElementById('codigoBarras').value.trim();
             const nombre = document.getElementById('nombreProducto').value.trim();
-            const precio = parseFloat(document.getElementById('precioUnitario').value);
+            const descripcion = document.getElementById('descripcionProducto').value.trim();
+            const precioRaw = document.getElementById('precioUnitario').value;
+            const precio = parseFloat(precioRaw);
             const catId = document.getElementById('categoria').value;
             
-            if (!nombre || isNaN(precio) || !catId) {
-                showToast('error', 'Nombre, Precio y Categoría son obligatorios');
+            if (codigoBarras) {
+                const regexBarras = /^\d{8,20}$/;
+                if (!regexBarras.test(codigoBarras)) {
+                    showToast('warning', 'El código de barras debe tener entre 8 y 20 dígitos numéricos');
+                    return;
+                }
+            }
+
+            if (!nombre) {
+                showToast('warning', 'El nombre del producto es obligatorio');
+                return;
+            }
+            if (nombre.length > 150) {
+                showToast('warning', 'El nombre del producto no puede superar los 150 caracteres');
+                return;
+            }
+
+            if (descripcion && descripcion.length > 255) {
+                showToast('warning', 'La descripción no puede superar los 255 caracteres');
+                return;
+            }
+
+            if (isNaN(precio) || precio <= 0) {
+                showToast('warning', 'El precio unitario debe ser un número decimal positivo mayor a cero');
+                return;
+            }
+
+            if (!catId) {
+                showToast('warning', 'Debe seleccionar una categoría para el producto');
                 return;
             }
 
@@ -315,9 +345,9 @@
             btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Guardando...';
 
             const body = {
-                codigoBarras: document.getElementById('codigoBarras').value.trim(),
+                codigoBarras: codigoBarras,
                 nombre: nombre,
-                descripcion: document.getElementById('descripcionProducto').value.trim(),
+                descripcion: descripcion,
                 precioUnitario: precio,
                 porcentajeIva: parseInt(document.getElementById('porcentajeIva').value),
                 idCategoria: parseInt(catId),

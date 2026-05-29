@@ -68,16 +68,30 @@ public class BodegaViewController {
     @PostMapping("/ajustar")
     public String ajustarStock(
             Authentication auth,
-            @RequestParam Integer productoId,
-            @RequestParam Integer cantidad,
+            @RequestParam(required = false) Integer productoId,
+            @RequestParam(required = false) Integer cantidad,
             RedirectAttributes redirectAttributes
     ) {
+        if (productoId == null) {
+            redirectAttributes.addFlashAttribute("error", "Debe seleccionar un producto.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Debe seleccionar un producto.");
+            return "redirect:/bodega/ajustar";
+        }
+        if (cantidad == null || cantidad < 1) {
+            redirectAttributes.addFlashAttribute("error", "La cantidad debe ser mayor o igual a 1.");
+            redirectAttributes.addFlashAttribute("errorMessage", "La cantidad debe ser mayor o igual a 1.");
+            return "redirect:/bodega/ajustar";
+        }
+
         Sucursal sucursal = requireSucursal(auth);
         try {
             inventarioService.aumentarStock(productoId, sucursal.getId(), cantidad);
             redirectAttributes.addFlashAttribute("exito", "Stock ajustado correctamente.");
+            redirectAttributes.addFlashAttribute("successMessage", "Stock ajustado correctamente.");
         } catch (RuntimeException ex) {
             redirectAttributes.addFlashAttribute("error", ex.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            return "redirect:/bodega/ajustar";
         }
         return "redirect:/bodega/stock";
     }
@@ -85,7 +99,7 @@ public class BodegaViewController {
     @GetMapping("/transferencias")
     public String mostrarTransferencia(Authentication auth, Model model) {
         Sucursal sucursal = requireSucursal(auth);
-        model.addAttribute("productos", productoRepository.findAll());
+        model.addAttribute("inventarios", inventarioService.listarPorSucursal(sucursal.getId()));
         model.addAttribute("sucursalOrigen", sucursal);
         model.addAttribute("sucursales", sucursalRepository.findAll().stream()
                 .filter(s -> !s.getId().equals(sucursal.getId()))
@@ -96,13 +110,42 @@ public class BodegaViewController {
     @PostMapping("/transferencias")
     public String transferirStock(
             Authentication auth,
-            @RequestParam Integer productoId,
-            @RequestParam Long sucursalDestinoId,
-            @RequestParam Integer cantidad,
+            @RequestParam(required = false) Integer productoId,
+            @RequestParam(required = false) Long sucursalDestinoId,
+            @RequestParam(required = false) Integer cantidad,
             RedirectAttributes redirectAttributes
     ) {
+        if (productoId == null) {
+            redirectAttributes.addFlashAttribute("error", "Debe seleccionar un producto.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Debe seleccionar un producto.");
+            return "redirect:/bodega/transferencias";
+        }
+        if (sucursalDestinoId == null) {
+            redirectAttributes.addFlashAttribute("error", "Debe seleccionar la sucursal de destino.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Debe seleccionar la sucursal de destino.");
+            return "redirect:/bodega/transferencias";
+        }
+        if (cantidad == null || cantidad < 1) {
+            redirectAttributes.addFlashAttribute("error", "La cantidad a transferir debe ser mayor o igual a 1.");
+            redirectAttributes.addFlashAttribute("errorMessage", "La cantidad a transferir debe ser mayor o igual a 1.");
+            return "redirect:/bodega/transferencias";
+        }
+
         Sucursal sucursalOrigen = requireSucursal(auth);
+        if (sucursalOrigen.getId().equals(sucursalDestinoId)) {
+            redirectAttributes.addFlashAttribute("error", "La sucursal origen y destino no pueden ser iguales.");
+            redirectAttributes.addFlashAttribute("errorMessage", "La sucursal origen y destino no pueden ser iguales.");
+            return "redirect:/bodega/transferencias";
+        }
+
         try {
+            boolean tieneStock = inventarioService.verificarStock(productoId, sucursalOrigen.getId(), cantidad);
+            if (!tieneStock) {
+                redirectAttributes.addFlashAttribute("error", "Stock insuficiente en la sucursal origen.");
+                redirectAttributes.addFlashAttribute("errorMessage", "Stock insuficiente en la sucursal origen.");
+                return "redirect:/bodega/transferencias";
+            }
+
             inventarioService.transferirStock(
                     productoId,
                     sucursalOrigen.getId(),
@@ -110,8 +153,11 @@ public class BodegaViewController {
                     cantidad
             );
             redirectAttributes.addFlashAttribute("exito", "Transferencia realizada correctamente.");
+            redirectAttributes.addFlashAttribute("successMessage", "Transferencia realizada correctamente.");
         } catch (RuntimeException ex) {
             redirectAttributes.addFlashAttribute("error", ex.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            return "redirect:/bodega/transferencias";
         }
         return "redirect:/bodega/historial";
     }

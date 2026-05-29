@@ -41,11 +41,11 @@
                                 Registrar Entrada
                             </h5>
 
-                            <form th:action="@{/bodega/inventario/ajuste}" method="post">
+                            <form th:action="@{/bodega/inventario/ajuste}" method="post" id="formAjusteInventario">
 
                                 <div class="mb-4">
                                     <label class="form-label fw-semibold">Producto *</label>
-                                    <select name="productoId" class="form-select" required>
+                                    <select name="productoId" id="selProducto" class="form-select" required>
                                         <option value="">-- Seleccione un producto --</option>
                                         <option th:each="p : ${productos}"
                                                 th:value="${p.idProducto}"
@@ -63,6 +63,7 @@
                                     <label class="form-label fw-semibold">Cantidad a Ingresar *</label>
                                     <input type="number"
                                            name="cantidad"
+                                           id="inputCantidad"
                                            class="form-control"
                                            min="1"
                                            required
@@ -73,6 +74,7 @@
                                 <div class="mb-4">
                                     <label class="form-label fw-semibold">Observación</label>
                                     <textarea name="observacion"
+                                              id="inputObservacion"
                                               class="form-control"
                                               rows="3"
                                               placeholder="Motivo del ajuste, proveedor, etc..."></textarea>
@@ -99,5 +101,72 @@
 </div>
 
 <div th:replace="~{layout/base :: scripts}"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('formAjusteInventario');
+        const cantidadInput = document.getElementById('inputCantidad');
+        const obsInput = document.getElementById('inputObservacion');
+
+        if (cantidadInput) {
+            cantidadInput.addEventListener('input', function () {
+                let rawVal = this.value;
+                if (/[^0-9]/.test(rawVal)) {
+                    this.value = rawVal.replace(/[^0-9]/g, '');
+                }
+            });
+        }
+
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                const prod = document.getElementById('selProducto').value;
+                const rawCant = cantidadInput.value;
+                const cant = parseInt(rawCant) || 0;
+
+                if (!prod) {
+                    e.preventDefault();
+                    showToast('error', 'Debe seleccionar un producto.');
+                    return;
+                }
+
+                if (cant < 1) {
+                    e.preventDefault();
+                    showToast('error', 'La cantidad debe ser un entero positivo mayor o igual a 1.');
+                    return;
+                }
+
+                if (obsInput) {
+                    obsInput.value = obsInput.value.trim();
+                    if (obsInput.value.length > 255) {
+                        e.preventDefault();
+                        showToast('error', 'La observación no puede superar los 255 caracteres.');
+                        return;
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function () {
+        const errorMsg = /*[[${errorMessage}]]*/ null;
+        const successMsg = /*[[${successMessage}]]*/ null;
+        const msg = /*[[${mensaje}]]*/ null;
+        const tipoMsg = /*[[${tipoMensaje}]]*/ null;
+
+        if (errorMsg) {
+            showToast('error', errorMsg);
+        }
+        if (successMsg) {
+            showToast('success', successMsg);
+        }
+        if (msg) {
+            showToast(tipoMsg === 'success' ? 'success' : 'error', msg);
+        }
+    });
+    /*]]>*/
+</script>
 </body>
 </html>
