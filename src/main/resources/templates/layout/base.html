@@ -105,6 +105,14 @@
             <a th:href="@{/reportes/inventario}" class="sidebar-link">
                 <i class="bi bi-file-earmark-bar-graph"></i> Reporte de inventario
             </a>
+
+            <a th:href="@{/bodega/solicitudes}" class="sidebar-link">
+                <i class="bi bi-bell"></i> Solicitudes
+                <span th:if="${solicitudesPendientes != null and solicitudesPendientes > 0}"
+                      class="badge ms-auto"
+                      style="background:#ef4444;color:#fff;border-radius:999px;font-size:.7rem;padding:2px 7px;"
+                      th:text="${solicitudesPendientes}">0</span>
+            </a>
         </div>
 
     </nav>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Solicitudes de Transferencia — Bodega')}"></head>
+<body class="role-bodega">
+
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-bodega}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
+
+            <div class="breadcrumb-wrapper">
+                <a th:href="@{/bodega/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+                <i class="bi bi-chevron-right sep"></i>
+                <span class="current">Solicitudes de Transferencia</span>
+            </div>
+
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title"><i class="bi bi-bell-fill"></i> Solicitudes de Transferencia</h2>
+                    <p class="page-desc">Sucursal: <strong th:text="${sucursal.ciudad}">—</strong></p>
+                </div>
+            </div>
+
+            <!-- MENSAJES -->
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle me-2"></i>
+                <span th:text="${successMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <span th:text="${errorMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- PENDIENTES -->
+            <div class="card slide-up mb-4">
+                <div class="card-body" style="padding:1.5rem;">
+                    <h5 class="card-title mb-3" style="font-weight:700; color:var(--text-main);">
+                        <i class="bi bi-hourglass-split" style="color:var(--warning, #f59e0b); margin-right:.5rem;"></i>
+                        Solicitudes Pendientes
+                        <span th:if="${#lists.size(pendientes) > 0}"
+                              class="badge ms-2"
+                              style="background:var(--danger, #ef4444); color:#fff; border-radius:999px;"
+                              th:text="${#lists.size(pendientes)}">0</span>
+                    </h5>
+
+                    <div th:if="${#lists.isEmpty(pendientes)}" class="text-center py-4 text-muted">
+                        <i class="bi bi-inbox" style="font-size:2rem;"></i>
+                        <p class="mt-2">No hay solicitudes pendientes</p>
+                    </div>
+
+                    <div class="table-wrapper" th:if="${!#lists.isEmpty(pendientes)}">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Producto</th>
+                                    <th class="text-center">Cantidad</th>
+                                    <th>Solicita (destino)</th>
+                                    <th>Fecha</th>
+                                    <th class="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="s : ${pendientes}">
+                                    <td class="text-muted" th:text="${s.id}"></td>
+                                    <td>
+                                        <span class="fw-semibold" th:text="${s.producto.nombre}"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-light text-dark border fw-bold"
+                                              th:text="${s.cantidad}"></span>
+                                    </td>
+                                    <td>
+                                        <i class="bi bi-geo-alt text-muted me-1"></i>
+                                        <span th:text="${s.sucursalDestino.ciudad + ' (' + s.sucursalDestino.codigo + ')'}"></span>
+                                    </td>
+                                    <td class="text-muted" style="font-size:.875rem;"
+                                        th:text="${#temporals.format(s.fechaSolicitud, 'dd/MM/yyyy HH:mm')}"></td>
+                                    <td class="text-center">
+                                        <div class="d-flex gap-2 justify-content-center">
+                                            <form th:action="@{/bodega/solicitudes/{id}/aceptar(id=${s.id})}"
+                                                  method="post"
+                                                  onsubmit="return confirm('¿Aceptar y transferir ' + this.dataset.cantidad + ' unidades de ' + this.dataset.producto + '?')"
+                                                  th:data-cantidad="${s.cantidad}"
+                                                  th:data-producto="${s.producto.nombre}">
+                                                <button type="submit" class="btn btn-sm btn-filled">
+                                                    <i class="bi bi-check-lg"></i> Aceptar
+                                                </button>
+                                            </form>
+                                            <form th:action="@{/bodega/solicitudes/{id}/rechazar(id=${s.id})}"
+                                                  method="post"
+                                                  onsubmit="return confirm('¿Rechazar esta solicitud?')">
+                                                <button type="submit" class="btn btn-sm btn-ghost"
+                                                        style="color:var(--danger,#ef4444); border-color:var(--danger,#ef4444);">
+                                                    <i class="bi bi-x-lg"></i> Rechazar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HISTORIAL -->
+            <div class="card slide-up" style="animation-delay:.1s;">
+                <div class="card-body" style="padding:1.5rem;">
+                    <h5 class="card-title mb-3" style="font-weight:700; color:var(--text-main);">
+                        <i class="bi bi-clock-history" style="color:var(--primary); margin-right:.5rem;"></i>
+                        Historial de Solicitudes
+                    </h5>
+
+                    <div th:if="${#lists.isEmpty(historial)}" class="text-center py-4 text-muted">
+                        <i class="bi bi-inbox" style="font-size:2rem;"></i>
+                        <p class="mt-2">Sin historial aún</p>
+                    </div>
+
+                    <div class="table-wrapper" th:if="${!#lists.isEmpty(historial)}">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Producto</th>
+                                    <th class="text-center">Cantidad</th>
+                                    <th>Destino</th>
+                                    <th>Fecha</th>
+                                    <th class="text-center">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="s : ${historial}">
+                                    <td class="text-muted" th:text="${s.id}"></td>
+                                    <td class="fw-semibold" th:text="${s.producto.nombre}"></td>
+                                    <td class="text-center">
+                                        <span class="badge bg-light text-dark border" th:text="${s.cantidad}"></span>
+                                    </td>
+                                    <td th:text="${s.sucursalDestino.ciudad}"></td>
+                                    <td class="text-muted" style="font-size:.875rem;"
+                                        th:text="${#temporals.format(s.fechaSolicitud, 'dd/MM/yyyy HH:mm')}"></td>
+                                    <td class="text-center">
+                                        <span th:if="${s.estado == 'PENDIENTE'}"
+                                              class="badge"
+                                              style="background:#fef3c7;color:#92400e;border:1px solid #fcd34d;">
+                                            <i class="bi bi-hourglass-split me-1"></i>Pendiente
+                                        </span>
+                                        <span th:if="${s.estado == 'ACEPTADA'}"
+                                              class="badge"
+                                              style="background:#d1fae5;color:#065f46;border:1px solid #6ee7b7;">
+                                            <i class="bi bi-check-circle me-1"></i>Aceptada
+                                        </span>
+                                        <span th:if="${s.estado == 'RECHAZADA'}"
+                                              class="badge"
+                                              style="background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;">
+                                            <i class="bi bi-x-circle me-1"></i>Rechazada
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div th:replace="~{layout/base :: footer}"></div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function () {
+        const successMsg = /*[[${successMessage}]]*/ null;
+        const errorMsg = /*[[${errorMessage}]]*/ null;
+        if (successMsg) showToast('success', successMsg);
+        if (errorMsg) showToast('error', errorMsg);
+    });
+    /*]]>*/
+</script>
+</body>
+</html>
