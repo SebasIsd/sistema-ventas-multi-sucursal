@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Gestión de Usuarios — Admin')}">
+</head>
+<body class="role-admin">
+
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-admin}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
+
+            <!-- Breadcrumb -->
+            <div class="breadcrumb-wrapper">
+                <a th:href="@{/admin/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+                <i class="bi bi-chevron-right sep"></i>
+                <span class="current">Gestión de Usuarios</span>
+            </div>
+
+            <!-- Header -->
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title"><i class="bi bi-people"></i> Gestión de Usuarios</h2>
+                    <p class="page-desc">Administra cuentas de acceso, roles y sucursales asignadas</p>
+                </div>
+                <a th:href="@{/admin/usuarios/nuevo}" class="btn btn-filled">
+                    <i class="bi bi-plus-lg"></i> Nuevo Usuario
+                </a>
+            </div>
+
+            <!-- Mensajes Flash -->
+            <div th:if="${mensaje}"
+                 class="alert alert-dismissible fade show mb-4"
+                 th:classappend="${tipoMensaje == 'success'} ? 'alert-success' : 'alert-danger'"
+                 role="alert">
+                <i class="bi bi-info-circle me-2"></i>
+                <span th:text="${mensaje}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Tabla de usuarios -->
+            <div class="card slide-up">
+                <div class="card-body" style="padding:1.5rem;">
+                    <div class="table-wrapper">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Nombre Completo</th>
+                                    <th>Email</th>
+                                    <th>Rol</th>
+                                    <th>Sucursal</th>
+                                    <th class="text-center">Estado</th>
+                                    <th class="text-center" width="120">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="user : ${usuarios}">
+                                    <td class="fw-bold text-main" th:text="${user.username}">admin</td>
+                                    <td th:text="${user.nombreCompleto}">Administrador General</td>
+                                    <td class="text-muted" th:text="${user.email}">admin@sistema.com</td>
+                                    <td>
+                                        <span class="badge bg-secondary fw-semibold" th:text="${user.rol.nombre}">ADMIN</span>
+                                    </td>
+                                    <td th:text="${user.sucursal != null ? user.sucursal.ciudad : '—'}">Quito</td>
+                                    <td class="text-center">
+                                        <span th:if="${user.activo}" class="badge-status active">Activo</span>
+                                        <span th:unless="${user.activo}" class="badge-status inactive">Inactivo</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a th:href="@{/admin/usuarios/editar/{id}(id=${user.id})}"
+                                               class="btn btn-sm btn-icon-edit"
+                                               title="Editar">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form th:action="@{/admin/usuarios/eliminar/{id}(id=${user.id})}"
+                                                  method="post"
+                                                  style="display:inline;"
+                                                  onsubmit="return confirm('¿Eliminar este usuario? Esta acción no se puede deshacer.')">
+                                                <button type="submit" class="btn btn-sm btn-icon-delete" title="Eliminar">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Estado vacío -->
+                                <tr th:if="${#lists.isEmpty(usuarios)}">
+                                    <td colspan="7" style="text-align:center; padding:3rem 1rem;">
+                                        <i class="bi bi-people" style="font-size:3rem; color:#cbd5e1; display:block; margin-bottom:1rem;"></i>
+                                        <p style="color:var(--text-main); font-weight:600; margin:0;">No hay usuarios registrados</p>
+                                        <small style="color:var(--text-muted);">Comienza creando el primer usuario.</small>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div th:replace="~{layout/base :: footer}"></div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

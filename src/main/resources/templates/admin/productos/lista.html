@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Productos — Sistema de Ventas')}">
+</head>
+<body class="role-admin">
+
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-admin}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
+
+                <!-- Breadcrumb -->
+                <div class="breadcrumb-wrapper">
+                    <a th:href="@{/admin/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+                    <i class="bi bi-chevron-right sep"></i>
+                    <span class="current">Productos</span>
+                </div>
+
+                <!-- Header -->
+                <div class="page-header">
+                    <div>
+                        <h2 class="page-title"><i class="bi bi-box-seam"></i> Productos</h2>
+                        <p class="page-desc">Catálogo completo de productos e inventario base</p>
+                    </div>
+                    <button class="btn btn-filled" onclick="abrirModalNuevo()">
+                        <i class="bi bi-plus"></i> Nuevo Producto
+                    </button>
+                </div>
+
+                <div class="card slide-up">
+                    <div class="card-body" style="padding:1.5rem;">
+
+                        <!-- Tools -->
+                        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                            <div class="search-wrapper flex-grow-1" style="max-width:360px;">
+                                <i class="bi bi-search search-icon"></i>
+                                <input type="text" id="buscador" class="search-input"
+                                       placeholder="Buscar por nombre, código o categoría..." oninput="filtrarTabla()">
+                            </div>
+                        </div>
+
+                        <!-- Tabla -->
+                        <div class="table-wrapper">
+                            <table class="table align-middle">
+                                <thead >
+                                    <tr>
+                                        <th width="70">ID</th>
+                                        <th>Código</th>
+                                        <th>Nombre de Producto</th>
+                                        <th class="text-end">Precio</th>
+                                        <th class="text-center">IVA</th>
+                                        <th>Categoría</th>
+                                        <th width="110">Estado</th>
+                                        <th width="150" class="text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaProductos">
+                                    <!-- Renderizado por JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Estado Vacío -->
+                        <div id="sinResultados" style="display:none; text-align:center; padding:3rem 1rem;">
+                            <i class="bi bi-boxes" style="font-size:3rem; color:#cbd5e1; margin-bottom:1rem;"></i>
+                            <h5 style="color:var(--text-main); font-weight:600;">Sin resultados</h5>
+                            <p style="color:var(--text-muted); font-size:.9rem;">No se encontraron productos con ese criterio.</p>
+                        </div>
+
+                        <!-- Paginación UI -->
+                        <div class="pagination-container" id="paginationWrap">
+                            <div class="page-per-row">
+                                <span>Mostrar</span>
+                                <select onchange="cambiarFilasPorPagina(this.value)">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                </select>
+                                <span>filas</span>
+                            </div>
+                            <div class="pagination-info" id="pageInfoText"></div>
+                            <div class="pagination-controls" id="pageControls"></div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- FOOTER MODULAR -->
+    <div th:replace="~{layout/base :: footer}"></div>
+        </div>
+    </div>
+</div>
+
+    <!-- MODAL -->
+    <div class="modal fade" id="modalProducto" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content" style="border:none; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.15);">
+                <div class="modal-header" style="border-bottom:1px solid var(--border); padding:1.25rem 1.5rem;">
+                    <h5 class="modal-title" id="modalTitle" style="font-weight:700; font-size:1.1rem; color:var(--text-main);">
+                        <i class="bi bi-box-seam" style="color:var(--primary); margin-right:.5rem;"></i>
+                        <span>Nuevo Producto</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body" style="padding:1.5rem;">
+                    <input type="hidden" id="idProducto">
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Código de Barras</label>
+                            <input type="text" id="codigoBarras" class="form-control" placeholder="Ej. 786123456789" pattern="^\d{8,20}$" title="Debe contener entre 8 y 20 dígitos numéricos">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Nombre del Producto <span class="text-danger">*</span></label>
+                            <input type="text" id="nombreProducto" class="form-control" placeholder="Nombre descriptivo" required maxlength="150">
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Descripción</label>
+                            <textarea id="descripcionProducto" class="form-control" rows="2" placeholder="Opcional..." maxlength="255"></textarea>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Precio Unitario ($) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" min="0.01" id="precioUnitario" class="form-control" placeholder="0.00" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">IVA (%) <span class="text-danger">*</span></label>
+                            <select id="porcentajeIva" class="form-select">
+                                <option value="0">0%</option>
+                                <option value="5">5%</option>
+                                <option value="15" selected>15%</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Categoría <span class="text-danger">*</span></label>
+                            <select id="categoria" class="form-select">
+                                <!-- JS carga -->
+                            </select>
+                        </div>
+
+                        <div class="col-12 mt-3">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" id="activoProducto" class="form-check-input" checked style="cursor:pointer;">
+                                <label class="form-check-label" for="activoProducto" style="font-weight:500; cursor:pointer;">
+                                    Producto Activo
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer" style="border-top:1px solid var(--border); padding:1.25rem 1.5rem;">
+                    <button class="btn btn-ghost" data-bs-dismiss="modal">Cancelar</button>
+                    <button class="btn btn-filled" onclick="guardarProducto()" id="btnGuardar">
+                        <i class="bi bi-floppy"></i> Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS MODULAR -->
+    <div th:replace="~{layout/base :: scripts}"></div>
+
+    <!-- Scripts de la vista -->
+    <script>
+        let bsModal;
+        let todosLosProductos = [];
+        let paginator;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            bsModal = new bootstrap.Modal(document.getElementById('modalProducto'));
+            
+            cargarCategorias();
+            cargarProductos();
+        });
+
+        async function cargarCategorias() {
+            try {
+                const res = await fetch('/api/categorias');
+                if(res.ok) {
+                    const cats = await res.json();
+                    const sel = document.getElementById('categoria');
+                    sel.innerHTML = '<option value="">-- Seleccionar --</option>' + 
+                        cats.filter(c => c.activo).map(c => `<option value="${c.idCategoria}">${c.nombre}</option>`).join('');
+                }
+            } catch(e) { console.error('Error cargando categorías'); }
+        }
+
+        async function cargarProductos() {
+            try {
+                const res = await fetch('/api/productos');
+                if (!res.ok) throw new Error('Error al cargar datos');
+                todosLosProductos = await res.json();
+                
+                paginator = new TablePaginator(todosLosProductos, renderFilasTabla, 10);
+                paginator.renderCurrentPage();
+            } catch (error) {
+                showToast('error', 'Error de conexión con el servidor');
+            }
+        }
+
+        function renderFilasTabla(data) {
+            let html = '';
+            data.forEach(p => {
+                const badge = p.activo 
+                    ? '<span class="badge-status active">Activo</span>'
+                    : '<span class="badge-status inactive">Inactivo</span>';
+
+                html += `
+                    <tr>
+                        <td><span class="text-muted fw-semibold">#${p.idProducto}</span></td>
+                        <td><span class="badge bg-light text-dark border">${p.codigoBarras || '-'}</span></td>
+                        <td class="fw-semibold text-main">${p.nombre}</td>
+                        <td class="text-end"><span class="price-tag">${formatCurrency(p.precioUnitario)}</span></td>
+                        <td class="text-center">${p.porcentajeIva}%</td>
+                        <td>${p.nombreCategoria || '<em class="text-muted">Sin Categoría</em>'}</td>
+                        <td>${badge}</td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                <button class="btn btn-sm btn-icon-edit" title="Editar"
+                                    onclick='editarProducto(${JSON.stringify(p)})'>
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-icon-delete" title="Eliminar"
+                                    onclick='eliminarProducto(${p.idProducto})'>
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('tablaProductos').innerHTML = html;
+            
+            const noRes = document.getElementById('sinResultados');
+            const pagWrap = document.getElementById('paginationWrap');
+            const tableWrap = document.querySelector('.table-wrapper');
+            
+            if (data.length === 0) {
+                noRes.style.display = 'block';
+                tableWrap.style.display = 'none';
+                pagWrap.style.display = 'none';
+            } else {
+                noRes.style.display = 'none';
+                tableWrap.style.display = 'block';
+                pagWrap.style.display = 'flex';
+            }
+        }
+
+        function cambiarFilasPorPagina(val) {
+            if(paginator) paginator.setRowsPerPage(parseInt(val));
+        }
+
+        function filtrarTabla() {
+            const txt = document.getElementById('buscador').value.toLowerCase().trim();
+            const filtrados = todosLosProductos.filter(p => 
+                p.nombre.toLowerCase().includes(txt) || 
+                (p.codigoBarras && p.codigoBarras.toLowerCase().includes(txt)) ||
+                (p.nombreCategoria && p.nombreCategoria.toLowerCase().includes(txt))
+            );
+            if(paginator) paginator.updateData(filtrados);
+        }
+
+        function abrirModalNuevo() {
+            document.getElementById('idProducto').value = '';
+            document.getElementById('codigoBarras').value = '';
+            document.getElementById('nombreProducto').value = '';
+            document.getElementById('descripcionProducto').value = '';
+            document.getElementById('precioUnitario').value = '';
+            document.getElementById('porcentajeIva').value = '15';
+            document.getElementById('categoria').value = '';
+            document.getElementById('activoProducto').checked = true;
+            
+            document.getElementById('modalTitle').innerHTML = '<i class="bi bi-box-seam" style="color:var(--primary); margin-right:.5rem;"></i> Nuevo Producto';
+            
+            bsModal.show();
+        }
+
+        function editarProducto(p) {
+            document.getElementById('idProducto').value = p.idProducto;
+            document.getElementById('codigoBarras').value = p.codigoBarras || '';
+            document.getElementById('nombreProducto').value = p.nombre;
+            document.getElementById('descripcionProducto').value = p.descripcion || '';
+            document.getElementById('precioUnitario').value = p.precioUnitario;
+            document.getElementById('porcentajeIva').value = p.porcentajeIva;
+            document.getElementById('categoria').value = p.idCategoria || '';
+            document.getElementById('activoProducto').checked = p.activo;
+            
+            document.getElementById('modalTitle').innerHTML = '<i class="bi bi-pencil" style="color:var(--amber); margin-right:.5rem;"></i> Editar Producto';
+            
+            bsModal.show();
+        }
+
+        async function guardarProducto() {
+            const id = document.getElementById('idProducto').value;
+            const codigoBarras = document.getElementById('codigoBarras').value.trim();
+            const nombre = document.getElementById('nombreProducto').value.trim();
+            const descripcion = document.getElementById('descripcionProducto').value.trim();
+            const precioRaw = document.getElementById('precioUnitario').value;
+            const precio = parseFloat(precioRaw);
+            const catId = document.getElementById('categoria').value;
+            
+            if (codigoBarras) {
+                const regexBarras = /^\d{8,20}$/;
+                if (!regexBarras.test(codigoBarras)) {
+                    showToast('warning', 'El código de barras debe tener entre 8 y 20 dígitos numéricos');
+                    return;
+                }
+            }
+
+            if (!nombre) {
+                showToast('warning', 'El nombre del producto es obligatorio');
+                return;
+            }
+            if (nombre.length > 150) {
+                showToast('warning', 'El nombre del producto no puede superar los 150 caracteres');
+                return;
+            }
+
+            if (descripcion && descripcion.length > 255) {
+                showToast('warning', 'La descripción no puede superar los 255 caracteres');
+                return;
+            }
+
+            if (isNaN(precio) || precio <= 0) {
+                showToast('warning', 'El precio unitario debe ser un número decimal positivo mayor a cero');
+                return;
+            }
+
+            if (!catId) {
+                showToast('warning', 'Debe seleccionar una categoría para el producto');
+                return;
+            }
+
+            const btn = document.getElementById('btnGuardar');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Guardando...';
+
+            const body = {
+                codigoBarras: codigoBarras,
+                nombre: nombre,
+                descripcion: descripcion,
+                precioUnitario: precio,
+                porcentajeIva: parseInt(document.getElementById('porcentajeIva').value),
+                idCategoria: parseInt(catId),
+                activo: document.getElementById('activoProducto').checked
+            };
+
+            const url = id ? '/api/productos/' + id : '/api/productos';
+            const method = id ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                if (!res.ok) throw new Error('Error al guardar');
+
+                showToast('success', id ? 'Producto actualizado exitosamente' : 'Producto creado exitosamente');
+                
+                bsModal.hide();
+                
+                document.getElementById('buscador').value = '';
+                await cargarProductos();
+                
+            } catch (error) {
+                showToast('error', error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-floppy"></i> Guardar';
+            }
+        }
+
+        function eliminarProducto(id) {
+            confirmDialog('Eliminar Producto', '¿Estás seguro de eliminar este producto? Esta acción no se puede deshacer.', async () => {
+                try {
+                    const res = await fetch('/api/productos/' + id, { method: 'DELETE' });
+                    if (!res.ok) throw new Error('No se pudo eliminar el producto');
+                    
+                    showToast('success', 'Producto eliminado');
+                    
+                    document.getElementById('buscador').value = '';
+                    cargarProductos();
+                } catch (error) {
+                    showToast('error', error.message);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

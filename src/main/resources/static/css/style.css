@@ -1,0 +1,13 @@
+/* =========================================================
+   style.css — Punto de entrada único
+   Rutas absolutas para evitar fallos de carga por @import relativo
+   ========================================================= */
+
+@import url('/css/modules/variables.css');
+@import url('/css/modules/base.css');
+@import url('/css/modules/sidebar.css');
+@import url('/css/modules/layout.css');
+@import url('/css/modules/components.css');
+@import url('/css/modules/tables.css');
+@import url('/css/modules/forms.css');
+@import url('/css/modules/utilities.css');

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Reporte de Ventas — Sistema de Ventas')}">
+</head>
+<body class="role-cajero">
+
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-cajero}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
+
+            <!-- Breadcrumb -->
+            <div class="breadcrumb-wrapper">
+                <a th:href="@{/cajero/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+                <i class="bi bi-chevron-right sep"></i>
+                <span class="current">Reporte de Ventas</span>
+            </div>
+
+            <!-- Header -->
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title"><i class="bi bi-graph-up"></i> Reporte de Ventas</h2>
+                    <p class="page-desc">Informe PDF de ventas realizadas</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a class="btn btn-primary" th:href="@{/reportes/ventas/descargar(sucursalId=${sucursalId}, fechaInicio=${fechaInicio}, fechaFin=${fechaFin})}">
+                        <i class="bi bi-download"></i> Descargar PDF
+                    </a>
+                </div>
+            </div>
+
+            <!-- Visor PDF -->
+            <div class="card slide-up">
+                <div class="card-body p-3">
+                    <iframe class="pdf-viewer"
+                            th:src="@{/reportes/ventas/pdf(sucursalId=${sucursalId}, fechaInicio=${fechaInicio}, fechaFin=${fechaFin})}"
+                            title="Reporte de Ventas">
+                    </iframe>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div th:replace="~{layout/base :: footer}"></div>
+        </div>
+    </div>
+</div>
+
+<style>
+.pdf-viewer {
+    width: 100%;
+    height: 700px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+</style>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

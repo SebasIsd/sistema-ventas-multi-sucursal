@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Ajuste de Stock — Bodega')}">
+</head>
+<body class="role-bodega">
+
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-bodega}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
+
+            <!-- Breadcrumb -->
+            <div class="breadcrumb-wrapper">
+                <a th:href="@{/bodega/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+                <i class="bi bi-chevron-right sep"></i>
+                <a th:href="@{/bodega/inventario}">Inventario</a>
+                <i class="bi bi-chevron-right sep"></i>
+                <span class="current">Ajuste de Stock</span>
+            </div>
+
+            <!-- Header -->
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title"><i class="bi bi-sliders"></i> Ajuste de Stock</h2>
+                    <p class="page-desc">Registrar entradas o ajustes manuales de inventario</p>
+                </div>
+                <a th:href="@{/bodega/inventario}" class="btn btn-ghost">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+            </div>
+
+            <!-- Formulario -->
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="card slide-up">
+                        <div class="card-body" style="padding:2rem;">
+
+                            <h5 style="font-weight:700; color:var(--text-main); margin-bottom:1.5rem;">
+                                <i class="bi bi-plus-circle" style="color:var(--primary);"></i>
+                                Registrar Entrada
+                            </h5>
+
+                            <form th:action="@{/bodega/inventario/ajuste}" method="post" id="formAjusteInventario">
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">Producto *</label>
+                                    <select name="productoId" id="selProducto" class="form-select" required>
+                                        <option value="">-- Seleccione un producto --</option>
+                                        <option th:each="p : ${productos}"
+                                                th:value="${p.idProducto}"
+                                                th:text="${p.nombre}">
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">Sucursal Destino</label>
+                                    <input type="text" class="form-control" th:value="${sucursal.ciudad}" readonly style="background-color: var(--card-bg); cursor: not-allowed;">
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">Cantidad a Ingresar *</label>
+                                    <input type="number"
+                                           name="cantidad"
+                                           id="inputCantidad"
+                                           class="form-control"
+                                           min="1"
+                                           required
+                                           placeholder="Ej: 50">
+                                    <small class="text-muted">Cantidad de unidades a agregar al stock</small>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">Observación</label>
+                                    <textarea name="observacion"
+                                              id="inputObservacion"
+                                              class="form-control"
+                                              rows="3"
+                                              placeholder="Motivo del ajuste, proveedor, etc..."></textarea>
+                                </div>
+
+                                <div class="d-flex gap-3">
+                                    <button type="submit" class="btn btn-filled px-4">
+                                        <i class="bi bi-floppy me-2"></i> Guardar Entrada
+                                    </button>
+                                    <a th:href="@{/bodega/inventario}" class="btn btn-ghost px-4">
+                                        Cancelar
+                                    </a>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:replace="~{layout/base :: footer}"></div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('formAjusteInventario');
+        const cantidadInput = document.getElementById('inputCantidad');
+        const obsInput = document.getElementById('inputObservacion');
+
+        if (cantidadInput) {
+            cantidadInput.addEventListener('input', function () {
+                let rawVal = this.value;
+                if (/[^0-9]/.test(rawVal)) {
+                    this.value = rawVal.replace(/[^0-9]/g, '');
+                }
+            });
+        }
+
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                const prod = document.getElementById('selProducto').value;
+                const rawCant = cantidadInput.value;
+                const cant = parseInt(rawCant) || 0;
+
+                if (!prod) {
+                    e.preventDefault();
+                    showToast('error', 'Debe seleccionar un producto.');
+                    return;
+                }
+
+                if (cant < 1) {
+                    e.preventDefault();
+                    showToast('error', 'La cantidad debe ser un entero positivo mayor o igual a 1.');
+                    return;
+                }
+
+                if (obsInput) {
+                    obsInput.value = obsInput.value.trim();
+                    if (obsInput.value.length > 255) {
+                        e.preventDefault();
+                        showToast('error', 'La observación no puede superar los 255 caracteres.');
+                        return;
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function () {
+        const errorMsg = /*[[${errorMessage}]]*/ null;
+        const successMsg = /*[[${successMessage}]]*/ null;
+        const msg = /*[[${mensaje}]]*/ null;
+        const tipoMsg = /*[[${tipoMensaje}]]*/ null;
+
+        if (errorMsg) {
+            showToast('error', errorMsg);
+        }
+        if (successMsg) {
+            showToast('success', successMsg);
+        }
+        if (msg) {
+            showToast(tipoMsg === 'success' ? 'success' : 'error', msg);
+        }
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

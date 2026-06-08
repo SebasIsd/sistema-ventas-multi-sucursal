@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Historial — Bodega')}"></head>
+<body class="role-bodega">
+
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-bodega}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
+
+    <div class="breadcrumb-wrapper">
+        <a th:href="@{/bodega/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+        <i class="bi bi-chevron-right sep"></i>
+        <span class="current">Historial de movimientos</span>
+    </div>
+
+    <div class="page-header">
+        <div>
+            <h2 class="page-title"><i class="bi bi-clock-history"></i> Movimientos</h2>
+            <p class="page-desc">Sucursal: <span th:text="${sucursalNombre}">—</span></p>
+        </div>
+    </div>
+
+    <div th:if="${exito}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${exito}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="card slide-up">
+        <div class="card-body" style="padding:1.5rem;">
+            <div class="table-wrapper">
+                <table class="table align-middle">
+                    <thead >
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Producto</th>
+                        <th>Tipo</th>
+                        <th class="text-center">Cantidad</th>
+                        <th class="text-center">Stock final</th>
+                        <th>Observación</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="m : ${movimientos}">
+                        <td th:text="${#temporals.format(m.fechaMovimiento, 'dd/MM/yyyy HH:mm')}">—</td>
+                        <td th:text="${m.producto.nombre}">—</td>
+                        <td><span class="badge bg-light text-dark border" th:text="${m.tipoMovimiento}">—</span></td>
+                        <td class="text-center" th:text="${m.cantidad}">0</td>
+                        <td class="text-center" th:text="${m.stockResultante}">0</td>
+                        <td th:text="${m.observacion}">—</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div th:if="${#lists.isEmpty(movimientos)}" class="text-center py-5 text-muted">
+                <p class="mb-0">No hay movimientos registrados.</p>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{layout/base :: footer}"></div>
+    </div>
+    </div>
+</div>
+<div th:replace="~{layout/base :: scripts}"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function () {
+        const errorMsg = /*[[${errorMessage}]]*/ null;
+        const successMsg = /*[[${successMessage}]]*/ null;
+        const msg = /*[[${mensaje}]]*/ null;
+        const tipoMsg = /*[[${tipoMensaje}]]*/ null;
+
+        if (errorMsg) {
+             showToast('error', errorMsg);
+        }
+        if (successMsg) {
+             showToast('success', successMsg);
+        }
+        if (msg) {
+             showToast(tipoMsg === 'success' ? 'success' : 'error', msg);
+        }
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

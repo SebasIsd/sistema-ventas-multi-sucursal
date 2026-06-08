@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Catálogo — Bodega')}"></head>
+<body class="role-bodega">
+
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-bodega}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
+
+    <div class="breadcrumb-wrapper">
+        <a th:href="@{/bodega/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+        <i class="bi bi-chevron-right sep"></i>
+        <span class="current">Catálogo de productos</span>
+    </div>
+
+    <div class="page-header">
+        <div>
+            <h2 class="page-title"><i class="bi bi-box-seam"></i> Productos</h2>
+            <p class="page-desc">Consulta de catálogo (solo lectura)</p>
+        </div>
+    </div>
+
+    <div class="card slide-up">
+        <div class="card-body" style="padding:1.5rem;">
+            <div class="table-wrapper">
+                <table class="table align-middle">
+                    <thead >
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th class="text-end">Precio</th>
+                        <th class="text-center">IVA</th>
+                        <th class="text-center">Estado</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="p : ${productos}">
+                        <td th:text="${'#' + p.idProducto}">#1</td>
+                        <td class="fw-semibold" th:text="${p.nombre}">—</td>
+                        <td th:text="${p.nombreCategoria ?: '—'}">—</td>
+                        <td class="text-end" th:text="${#numbers.formatCurrency(p.precioUnitario)}">$0</td>
+                        <td class="text-center" th:text="${p.porcentajeIva + '%'}">15%</td>
+                        <td class="text-center">
+                            <span th:if="${p.activo}" class="badge-status active">Activo</span>
+                            <span th:unless="${p.activo}" class="badge-status inactive">Inactivo</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{layout/base :: footer}"></div>
+    </div>
+    </div>
+</div>
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

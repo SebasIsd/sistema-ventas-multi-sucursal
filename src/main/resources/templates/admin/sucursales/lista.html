@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Sucursales — Admin')}"></head>
+<body class="role-admin">
+
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-admin}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
+
+    <div class="breadcrumb-wrapper">
+        <a th:href="@{/admin/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+        <i class="bi bi-chevron-right sep"></i>
+        <span class="current">Sucursales</span>
+    </div>
+
+    <div class="page-header">
+        <div>
+            <h2 class="page-title"><i class="bi bi-building"></i> Sucursales</h2>
+            <p class="page-desc">Gestión de sedes registradas en el sistema</p>
+        </div>
+        <button class="btn btn-filled" onclick="abrirModalNueva()">
+            <i class="bi bi-plus"></i> Nueva Sucursal
+        </button>
+    </div>
+
+    <div class="card slide-up">
+        <div class="card-body" style="padding:1.5rem;">
+
+            <!-- Buscador -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted" style="font-size:.9rem;">
+                    <i class="bi bi-building"></i> Lista de sucursales
+                </span>
+                <div class="search-box" style="max-width:280px;">
+                    <input type="text"
+                           id="buscador"
+                           class="search-input"
+                           placeholder="Buscar sucursal..."
+                           oninput="filtrarTabla()">
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th width="60">ID</th>
+                            <th>Código</th>
+                            <th>Ciudad</th>
+                            <th>Dirección</th>
+                            <th>Teléfono</th>
+                            <th class="text-center" width="120">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaSucursales">
+                        <!-- Cargado por JavaScript desde /api/sucursales -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Estado vacío -->
+            <div id="estadoVacio" style="display:none; text-align:center; padding:3rem 1rem;">
+                <i class="bi bi-building" style="font-size:3rem; color:#cbd5e1; margin-bottom:1rem;"></i>
+                <h5 style="color:var(--text-main); font-weight:600;">Sin sucursales</h5>
+                <p style="color:var(--text-muted); font-size:.9rem;">No hay sucursales registradas.</p>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{layout/base :: footer}"></div>
+    </div>
+    </div>
+</div>
+
+<!-- MODAL: Crear / Editar Sucursal -->
+<div class="modal fade" id="modalSucursal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border:none; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.15);">
+
+            <div class="modal-header" style="border-bottom:1px solid var(--border); padding:1.25rem 1.5rem;">
+                <h5 class="modal-title" id="modalTitle">
+                    <i class="bi bi-building" style="color:var(--primary); margin-right:.5rem;"></i>
+                    Nueva Sucursal
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body" style="padding:1.5rem;">
+                <input type="hidden" id="idSucursal">
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Código *</label>
+                        <input type="text" id="codigo" class="form-control" placeholder="Ej: UIO-01" required maxlength="10" pattern="^[A-Z0-9-]+$" title="Alfanumérico en mayúsculas con guiones (máx 10)">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Ciudad *</label>
+                        <input type="text" id="ciudad" class="form-control" placeholder="Ej: Quito" required maxlength="100" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$" title="Solo letras y espacios (máx 100)">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Dirección *</label>
+                        <textarea id="direccion" class="form-control" rows="2" placeholder="Av. Principal 123..." required maxlength="255"></textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Teléfono *</label>
+                        <input type="text" id="telefono" class="form-control" placeholder="02-2345678" required pattern="^\+?\d{7,15}$" title="De 7 a 15 dígitos numéricos, opcional + al inicio">
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="border-top:1px solid var(--border); padding:1.25rem 1.5rem;">
+                <button class="btn btn-ghost" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-filled" onclick="guardarSucursal()" id="btnGuardar">
+                    <i class="bi bi-floppy"></i> Guardar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+
+<script>
+    let bsModal;
+    let sucursales = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        bsModal = new bootstrap.Modal(document.getElementById('modalSucursal'));
+        cargarSucursales();
+    });
+
+    async function cargarSucursales() {
+        try {
+            const res = await fetch('/api/sucursales');
+            sucursales = await res.json();
+            renderTabla(sucursales);
+        } catch (e) {
+            console.error('Error cargando sucursales:', e);
+        }
+    }
+
+    function renderTabla(data) {
+        const tbody = document.getElementById('tablaSucursales');
+        const vacio = document.getElementById('estadoVacio');
+
+        if (!data.length) {
+            tbody.innerHTML = '';
+            vacio.style.display = 'block';
+            return;
+        }
+        vacio.style.display = 'none';
+
+        tbody.innerHTML = data.map(s => `
+            <tr>
+                <td><span class="text-muted fw-semibold">#${s.id}</span></td>
+                <td class="fw-semibold">${s.codigo}</td>
+                <td>${s.ciudad}</td>
+                <td>${s.direccion || '—'}</td>
+                <td>${s.telefono || '—'}</td>
+                <td class="text-center">
+                    <div class="d-flex justify-content-center gap-2">
+                        <button class="btn btn-sm btn-icon-edit" onclick='editarSucursal(${JSON.stringify(s)})' title="Editar">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-icon-delete" onclick='eliminarSucursal(${s.id})' title="Eliminar">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function filtrarTabla() {
+        const txt = document.getElementById('buscador').value.toLowerCase();
+        const filtradas = sucursales.filter(s =>
+            s.codigo.toLowerCase().includes(txt) ||
+            s.ciudad.toLowerCase().includes(txt) ||
+            (s.direccion && s.direccion.toLowerCase().includes(txt))
+        );
+        renderTabla(filtradas);
+    }
+
+    function abrirModalNueva() {
+        document.getElementById('idSucursal').value = '';
+        document.getElementById('codigo').value = '';
+        document.getElementById('ciudad').value = '';
+        document.getElementById('direccion').value = '';
+        document.getElementById('telefono').value = '';
+        document.getElementById('modalTitle').innerHTML =
+            '<i class="bi bi-building" style="color:var(--primary); margin-right:.5rem;"></i> Nueva Sucursal';
+        bsModal.show();
+    }
+
+    function editarSucursal(s) {
+        document.getElementById('idSucursal').value = s.id;
+        document.getElementById('codigo').value = s.codigo;
+        document.getElementById('ciudad').value = s.ciudad;
+        document.getElementById('direccion').value = s.direccion || '';
+        document.getElementById('telefono').value = s.telefono || '';
+        document.getElementById('modalTitle').innerHTML =
+            '<i class="bi bi-pencil" style="color:orange; margin-right:.5rem;"></i> Editar Sucursal';
+        bsModal.show();
+    }
+
+    async function guardarSucursal() {
+        const id = document.getElementById('idSucursal').value;
+        const body = {
+            codigo: document.getElementById('codigo').value.trim(),
+            ciudad: document.getElementById('ciudad').value.trim(),
+            direccion: document.getElementById('direccion').value.trim(),
+            telefono: document.getElementById('telefono').value.trim()
+        };
+
+        if (!body.codigo) {
+            showToast('warning', 'El código de la sucursal es requerido');
+            return;
+        }
+        const regexCodigo = /^[A-Z0-9-]+$/;
+        if (!regexCodigo.test(body.codigo)) {
+            showToast('warning', 'Código debe ser alfanumérico en mayúsculas y puede incluir guiones (ej: UIO-01)');
+            return;
+        }
+        if (body.codigo.length > 10) {
+            showToast('warning', 'Código no debe exceder 10 caracteres');
+            return;
+        }
+
+        if (!body.ciudad) {
+            showToast('warning', 'La ciudad es requerida');
+            return;
+        }
+        const regexCiudad = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/;
+        if (!regexCiudad.test(body.ciudad)) {
+            showToast('warning', 'Ciudad debe contener solo letras y espacios');
+            return;
+        }
+        if (body.ciudad.length > 100) {
+            showToast('warning', 'Ciudad no debe exceder 100 caracteres');
+            return;
+        }
+
+        if (!body.direccion) {
+            showToast('warning', 'La dirección es requerida');
+            return;
+        }
+        if (body.direccion.length > 255) {
+            showToast('warning', 'Dirección no debe exceder 255 caracteres');
+            return;
+        }
+
+        if (!body.telefono) {
+            showToast('warning', 'El teléfono es requerido');
+            return;
+        }
+        const regexTelefono = /^\+?\d{7,15}$/;
+        if (!regexTelefono.test(body.telefono)) {
+            showToast('warning', 'Teléfono debe contener entre 7 y 15 dígitos numéricos (puede empezar con +)');
+            return;
+        }
+
+        const url = id ? `/api/sucursales/${id}` : '/api/sucursales';
+        const method = id ? 'PUT' : 'POST';
+
+        const res = await fetch(url, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+
+        if (res.ok) {
+            bsModal.hide();
+            await cargarSucursales();
+            showToast('success', id ? 'Sucursal actualizada' : 'Sucursal creada exitosamente');
+        } else {
+            showToast('error', 'Error al guardar la sucursal');
+        }
+    }
+
+    async function eliminarSucursal(id) {
+        if (!confirm('¿Eliminar esta sucursal? Esta acción no se puede deshacer.')) return;
+
+        const res = await fetch(`/api/sucursales/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+            await cargarSucursales();
+            showToast('success', 'Sucursal eliminada');
+        } else {
+            showToast('error', 'Error al eliminar la sucursal');
+        }
+    }
+</script>
+
+</body>
+</html>

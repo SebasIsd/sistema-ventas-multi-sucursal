@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Categorías — Sistema de Ventas')}">
+</head>
+<body class="role-admin">
+
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-admin}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
+
+                <!-- Breadcrumb -->
+                <div class="breadcrumb-wrapper">
+                    <a th:href="@{/admin/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+                    <i class="bi bi-chevron-right sep"></i>
+                    <span class="current">Categorías</span>
+                </div>
+
+                <!-- Header -->
+                <div class="page-header">
+                    <div>
+                        <h2 class="page-title"><i class="bi bi-tags"></i> Categorías</h2>
+                        <p class="page-desc">Administración de categorías del inventario</p>
+                    </div>
+                    <button class="btn btn-filled" onclick="abrirModalNueva()">
+                        <i class="bi bi-plus"></i> Nueva Categoría
+                    </button>
+                </div>
+
+                <div class="card slide-up">
+                    <div class="card-body" style="padding:1.5rem;">
+
+                        <!-- Tools: Buscar & Filas -->
+                        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                            <div class="search-wrapper flex-grow-1" style="max-width:320px;">
+                                <i class="bi bi-search search-icon"></i>
+                                <input type="text" id="buscador" class="search-input"
+                                       placeholder="Buscar categoría..." oninput="filtrarTabla()">
+                            </div>
+                        </div>
+
+                        <!-- Tabla -->
+                        <div class="table-wrapper">
+                            <table class="table align-middle">
+                                <thead >
+                                    <tr>
+                                        <th width="80">ID</th>
+                                        <th>Nombre</th>
+                                        <th>Descripción</th>
+                                        <th width="120">Estado</th>
+                                        <th width="160" class="text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaCategorias">
+                                    <!-- Renderizado por JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Estado Vacío -->
+                        <div id="sinResultados" style="display:none; text-align:center; padding:3rem 1rem;">
+                            <i class="bi bi-box-seam" style="font-size:3rem; color:#cbd5e1; margin-bottom:1rem;"></i>
+                            <h5 style="color:var(--text-main); font-weight:600;">Sin resultados</h5>
+                            <p style="color:var(--text-muted); font-size:.9rem;">No se encontraron categorías con ese criterio.</p>
+                        </div>
+
+                        <!-- Paginación UI -->
+                        <div class="pagination-container" id="paginationWrap">
+                            <div class="page-per-row">
+                                <span>Mostrar</span>
+                                <select onchange="cambiarFilasPorPagina(this.value)">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                </select>
+                                <span>filas</span>
+                            </div>
+                            <div class="pagination-info" id="pageInfoText"></div>
+                            <div class="pagination-controls" id="pageControls"></div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- FOOTER MODULAR -->
+    <div th:replace="~{layout/base :: footer}"></div>
+        </div>
+    </div>
+</div>
+
+    <!-- MODAL -->
+    <div class="modal fade" id="modalCategoria" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border:none; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.15);">
+                <div class="modal-header" style="border-bottom:1px solid var(--border); padding:1.25rem 1.5rem;">
+                    <h5 class="modal-title" id="modalTitle" style="font-weight:700; font-size:1.1rem; color:var(--text-main);">
+                        <i class="bi bi-tag" style="color:var(--primary); margin-right:.5rem;"></i>
+                        <span>Nueva Categoría</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body" style="padding:1.5rem;">
+                    <input type="hidden" id="idCategoria">
+
+                    <div class="mb-3">
+                        <label class="form-label">Nombre de Categoría <span class="text-danger">*</span></label>
+                        <input type="text" id="nombre" class="form-control" placeholder="Ej. Lácteos" required minlength="3" maxlength="100" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s]+$" title="De 3 a 100 caracteres. Solo letras, números y espacios.">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Descripción</label>
+                        <textarea id="descripcion" class="form-control" rows="3" placeholder="Opcional..." maxlength="255"></textarea>
+                    </div>
+
+                    <div class="form-check form-switch mt-4">
+                        <input type="checkbox" class="form-check-input" id="activo" checked style="cursor:pointer;">
+                        <label class="form-check-label" for="activo" style="font-weight:500; cursor:pointer;">
+                            Categoría Activa
+                        </label>
+                    </div>
+                </div>
+
+                <div class="modal-footer" style="border-top:1px solid var(--border); padding:1.25rem 1.5rem;">
+                    <button class="btn btn-ghost" data-bs-dismiss="modal">Cancelar</button>
+                    <button class="btn btn-filled" onclick="guardarCategoria()" id="btnGuardar">
+                        <i class="bi bi-floppy"></i> Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS MODULAR -->
+    <div th:replace="~{layout/base :: scripts}"></div>
+
+    <!-- Scripts de la vista -->
+    <script>
+        let bsModal;
+        let todasLasCategorias = [];
+        let paginator;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            bsModal = new bootstrap.Modal(document.getElementById('modalCategoria'));
+            cargarCategorias();
+        });
+
+        async function cargarCategorias() {
+            try {
+                const res = await fetch('/api/categorias');
+                if (!res.ok) throw new Error('Error al cargar datos');
+                todasLasCategorias = await res.json();
+                
+                paginator = new TablePaginator(todasLasCategorias, renderFilasTabla, 10);
+                paginator.renderCurrentPage();
+            } catch (error) {
+                showToast('error', 'Error de conexión con el servidor');
+            }
+        }
+
+        function renderFilasTabla(data) {
+            let html = '';
+            data.forEach(cat => {
+                const badge = cat.activo 
+                    ? '<span class="badge-status active"><i class="bi bi-check-circle"></i> Activo</span>'
+                    : '<span class="badge-status inactive"><i class="bi bi-x-circle"></i> Inactivo</span>';
+
+                html += `
+                    <tr>
+                        <td><span class="text-muted fw-semibold">#${cat.idCategoria}</span></td>
+                        <td class="fw-semibold text-main">${cat.nombre}</td>
+                        <td class="text-muted">${cat.descripcion || '<em style="opacity:.5;">Sin descripción</em>'}</td>
+                        <td>${badge}</td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                <button class="btn btn-sm btn-icon-edit" title="Editar"
+                                    onclick='editarCategoria(${JSON.stringify(cat)})'>
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-icon-delete" title="Eliminar"
+                                    onclick='eliminarCategoria(${cat.idCategoria})'>
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('tablaCategorias').innerHTML = html;
+            
+            const noRes = document.getElementById('sinResultados');
+            const pagWrap = document.getElementById('paginationWrap');
+            const tableWrap = document.querySelector('.table-wrapper');
+            
+            if (data.length === 0) {
+                noRes.style.display = 'block';
+                tableWrap.style.display = 'none';
+                pagWrap.style.display = 'none';
+            } else {
+                noRes.style.display = 'none';
+                tableWrap.style.display = 'block';
+                pagWrap.style.display = 'flex';
+            }
+        }
+
+        function cambiarFilasPorPagina(val) {
+            if(paginator) paginator.setRowsPerPage(parseInt(val));
+        }
+
+        function filtrarTabla() {
+            const txt = document.getElementById('buscador').value.toLowerCase().trim();
+            const filtradas = todasLasCategorias.filter(c => 
+                c.nombre.toLowerCase().includes(txt) || 
+                (c.descripcion && c.descripcion.toLowerCase().includes(txt))
+            );
+            if(paginator) paginator.updateData(filtradas);
+        }
+
+        function abrirModalNueva() {
+            document.getElementById('idCategoria').value = '';
+            document.getElementById('nombre').value = '';
+            document.getElementById('descripcion').value = '';
+            document.getElementById('activo').checked = true;
+            
+            document.getElementById('modalTitle').innerHTML = '<i class="bi bi-tag" style="color:var(--primary); margin-right:.5rem;"></i> Nueva Categoría';
+            
+            bsModal.show();
+        }
+
+        function editarCategoria(cat) {
+            document.getElementById('idCategoria').value = cat.idCategoria;
+            document.getElementById('nombre').value = cat.nombre;
+            document.getElementById('descripcion').value = cat.descripcion || '';
+            document.getElementById('activo').checked = cat.activo;
+            
+            document.getElementById('modalTitle').innerHTML = '<i class="bi bi-pencil" style="color:var(--amber); margin-right:.5rem;"></i> Editar Categoría';
+            
+            bsModal.show();
+        }
+
+        async function guardarCategoria() {
+            const id = document.getElementById('idCategoria').value;
+            const nombre = document.getElementById('nombre').value.trim();
+            const descripcion = document.getElementById('descripcion').value.trim();
+            
+            if (!nombre) {
+                showToast('warning', 'El nombre es obligatorio');
+                return;
+            }
+            if (nombre.length < 3 || nombre.length > 100) {
+                showToast('warning', 'El nombre debe tener entre 3 y 100 caracteres');
+                return;
+            }
+            const regexNombre = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s]+$/;
+            if (!regexNombre.test(nombre)) {
+                showToast('warning', 'El nombre debe contener solo letras, números y espacios');
+                return;
+            }
+
+            if (descripcion && descripcion.length > 255) {
+                showToast('warning', 'La descripción no debe exceder los 255 caracteres');
+                return;
+            }
+
+            const btn = document.getElementById('btnGuardar');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Guardando...';
+
+            const body = {
+                nombre: nombre,
+                descripcion: descripcion,
+                activo: document.getElementById('activo').checked
+            };
+
+            const url = id ? '/api/categorias/' + id : '/api/categorias';
+            const method = id ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                if (!res.ok) throw new Error('Error al guardar');
+
+                showToast('success', id ? 'Categoría actualizada exitosamente' : 'Categoría creada exitosamente');
+                
+                bsModal.hide();
+                
+                document.getElementById('buscador').value = '';
+                await cargarCategorias();
+                
+            } catch (error) {
+                showToast('error', error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-floppy"></i> Guardar';
+            }
+        }
+
+        function eliminarCategoria(id) {
+            confirmDialog('Eliminar Categoría', '¿Estás seguro de eliminar esta categoría? Esta acción no se puede deshacer.', async () => {
+                try {
+                    const res = await fetch('/api/categorias/' + id, { method: 'DELETE' });
+                    if (!res.ok) throw new Error('No se pudo eliminar la categoría (quizás está en uso)');
+                    
+                    showToast('success', 'Categoría eliminada');
+                    
+                    document.getElementById('buscador').value = '';
+                    cargarCategorias();
+                } catch (error) {
+                    showToast('error', error.message);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

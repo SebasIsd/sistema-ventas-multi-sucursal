@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Historial de Movimientos — Bodega')}">
+</head>
+<body class="role-bodega">
+
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-bodega}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
+
+            <!-- Breadcrumb -->
+            <div class="breadcrumb-wrapper">
+                <a th:href="@{/bodega/dashboard}"><i class="bi bi-house-door"></i> Inicio</a>
+                <i class="bi bi-chevron-right sep"></i>
+                <a th:href="@{/bodega/inventario}">Inventario</a>
+                <i class="bi bi-chevron-right sep"></i>
+                <span class="current">Historial de Movimientos</span>
+            </div>
+
+            <!-- Header -->
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title"><i class="bi bi-clock-history"></i> Historial de Movimientos — <span th:text="${sucursal.ciudad}"></span></h2>
+                    <p class="page-desc">Registro cronológico de todos los cambios de stock en tu sucursal</p>
+                </div>
+                <a th:href="@{/bodega/inventario}" class="btn btn-ghost">
+                    <i class="bi bi-arrow-left"></i> Volver al Inventario
+                </a>
+            </div>
+
+            <!-- Tabla historial -->
+            <div class="card slide-up">
+                <div class="card-body" style="padding:1.5rem;">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="fw-semibold" style="color:var(--text-main);">
+                            <i class="bi bi-clock-history"></i>
+                            <span th:text="${#lists.size(movimientos) + ' movimientos registrados'}">0 movimientos registrados</span>
+                        </span>
+                        <div class="search-box" style="max-width:260px;">
+                            <input type="text" id="buscadorHist" class="search-input"
+                                   placeholder="Buscar por producto, tipo..."
+                                   oninput="filtrarHistorial()">
+                        </div>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="table align-middle" id="tablaHistorial">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Tipo Movimiento</th>
+                                    <th class="text-center">Cantidad</th>
+                                    <th class="text-center">Stock Resultante</th>
+                                    <th>Observación</th>
+                                    <th>Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyHistorial">
+                                <tr th:each="m : ${movimientos}">
+                                    <td class="fw-semibold text-main" th:text="${m.producto.nombre}">Producto</td>
+                                    <td>
+                                        <span th:switch="${m.tipoMovimiento}">
+                                            <span th:case="'AJUSTE'" class="badge-status active">AJUSTE</span>
+                                            <span th:case="'SALIDA_VENTA'" class="badge-status inactive">VENTA</span>
+                                            <span th:case="'TRANSFERENCIA_SALIDA'"
+                                                  style="background:#fef3c7;color:#d97706;border-radius:20px;padding:.25rem .75rem;font-size:.78rem;font-weight:600;">
+                                                TRANSF. SALIDA
+                                            </span>
+                                            <span th:case="'TRANSFERENCIA_ENTRADA'"
+                                                  style="background:#e0f2fe;color:#006ECF;border-radius:20px;padding:.25rem .75rem;font-size:.78rem;font-weight:600;">
+                                                TRANSF. ENTRADA
+                                            </span>
+                                            <span th:case="*"
+                                                  style="background:#f1f5f9;color:#64748b;border-radius:20px;padding:.25rem .75rem;font-size:.78rem;font-weight:600;"
+                                                  th:text="${m.tipoMovimiento}">
+                                                OTRO
+                                            </span>
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="fw-bold" th:text="${m.cantidad}">0</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="fw-bold" th:text="${m.stockResultante}">0</span>
+                                    </td>
+                                    <td class="text-muted" style="font-size:.85rem;" th:text="${m.observacion ?: '—'}">—</td>
+                                    <td>
+                                        <span style="font-size:.85rem;"
+                                              th:text="${#temporals.format(m.fechaMovimiento, 'dd/MM/yyyy HH:mm')}">
+                                            —
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Estado vacío -->
+                    <div th:if="${#lists.isEmpty(movimientos)}" style="text-align:center; padding:3rem 1rem;">
+                        <i class="bi bi-clock-history" style="font-size:3rem; color:#cbd5e1; margin-bottom:1rem;"></i>
+                        <h5 style="color:var(--text-main); font-weight:600;">Sin movimientos</h5>
+                        <p style="color:var(--text-muted); font-size:.9rem;">No se han registrado movimientos de inventario.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div th:replace="~{layout/base :: footer}"></div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+<script>
+    function filtrarHistorial() {
+        const txt = document.getElementById('buscadorHist').value.toLowerCase();
+        document.querySelectorAll('#tbodyHistorial tr').forEach(row => {
+            row.style.display = row.textContent.toLowerCase().includes(txt) ? '' : 'none';
+        });
+    }
+</script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function () {
+        const errorMsg = /*[[${errorMessage}]]*/ null;
+        const successMsg = /*[[${successMessage}]]*/ null;
+        const msg = /*[[${mensaje}]]*/ null;
+        const tipoMsg = /*[[${tipoMensaje}]]*/ null;
+
+        if (errorMsg) {
+             showToast('error', errorMsg);
+        }
+        if (successMsg) {
+             showToast('success', successMsg);
+        }
+        if (msg) {
+             showToast(tipoMsg === 'success' ? 'success' : 'error', msg);
+        }
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

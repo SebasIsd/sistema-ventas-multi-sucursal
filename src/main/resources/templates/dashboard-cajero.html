@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Panel Cajero — Sistema de Ventas')}">
+</head>
+<body class="role-cajero">
+
+<div class="app-container">
+    <aside th:replace="~{layout/base :: sidebar-cajero}"></aside>
+    <div class="main-wrapper">
+        <header th:replace="~{layout/base :: top-bar}"></header>
+        <div class="page-content">
+
+    <div class="welcome-banner">
+        <div class="welcome-text">
+            <h1 th:text="'🛒 ¡Hola, ' + ${#authentication.principal.nombreCompleto} + '!'">🛒 ¡Hola, Cajero!</h1>
+            <p>Realiza ventas, consulta transacciones y gestiona clientes</p>
+        </div>
+        <div class="time-badge">
+            <i class="bi bi-clock"></i>
+            <span id="clockDisplay">--:--</span>
+        </div>
+    </div>
+
+    <div class="section-title">
+        <i class="bi bi-lightning" style="color: var(--primary);"></i>
+        Acciones Rápidas
+    </div>
+
+    <div class="actions-grid">
+
+        <a th:href="@{/ventas/nueva}" class="action-card">
+            <div class="action-icon-wrap green" style="background:#dcfce7;color:#1DBD8E;"><i class="bi bi-plus-circle"></i></div>
+            <h3>Nueva Venta</h3>
+            <p>Registra una nueva transacción de venta para un cliente</p>
+            <span class="action-btn green"><i class="bi bi-arrow-right"></i> Iniciar</span>
+        </a>
+
+        <a th:href="@{/ventas/historial}" class="action-card">
+            <div class="action-icon-wrap blue" style="background:#e0f2fe;color:#006ECF;"><i class="bi bi-clock-history"></i></div>
+            <h3>Historial de Ventas</h3>
+            <p>Consulta las ventas registradas en tu sucursal</p>
+            <span class="action-btn blue"><i class="bi bi-arrow-right"></i> Ver historial</span>
+        </a>
+
+        <a th:href="@{/clientes/listar}" class="action-card">
+            <div class="action-icon-wrap purple" style="background:#f1f5f9;color:#2D3F54;"><i class="bi bi-people"></i></div>
+            <h3>Clientes</h3>
+            <p>Registrar y buscar clientes para las ventas</p>
+            <span class="action-btn purple" style="background:#2D3F54;"><i class="bi bi-arrow-right"></i> Gestionar</span>
+        </a>
+
+    </div>
+    <div th:replace="~{layout/base :: footer}"></div>
+    </div>
+    </div>
+</div>
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>
