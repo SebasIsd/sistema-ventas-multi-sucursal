@@ -216,8 +216,9 @@
             return;
         }
 
-        // Si no hay stock → mostrar botón de solicitar transferencia en lugar de bloquear
-        if(producto.stock <= 0){
+        // DESPUÉS
+const cantidadActual = parseInt(fila.querySelector(".cantidad-input").value) || 1;
+if(producto.stock <= 0 || producto.stock < cantidadActual){
             fila.querySelector(".stock-text").innerText = "0";
             fila.querySelector(".precio-text").innerText = formatCurrency(producto.precio);
 
@@ -367,7 +368,26 @@
                 cantidadInput.value = 1;
             }
 
-            // VALIDAR STOCK
+           // VALIDAR STOCK vs CANTIDAD
+const btnTransExistente = fila.querySelector(".btn-solicitar-transferencia");
+if (producto.stock < cantidad) {
+    fila.querySelector(".stock-text").innerText = producto.stock;
+    if (!btnTransExistente) {
+        const tdProducto = select.parentElement;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "btn btn-sm mt-1 btn-solicitar-transferencia";
+        btn.style = "background:#fef3c7;color:#92400e;border:1px solid #fcd34d;font-size:.78rem;";
+        btn.innerHTML = '<i class="bi bi-arrow-left-right me-1"></i>Stock insuficiente — Solicitar de otra sucursal';
+        btn.onclick = function() { abrirModalTransferencia(producto.id, producto.nombre); };
+        tdProducto.appendChild(btn);
+    }
+    showToast('error', `Stock insuficiente para "${producto.nombre}". Disponible: ${producto.stock}`);
+} else {
+    // Si la cantidad vuelve a ser válida, quitar el botón si existía
+    if (btnTransExistente) btnTransExistente.remove();
+    fila.querySelector(".stock-text").innerText = producto.stock;
+}
 
 
             const subtotalFila = cantidad * producto.precio;
@@ -538,6 +558,13 @@
                         tieneError = true;
                         return;
                     }
+                    // Después de validar cantidad, agregar:
+if (producto && cantidad > producto.stock) {
+    e.preventDefault();
+    showToast('error', `Stock insuficiente para "${producto.nombre}". Disponible: ${producto.stock}, pedido: ${cantidad}.`);
+    tieneError = true;
+    return;
+}
 
 
                 });
