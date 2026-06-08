@@ -368,11 +368,7 @@
             }
 
             // VALIDAR STOCK
-            if(cantidad > producto.stock){
-                cantidad = producto.stock;
-                cantidadInput.value = producto.stock;
-                showToast('error', 'Cantidad ajustada al stock máximo disponible: ' + producto.stock);
-            }
+
 
             const subtotalFila = cantidad * producto.precio;
             subtotal += subtotalFila;
@@ -543,12 +539,7 @@
                         return;
                     }
 
-                    if (cantidad > producto.stock) {
-                        e.preventDefault();
-                        showToast('error', `Stock insuficiente para ${producto.nombre} en la fila ${index + 1} (Disponibles: ${producto.stock}).`);
-                        tieneError = true;
-                        return;
-                    }
+
                 });
             });
         }
